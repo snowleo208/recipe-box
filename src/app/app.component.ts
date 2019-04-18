@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'recipe-box';
+
+  items: Observable<any[]>;
+
+  constructor(db: AngularFirestore) {
+    this.items = db.collection('recipes').valueChanges();
+  }
+
 }

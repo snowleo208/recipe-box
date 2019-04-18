@@ -1,0 +1,53 @@
+<section class="form-builder">
+  <h1>Create Recipe</h1>
+
+  <form [formGroup]="recipeForm">
+
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" name="title" formControlName="title" placeholder="Enter recipe title" required>
+    </div>
+
+    <div class="form-group">
+      <label for="image">Image</label>
+      <input type="url" name="image" formControlName="image" placeholder="Enter recipe image url" required>
+    </div>
+
+    <div class="form-group">
+      <h2>Ingredients</h2>
+      <section class="form-group t-indgroup">
+        <div formArrayName="ingredients" *ngFor="let item of recipeForm.get('ingredients').controls; let i = index;">
+          <label for="name">Ingredient {{i+1}}</label>
+          <div class="form-group t-ingredients" [formGroupName]="i">
+            <input class="form-input t-ingredients" formControlName="name" placeholder="e.g. Meat">
+            <input class="form-input t-ingredients" formControlName="weight" placeholder="e.g. 500g">
+            <button class="form-button t-primary" (click)="removeItem('ingredients', i)" *ngIf="i > 0">Remove</button>
+          </div>
+        </div>
+
+        <button class="form-button" (click)="addItem('ingredients')">Add Item</button>
+      </section>
+    </div>
+
+    <div class="form-group">
+      <h2>Instructions</h2>
+      <section class="form-group t-indgroup">
+        <div formArrayName="instructions" *ngFor="let item of recipeForm.get('instructions').controls; let i = index;">
+          <label for="name">Step {{i+1}}</label>
+          <div class="form-group t-ingredients" [formGroupName]="i">
+            <textarea class="form-input t-steps" formControlName="step"
+              placeholder="Enter step of your recipe"></textarea>
+            <button class="form-button t-primary" (click)="removeItem('instructions', i)" *ngIf="i > 0">Remove</button>
+          </div>
+        </div>
+
+        <button class="form-button" (click)="addItem('instructions')">Add Item</button>
+      </section>
+    </div>
+
+    <input class="form-button t-primary" type="submit" (click)="onSubmit()" value="Submit" />
+
+    <p *ngIf="submitComplete | async">Finished!</p>
+
+  </form>
+</section>
