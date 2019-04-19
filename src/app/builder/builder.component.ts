@@ -16,11 +16,11 @@ import { BehaviorSubject } from 'rxjs';
 export class BuilderComponent implements OnInit {
   private itemsCollection: AngularFirestoreCollection<Recipe>;
   public submitComplete = new BehaviorSubject(false);
-  @Input() auth: any;
+  @Input() user: BehaviorSubject<any>;
 
   constructor(private formBuilder: FormBuilder, private afs: AngularFirestore) {
     this.itemsCollection = afs.collection<Recipe>('recipes');
-    this.submitComplete.subscribe(val => console.log(val));
+    this.submitComplete.subscribe();
   }
 
   public recipeForm: FormGroup;
@@ -35,6 +35,8 @@ export class BuilderComponent implements OnInit {
       ingredients: this.formBuilder.array([this.createItem()]),
       instructions: this.formBuilder.array([this.createInstruction()]),
     });
+
+    this.user.subscribe();
   }
 
   get ingredients() {
@@ -81,7 +83,7 @@ export class BuilderComponent implements OnInit {
   // submit and add recipe to firebase
   onSubmit(): void {
     const final = this.recipeForm.value;
-    this.auth.uid ? final.push({ userId: this.auth.uid }) : '';
+    this.user.value.uid ? (final.userId = this.user.value.uid) : '';
     this.itemsCollection.add(final).then(() => this.submitComplete.next(true));
   }
 }

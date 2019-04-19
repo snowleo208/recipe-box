@@ -1,10 +1,13 @@
-<div class="user t-login" *ngIf="afAuth.user | async as user; else showLogin">
-  <div class="user-avatar">
-    <img *ngIf="user.photoURL" src="{{user.photoURL}}" alt="{{user.displayName}}">
+<section class="login">
+  <div class="user t-login" *ngIf="afAuth.user | async as user; else showLogin">
+    <div class="user-avatar">
+      <img *ngIf="user.photoURL" src="{{user.photoURL}}" alt="{{user.displayName}}">
+    </div>
+    <p class="user-desc">Hello {{ user.displayName }}!</p>
+    <button class="btn t-logout" (click)="logout()">Logout</button>
   </div>
-  <p>Hello {{ user.displayName }}!</p>
-  <button (click)="logout()">Logout</button>
-</div>
-<ng-template #showLogin>
-  <button class="btn t-google" (click)="login()">Login with Google</button>
-</ng-template>
+  <ng-template #showLogin>
+    <button class="btn t-google" (click)="login()">Login with Google</button>
+  </ng-template>
+
+</section>

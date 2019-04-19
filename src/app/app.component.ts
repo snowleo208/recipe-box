@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { User } from 'firebase';
 
 @Component({
@@ -10,9 +10,8 @@ import { User } from 'firebase';
 })
 export class AppComponent {
   title = 'recipe-box';
-  @Input() auth: any = localStorage.getItem('_rb_user')
-    ? JSON.parse(localStorage.getItem('_rb_user'))
-    : {};
+  @Input() auth: any;
+  @Output() user = new BehaviorSubject(null);
 
   items: Observable<any[]>;
 
@@ -22,5 +21,6 @@ export class AppComponent {
 
   getUser($event: User) {
     this.auth = $event;
+    this.user.next($event);
   }
 }

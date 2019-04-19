@@ -6,6 +6,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -42,11 +44,18 @@ describe('LoginComponent', () => {
     collection: jasmine.createSpy('collection').and.returnValue(collectionStub),
   };
 
-  const angularAuthStub = {
-    signInWithPopup: new Promise((res, rej) => {
-      setTimeout(() => res({ uid: '23232323' }), 100);
+  let authState = {
+    email: 'sfdgfdgdfg@gmail.com',
+    password: 'password',
+    uid: 'nuDdbfbhTwgkF5C6HN5DWDflpA83',
+  };
+
+  let mockAngularFireAuth = {
+    auth: jasmine.createSpyObj('auth', {
+      signInWithPopup: Promise.resolve({
+        user: authState,
+      }),
     }),
-    signOut: () => {},
   };
 
   beforeEach(async(() => {
@@ -54,7 +63,7 @@ describe('LoginComponent', () => {
       imports: [FormsModule, ReactiveFormsModule],
       providers: [
         { provide: AngularFirestore, useValue: angularFirestoreStub },
-        { provide: AngularFireAuth, useValue: angularAuthStub },
+        { provide: AngularFireAuth, useValue: mockAngularFireAuth },
       ],
       declarations: [LoginComponent, BuilderComponent],
     }).compileComponents();
@@ -76,4 +85,36 @@ describe('LoginComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('#showLogin')).toBeNull();
   });
+
+  it('firebase auth should return a resolved promise', () => {
+    mockAngularFireAuth.auth
+      .signInWithPopup()
+      .then((data: { [x: string]: any }) => {
+        expect(data['user']).toBe(authState);
+      });
+  });
+
+  it('should show login button first', () => {
+    // should be rendered initially
+    expect(fixture.debugElement.query(By.css('.btn'))).toBeTruthy();
+  });
+
+  // it('should show user information', () => {
+  //   const button = fixture.debugElement.nativeElement.querySelector('.btn');
+  //   button.dispatchEvent(new Event('click'));
+
+  //   // mockAngularFireAuth.auth
+  //   //   .signInWithPopup()
+  //   //   .then((data: { [x: string]: any }) => {
+  //   //     expect(data['user']).toBe(authState);
+  //   //   })
+  //   //   .then(() => {
+  //   //     const component = fixture.componentInstance;
+  //   //     spyOn(component.auth, 'emit');
+  //   //     expect(component.auth.emit).toHaveBeenCalledWith(authState);
+  //   //   });
+
+  //   // should be rendered initially
+  //   expect(fixture.debugElement.query(By.css('.btn'))).toBeTruthy();
+  // });
 });

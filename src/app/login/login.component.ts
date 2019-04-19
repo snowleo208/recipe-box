@@ -12,18 +12,16 @@ export class LoginComponent implements OnInit {
 
   constructor(public afAuth: AngularFireAuth) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.afAuth.user.subscribe(val => {
+      val ? this.auth.emit(val) : '';
+    });
+  }
 
   login() {
     this.afAuth.auth
       .signInWithPopup(new auth.GoogleAuthProvider())
-      .then(() => this.auth.emit(this.afAuth.auth.currentUser))
-      .then(() =>
-        localStorage.setItem(
-          '_rb_user',
-          JSON.stringify(this.afAuth.auth.currentUser)
-        )
-      );
+      .then(() => this.auth.emit(this.afAuth.auth.currentUser));
   }
 
   logout() {
