@@ -1,9 +1,85 @@
 /* You can add global styles to this file, and also import other style files */
+$desktop: "only screen and (min-width : 1200px)"
+
 body
+    font-family: 'Poppins', sans-serif;
     width: 100%
     height: 100%
     margin: 0
     padding: 0
+    color: #212529
 
 *
+    font-family: inherit
     box-sizing: border-box
+
+h1, h2
+    font-size: 2rem;
+    font-weight: 700
+    margin-bottom: 1em
+    padding-top: 0.4em
+
+input
+    background: #eff3f7
+    min-height: 53px
+    font-size: 14px
+    border: 0
+    padding: 0 2em
+    margin-bottom: 1.2em
+
+textarea
+    background: #eff3f7
+    padding: 2em
+    border: 0
+
+a
+    color: #474747
+    transition: ease 300ms
+    &:hover
+        color: #ff2a6b
+
+.main
+    @media #{$desktop}
+        max-width: 1176px
+        margin: 0 auto
+
+.u-header
+    position: relative
+
+    &:after
+        position: absolute
+        content: ''
+        width: 56px
+        height: 5px
+        left: 0
+        top: 0
+        background: #ff2a6b
+        -webkit-clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%)
+        clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%)
+
+.btn
+    position: relative
+    min-width: 178px
+    text-align: center
+    border: none
+    padding: 1.05em
+    font-weight: 400
+    font-size: 1.05rem
+    color: white
+    background: #ff2a6b
+    cursor: pointer
+    transition: ease 300ms
+    &:hover
+        opacity: 0.9
+
+footer
+    color: #838383
+    text-align: center
+    padding: 1em
+    border: solid 1px rgba(25, 25, 25, 0.2)
+    border-width: 1px 0 0 0
+
+    p
+        font-size: 0.8rem
+        margin: 0
+        padding: 0

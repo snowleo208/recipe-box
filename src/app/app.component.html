@@ -1,7 +1,19 @@
-<ul>
-  <li class="text" *ngFor="let item of items | async">
-    {{item.title}}
-  </li>
-</ul>
-<app-login></app-login>
-<app-builder></app-builder>
+<app-login (auth)="getUser($event)"></app-login>
+
+<main class="main">
+  <h2 class="u-header t-recipe">Latest recipes</h2>
+  <section class="recipe-container">
+    <div class="recipe" *ngFor="let item of items | async">
+      <div class="recipe-img" *ngIf="item.image" [ngStyle]="{'background-image': 'url('+item.image+')'}"></div>
+      <div class="recipe-desc">
+        <p class="recipe-title">{{item.title}}</p>
+      </div>
+    </div>
+  </section>
+  <app-builder [auth]="auth"></app-builder>
+</main>
+
+<footer>
+  <p>Copyright ©2019 All rights reserved | This template is made with by <a
+      href="https://colorlib.com/wp/template/foodblog/" target="_blank" rel="noopener noreferrer">Colorlib</a></p>
+</footer>

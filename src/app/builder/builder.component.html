@@ -1,5 +1,5 @@
 <section class="form-builder">
-  <h1>Create Recipe</h1>
+  <h1 class="u-header">Create Recipe</h1>
 
   <form [formGroup]="recipeForm">
 
@@ -12,27 +12,41 @@
       <label for="image">Image</label>
       <input type="url" name="image" formControlName="image" placeholder="Enter recipe image url" required>
     </div>
+    <div class="form-group">
+      <label for="title">Preperation time</label>
+      <input type="text" name="prep" formControlName="prep" placeholder="Enter recipe preperation time, e.g. 30 min"
+        required>
+    </div>
+    <div class="form-group">
+      <label for="title">Cooking time</label>
+      <input type="text" name="cook" formControlName="cook" placeholder="Enter recipe cooking time, e.g. 30 min"
+        required>
+    </div>
+    <div class="form-group">
+      <label for="title">Servings</label>
+      <input type="text" name="serve" formControlName="serve" placeholder="Enter recipe servings, e.g. 24" required>
+    </div>
 
     <div class="form-group">
       <h2>Ingredients</h2>
       <section class="form-group t-indgroup">
-        <div formArrayName="ingredients" *ngFor="let item of recipeForm.get('ingredients').controls; let i = index;">
+        <div formArrayName="ingredients" *ngFor="let item of ingredients.controls; let i = index;">
           <label for="name">Ingredient {{i+1}}</label>
           <div class="form-group t-ingredients" [formGroupName]="i">
-            <input class="form-input t-ingredients" formControlName="name" placeholder="e.g. Meat">
-            <input class="form-input t-ingredients" formControlName="weight" placeholder="e.g. 500g">
-            <button class="form-button t-primary" (click)="removeItem('ingredients', i)" *ngIf="i > 0">Remove</button>
+            <input class="form-input t-ingredients" formControlName="name" placeholder="e.g. 1 cup milk">
+            <button class="btn form-button t-primary" (click)="removeItem('ingredients', i)"
+              *ngIf="i > 0">Remove</button>
           </div>
         </div>
 
-        <button class="form-button" (click)="addItem('ingredients')">Add Item</button>
+        <button class="btn form-button" (click)="addItem('ingredients')">Add Item</button>
       </section>
     </div>
 
     <div class="form-group">
       <h2>Instructions</h2>
       <section class="form-group t-indgroup">
-        <div formArrayName="instructions" *ngFor="let item of recipeForm.get('instructions').controls; let i = index;">
+        <div formArrayName="instructions" *ngFor="let item of instructions.controls; let i = index;">
           <label for="name">Step {{i+1}}</label>
           <div class="form-group t-ingredients" [formGroupName]="i">
             <textarea class="form-input t-steps" formControlName="step"
@@ -41,11 +55,11 @@
           </div>
         </div>
 
-        <button class="form-button" (click)="addItem('instructions')">Add Item</button>
+        <button class="btn form-button" (click)="addItem('instructions')">Add Item</button>
       </section>
     </div>
 
-    <input class="form-button t-primary" type="submit" (click)="onSubmit()" value="Submit" />
+    <input class="btn form-button t-primary" type="submit" (click)="onSubmit()" value="Submit" />
 
     <p *ngIf="submitComplete | async">Finished!</p>
 

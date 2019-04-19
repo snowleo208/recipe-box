@@ -1,0 +1,50 @@
+$xs: "only screen and (max-width : 576px)"
+$mobile: "only screen and (min-width : 576px)"
+$tablet: "only screen and (min-width : 768px)"
+$laptop: "only screen and (min-width : 992px)"
+$desktop: "only screen and (min-width : 1200px)"
+
+.recipe-container
+    display: flex
+    flex-flow: row wrap
+    justify-content: flex-start
+
+.recipe
+    position: relative
+    width: 100%
+    height: 341px
+
+    @media #{$laptop}
+        width: calc((100% / 3) - 0.7em)
+        margin: 0 1em 2em 0
+
+        &:nth-child(3n)
+            margin: 0 0 2em 0
+
+    &-img
+        height: 100%
+        background-size: cover
+        background-repeat: no-repeat
+        background-position: center
+    
+    &-title
+        margin: 0
+
+    &-desc
+        position: absolute
+        bottom: 0
+        left: 0
+        max-width: 70%
+        height: 4.6em
+        background: #ff2a6b
+        color: white
+        padding: 17px 25px 15px
+        &:after
+            position: absolute
+            content: ''
+            width: 0
+            height: 0
+            border-top: 4.6em solid #ff2a6b
+            border-right: 2.4em solid transparent
+            top: 0
+            right: -2.3em
