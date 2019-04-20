@@ -1,6 +1,7 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth } from 'firebase/app';
+import { auth, UserInfo } from 'firebase/app';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -9,24 +10,35 @@ import { auth } from 'firebase/app';
 })
 export class LoginComponent implements OnInit {
   @Output() auth: EventEmitter<any> = new EventEmitter();
+  authorizeInfo: Observable<UserInfo>;
 
-  constructor(public afAuth: AngularFireAuth) {}
+  constructor(public afAuth: AngularFireAuth) {
+    this.authorizeInfo = afAuth.user;
+  }
 
   ngOnInit() {
-    this.afAuth.user.subscribe(val => {
-      val ? this.auth.emit(val) : '';
-    });
+    this.userInfo
+      ? this.userInfo.subscribe(val => {
+          console.log(val);
+          this.sendUserInfo(val);
+        })
+      : '';
+  }
+
+  get userInfo(): Observable<UserInfo> | null {
+    return this.authorizeInfo;
+  }
+
+  sendUserInfo(obj: UserInfo) {
+    this.auth.emit(obj);
   }
 
   login() {
-    this.afAuth.auth
-      .signInWithPopup(new auth.GoogleAuthProvider())
-      .then(() => this.auth.emit(this.afAuth.auth.currentUser));
+    this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
   }
 
   logout() {
     this.afAuth.auth.signOut();
-    localStorage.removeItem('_rb_user');
     this.auth.emit(null);
   }
 }

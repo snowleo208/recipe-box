@@ -1,4 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  async,
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+} from '@angular/core/testing';
 
 import { LoginComponent } from './login.component';
 import { BuilderComponent } from '../builder/builder.component';
@@ -6,8 +11,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { Observable, of } from 'rxjs';
+import { tick } from '@angular/core/src/render3';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -56,6 +62,7 @@ describe('LoginComponent', () => {
         user: authState,
       }),
     }),
+    user: authState,
   };
 
   beforeEach(async(() => {
@@ -72,6 +79,13 @@ describe('LoginComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
+
+    let hostComponent = fixture.debugElement.componentInstance;
+    let user: BehaviorSubject<any> = new BehaviorSubject(null);
+
+    component.authorizeInfo = user;
+    hostComponent.user = user;
+
     fixture.detectChanges();
   });
 
@@ -79,18 +93,12 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render nothing', () => {
-    const fixture = TestBed.createComponent(LoginComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('#showLogin')).toBeNull();
-  });
-
-  it('firebase auth should return a resolved promise', () => {
+  it('firebase auth should return a resolved promise', done => {
     mockAngularFireAuth.auth
       .signInWithPopup()
       .then((data: { [x: string]: any }) => {
         expect(data['user']).toBe(authState);
+        done();
       });
   });
 
@@ -99,22 +107,52 @@ describe('LoginComponent', () => {
     expect(fixture.debugElement.query(By.css('.btn'))).toBeTruthy();
   });
 
-  // it('should show user information', () => {
-  //   const button = fixture.debugElement.nativeElement.querySelector('.btn');
-  //   button.dispatchEvent(new Event('click'));
+  it('should emit if user changes', async(() => {
+    component = fixture.componentInstance;
+    spyOn(component.auth, 'emit');
 
-  //   // mockAngularFireAuth.auth
-  //   //   .signInWithPopup()
-  //   //   .then((data: { [x: string]: any }) => {
-  //   //     expect(data['user']).toBe(authState);
-  //   //   })
-  //   //   .then(() => {
-  //   //     const component = fixture.componentInstance;
-  //   //     spyOn(component.auth, 'emit');
-  //   //     expect(component.auth.emit).toHaveBeenCalledWith(authState);
-  //   //   });
+    component.authorizeInfo.subscribe(val => {
+      component.auth.emit(val);
+    });
 
-  //   // should be rendered initially
-  //   expect(fixture.debugElement.query(By.css('.btn'))).toBeTruthy();
-  // });
+    component.authorizeInfo = new BehaviorSubject({
+      displayName: 'Mary',
+      email: '123@gmail.com',
+      phoneNumber: '12345678',
+      providerId: '12123',
+      photoURL: 'http://www.abc.com/123.jpg',
+      uid: '5434545345',
+    });
+
+    fixture.detectChanges();
+
+    expect(component.auth.emit).toHaveBeenCalled();
+  }));
+
+  it('should change if user changes', async(() => {
+    component = fixture.componentInstance;
+    spyOn(component.auth, 'emit');
+    let hostComponent = fixture.debugElement.componentInstance;
+    const compiled = fixture.debugElement.nativeElement;
+
+    component.authorizeInfo.subscribe(val => {
+      component.auth.emit(val);
+    });
+
+    component.authorizeInfo = of({
+      displayName: 'Lily',
+      email: '123@gmail.com',
+      phoneNumber: '12345678',
+      providerId: '12123',
+      photoURL: 'http://www.abc.com/123.jpg',
+      uid: '5434545345',
+    });
+
+    fixture.detectChanges();
+
+    expect(component.auth.emit).toHaveBeenCalled();
+
+    expect(fixture.debugElement.query(By.css('.user-desc'))).toBeTruthy();
+    expect(compiled.querySelector('p').textContent).toContain('Lily');
+  }));
 });

@@ -83,7 +83,13 @@ export class BuilderComponent implements OnInit {
   // submit and add recipe to firebase
   onSubmit(): void {
     const final = this.recipeForm.value;
+    const id = this.afs.createId();
+
     this.user.value.uid ? (final.userId = this.user.value.uid) : '';
-    this.itemsCollection.add(final).then(() => this.submitComplete.next(true));
+    id ? (final.id = id) : '';
+    this.itemsCollection
+      .doc(id)
+      .set(final)
+      .then(() => this.submitComplete.next(true));
   }
 }

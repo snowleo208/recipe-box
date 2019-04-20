@@ -4,7 +4,9 @@
   <h2 class="u-header t-recipe">Latest recipes</h2>
   <section class="recipe-container">
     <div class="recipe" *ngFor="let item of items | async">
-      <div class="recipe-img" *ngIf="item.image" [ngStyle]="{'background-image': 'url('+item.image+')'}"></div>
+      <a routerLink="../recipe/{{item.id}}" routerLinkActive="active">
+        <div class="recipe-img" *ngIf="item.image" [ngStyle]="{'background-image': 'url('+item.image+')'}"></div>
+      </a>
       <div class="recipe-desc">
         <p class="recipe-title">{{item.title}}</p>
       </div>
