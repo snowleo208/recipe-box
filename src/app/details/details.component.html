@@ -1,3 +1,18 @@
-<p>
-  details works!
-</p>
+<div class="recipe" *ngIf="((recipe | async)) as recipes; else loading">
+  <h1 class="recipe-header">{{recipes.title}}</h1>
+  <p>Cook: {{recipes.cook}}</p>
+  <p>Prep: {{recipes.prep}}</p>
+  <p>Serve: {{recipes.serve}}</p>
+
+  <h2 class="recipe-header">Ingredients</h2>
+  <ul *ngIf="recipes.ingredients">
+    <li *ngFor="let ingredient of recipes.ingredients">{{ingredient.name}}</li>
+  </ul>
+
+  <h2 class="recipe-header">Instructions</h2>
+  <ul *ngIf="recipes.instructions">
+    <li *ngFor="let instruction of recipes.instructions">{{instruction.step}}</li>
+  </ul>
+</div>
+
+<ng-template #loading>Loading&hellip;</ng-template>

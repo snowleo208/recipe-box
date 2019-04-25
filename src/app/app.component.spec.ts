@@ -4,7 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { BuilderComponent } from './builder/builder.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -44,7 +44,7 @@ describe('AppComponent', () => {
     collection: jasmine.createSpy('collection').and.returnValue(collectionStub),
   };
 
-  let authState = {
+  const authState = {
     displayName: 'Lily',
     email: '123@gmail.com',
     phoneNumber: '12345678',
@@ -53,7 +53,7 @@ describe('AppComponent', () => {
     uid: '5434545345',
   };
 
-  let mockAngularFireAuth = {
+  const mockAngularFireAuth = {
     auth: jasmine.createSpyObj('auth', {
       signInWithPopup: Promise.resolve({
         user: authState,
@@ -80,7 +80,7 @@ describe('AppComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    mockAngularFireAuth.auth.signInWithPopup.and.callFake(function() {
+    mockAngularFireAuth.auth.signInWithPopup.and.callFake(() => {
       return Promise.resolve({
         user: authState,
       });
@@ -94,12 +94,14 @@ describe('AppComponent', () => {
   }));
 
   it('should create the app', () => {
+    // tslint:disable-next-line:no-shadowed-variable
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   });
 
   it('should render title in a h2 tag', () => {
+    // tslint:disable-next-line:no-shadowed-variable
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;

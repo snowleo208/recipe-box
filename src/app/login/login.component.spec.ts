@@ -50,13 +50,13 @@ describe('LoginComponent', () => {
     collection: jasmine.createSpy('collection').and.returnValue(collectionStub),
   };
 
-  let authState = {
+  const authState = {
     email: 'sfdgfdgdfg@gmail.com',
     password: 'password',
     uid: 'nuDdbfbhTwgkF5C6HN5DWDflpA83',
   };
 
-  let mockAngularFireAuth = {
+  const mockAngularFireAuth = {
     auth: jasmine.createSpyObj('auth', {
       signInWithPopup: Promise.resolve({
         user: authState,
@@ -80,8 +80,8 @@ describe('LoginComponent', () => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
 
-    let hostComponent = fixture.debugElement.componentInstance;
-    let user: BehaviorSubject<any> = new BehaviorSubject(null);
+    const hostComponent = fixture.debugElement.componentInstance;
+    const user: BehaviorSubject<any> = new BehaviorSubject(null);
 
     component.authorizeInfo = user;
     hostComponent.user = user;
@@ -96,8 +96,8 @@ describe('LoginComponent', () => {
   it('firebase auth should return a resolved promise', done => {
     mockAngularFireAuth.auth
       .signInWithPopup()
-      .then((data: { [x: string]: any }) => {
-        expect(data['user']).toBe(authState);
+      .then((db: { [x: string]: any }) => {
+        expect(db.user).toBe(authState);
         done();
       });
   });
@@ -132,7 +132,7 @@ describe('LoginComponent', () => {
   it('should change if user changes', async(() => {
     component = fixture.componentInstance;
     spyOn(component.auth, 'emit');
-    let hostComponent = fixture.debugElement.componentInstance;
+    // let hostComponent = fixture.debugElement.componentInstance;
     const compiled = fixture.debugElement.nativeElement;
 
     component.authorizeInfo.subscribe(val => {
