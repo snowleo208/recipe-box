@@ -22,7 +22,6 @@ export class DetailsComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => this.recipeId.next(params.id));
-    this.recipe.subscribe(val => console.log(val));
   }
 
   getItem(node: string): Observable<{}[]> {

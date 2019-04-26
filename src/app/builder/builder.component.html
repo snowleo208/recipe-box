@@ -18,12 +18,12 @@
         required>
     </div>
     <div class="form-group">
-      <label for="title">Cooking time</label>
+      <label for="cook">Cooking time</label>
       <input type="text" name="cook" formControlName="cook" placeholder="Enter recipe cooking time, e.g. 30 min"
         required>
     </div>
     <div class="form-group">
-      <label for="title">Servings</label>
+      <label for="serve">Servings</label>
       <input type="text" name="serve" formControlName="serve" placeholder="Enter recipe servings, e.g. 24" required>
     </div>
 
@@ -57,6 +57,11 @@
 
         <button class="btn form-button" (click)="addItem('instructions')">Add Item</button>
       </section>
+    </div>
+
+    <div class="form-group">
+      <label for="public">Servings</label>
+      <input type="checkbox" name="public" formControlName="public">
     </div>
 
     <input class="btn form-button t-primary" type="submit" (click)="onSubmit()" value="Submit" />

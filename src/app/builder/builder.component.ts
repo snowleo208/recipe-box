@@ -32,6 +32,7 @@ export class BuilderComponent implements OnInit {
       prep: ['', Validators.required],
       cook: ['', Validators.required],
       serve: ['', Validators.required],
+      public: false,
       ingredients: this.formBuilder.array([this.createItem()]),
       instructions: this.formBuilder.array([this.createInstruction()]),
     });
@@ -85,8 +86,8 @@ export class BuilderComponent implements OnInit {
     const final = this.recipeForm.value;
     const id = this.afs.createId();
 
-    this.user.value.uid ? (final.userId = this.user.value.uid) : '';
-    id ? (final.id = id) : '';
+    final.userId = this.user.value.uid ? (this.user.value.uid) : '';
+    final.id = id ? id : '';
     this.itemsCollection
       .doc(id)
       .set(final)
