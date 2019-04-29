@@ -1,6 +1,4 @@
-<app-login (auth)="getUser($event)"></app-login>
-
-<main class="main">
+<div class="main">
   <h2 class="u-header t-recipe">Latest recipes</h2>
   <section class="recipe-container">
     <div class="recipe" *ngFor="let item of items | async">
@@ -12,8 +10,8 @@
       </div>
     </div>
   </section>
-  <app-builder [user]="user"></app-builder>
-</main>
+  <button class="btn t-builder" routerLink="../builder" routerLinkActive="active">Create Recipe</button>
+</div>
 
 <footer>
   <p>Copyright ©2019 All rights reserved | This template is made with by <a

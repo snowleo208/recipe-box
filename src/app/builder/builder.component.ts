@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Recipe } from '../recipe';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import {
@@ -6,7 +6,9 @@ import {
   AngularFirestoreCollection,
 } from '@angular/fire/firestore';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { UserInfo } from 'firebase';
+import { UserSessionService } from '../user-session.service';
 
 @Component({
   selector: 'app-builder',
@@ -15,12 +17,20 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class BuilderComponent implements OnInit {
   private itemsCollection: AngularFirestoreCollection<Recipe>;
+  private uid: BehaviorSubject<string | null> = new BehaviorSubject(null);
   public submitComplete = new BehaviorSubject(false);
-  @Input() user: BehaviorSubject<any>;
+  public session: UserSessionService;
 
-  constructor(private formBuilder: FormBuilder, private afs: AngularFirestore) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private afs: AngularFirestore,
+    private userSessionService: UserSessionService
+  ) {
     this.itemsCollection = afs.collection<Recipe>('recipes');
     this.submitComplete.subscribe();
+    this.session = userSessionService;
+
+    this.session.getUserInfoObs().subscribe(val => this.setUserId(val));
   }
 
   public recipeForm: FormGroup;
@@ -36,8 +46,6 @@ export class BuilderComponent implements OnInit {
       ingredients: this.formBuilder.array([this.createItem()]),
       instructions: this.formBuilder.array([this.createInstruction()]),
     });
-
-    this.user.subscribe();
   }
 
   get ingredients() {
@@ -46,6 +54,11 @@ export class BuilderComponent implements OnInit {
 
   get instructions() {
     return this.recipeForm.get('instructions') as FormArray;
+  }
+
+  setUserId(obj: UserInfo) {
+    console.log(obj);
+    obj.uid ? this.uid.next(obj.uid) : '';
   }
 
   // FormGroup
@@ -86,8 +99,9 @@ export class BuilderComponent implements OnInit {
     const final = this.recipeForm.value;
     const id = this.afs.createId();
 
-    final.userId = this.user.value.uid ? (this.user.value.uid) : '';
-    final.id = id ? id : '';
+    this.uid.subscribe(val => (final.uid = val));
+    final.id = id;
+
     this.itemsCollection
       .doc(id)
       .set(final)

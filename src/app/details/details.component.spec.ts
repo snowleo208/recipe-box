@@ -21,11 +21,14 @@ describe('DetailsComponent', () => {
     ingredients: [
       { name: '1/4 cup butter, melted' },
       { name: '1/2 teaspoon kosher salt' },
-      { name: '1 cup panko (Japanese) bread crumbs' }
+      { name: '1 cup panko (Japanese) bread crumbs' },
     ],
     instructions: [
       { step: 'Place butter in a shallow bowl.' },
-      { step: 'Combine the bread crumbs, cheese and salt in another shallow bowl.' }
+      {
+        step:
+          'Combine the bread crumbs, cheese and salt in another shallow bowl.',
+      },
     ],
   };
 
@@ -68,9 +71,8 @@ describe('DetailsComponent', () => {
         { provide: AngularFirestore, useValue: angularFirestoreStub },
         { provide: AngularFireAuth, useValue: mockAngularFireAuth },
       ],
-      declarations: [DetailsComponent]
-    })
-      .compileComponents();
+      declarations: [DetailsComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -89,6 +91,8 @@ describe('DetailsComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.debugElement.query(By.css('.recipe-header'))).toBeTruthy();
-    expect(compiled.querySelector('h1').textContent).toContain('Parmesan Chicken Nuggets');
+    expect(compiled.querySelector('h1').textContent).toContain(
+      'Parmesan Chicken Nuggets'
+    );
   });
 });

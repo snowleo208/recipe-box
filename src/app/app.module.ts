@@ -14,6 +14,7 @@ import { DetailsComponent } from './details/details.component';
 
 import { RouterModule, Routes } from '@angular/router';
 import { HomepageComponent } from './homepage/homepage.component';
+import { UserSessionService } from './user-session.service';
 
 const appRoutes: Routes = [
   { path: 'recipe/:id', component: DetailsComponent },
@@ -22,11 +23,11 @@ const appRoutes: Routes = [
     component: AppComponent,
     data: { title: 'Recipe Box' },
   },
-  // {
-  //   path: '',
-  //   component: HomepageComponent,
-  //   data: { title: 'Recipe Box' },
-  // },
+  {
+    path: 'builder',
+    component: BuilderComponent,
+    data: { title: 'Create your recipe | Recipe Box' },
+  },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   // { path: '**', component: PageNotFoundComponent }
 ];
@@ -50,7 +51,7 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     AngularFireAuthModule,
   ],
-  providers: [],
+  providers: [UserSessionService],
   bootstrap: [HomepageComponent],
 })
 export class AppModule {}

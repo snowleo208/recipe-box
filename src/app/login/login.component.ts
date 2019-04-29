@@ -2,6 +2,7 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth, UserInfo } from 'firebase/app';
 import { Observable, of } from 'rxjs';
+import { UserSessionService } from '../user-session.service';
 
 @Component({
   selector: 'app-login',
@@ -11,15 +12,19 @@ import { Observable, of } from 'rxjs';
 export class LoginComponent implements OnInit {
   @Output() auth: EventEmitter<any> = new EventEmitter();
   authorizeInfo: Observable<UserInfo>;
+  session: UserSessionService;
 
-  constructor(public afAuth: AngularFireAuth) {
+  constructor(
+    public afAuth: AngularFireAuth,
+    private userSessionService: UserSessionService
+  ) {
     this.authorizeInfo = afAuth.user;
+    this.session = userSessionService;
   }
 
   ngOnInit() {
     this.userInfo
       ? this.userInfo.subscribe(val => {
-          console.log(val);
           this.sendUserInfo(val);
         })
       : '';
@@ -30,7 +35,10 @@ export class LoginComponent implements OnInit {
   }
 
   sendUserInfo(obj: UserInfo) {
-    this.auth.emit(obj);
+    console.log(obj);
+    // this.auth.emit(obj);
+    this.session.setUserInfo(obj);
+    this.session.login(true);
   }
 
   login() {
@@ -39,6 +47,8 @@ export class LoginComponent implements OnInit {
 
   logout() {
     this.afAuth.auth.signOut();
-    this.auth.emit(null);
+    // this.auth.emit(null);
+    this.session.setUserInfo(null);
+    this.session.login(false);
   }
 }

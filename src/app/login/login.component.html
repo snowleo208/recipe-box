@@ -4,10 +4,10 @@
       <img *ngIf="user.photoURL" src="{{user.photoURL}}" alt="{{user.displayName}}">
     </div>
     <p class="user-desc">Hello {{user.displayName}}!</p>
-    <button class="btn t-logout" (click)="logout()">Logout</button>
+    <a class="login-link t-logout" (click)="logout()">Logout</a>
   </div>
   <ng-template #showLogin>
-    <button class="btn t-google" (click)="login()">Login with Google</button>
+    <a class="login-link t-google" (click)="login()">Login with Google</a>
   </ng-template>
 
 </section>

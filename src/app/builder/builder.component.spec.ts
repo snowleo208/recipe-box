@@ -4,6 +4,7 @@ import { BuilderComponent } from './builder.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { UserSessionService } from '../user-session.service';
 
 describe('BuilderComponent', () => {
   let component: BuilderComponent;
@@ -40,11 +41,19 @@ describe('BuilderComponent', () => {
     collection: jasmine.createSpy('collection').and.returnValue(collectionStub),
   };
 
+  const mockUserSession = {
+    isLogin: new BehaviorSubject(false),
+    setUserInfo: new BehaviorSubject(0),
+    getLoginObs: () => void 0,
+    getUserInfoObs: () => new BehaviorSubject({}),
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule, ReactiveFormsModule],
       providers: [
         { provide: AngularFirestore, useValue: angularFirestoreStub },
+        { provide: UserSessionService, useValue: mockUserSession },
       ],
       declarations: [BuilderComponent],
     }).compileComponents();
@@ -53,13 +62,6 @@ describe('BuilderComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BuilderComponent);
     component = fixture.componentInstance;
-
-    const hostComponent = fixture.debugElement.componentInstance;
-    const user: BehaviorSubject<any> = new BehaviorSubject({
-      uid: '12121212',
-    });
-    hostComponent.user = user;
-
     fixture.detectChanges();
   });
 

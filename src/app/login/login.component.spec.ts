@@ -14,6 +14,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { By } from '@angular/platform-browser';
 import { Observable, of } from 'rxjs';
 import { tick } from '@angular/core/src/render3';
+import { UserSessionService } from '../user-session.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -65,14 +66,22 @@ describe('LoginComponent', () => {
     user: authState,
   };
 
+  const mockUserSession = {
+    login: bool => new BehaviorSubject(bool),
+    setUserInfo: obj => new BehaviorSubject(authState),
+    getLoginObs: () => void 0,
+    getUserInfoObs: () => authState,
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule, ReactiveFormsModule],
       providers: [
         { provide: AngularFirestore, useValue: angularFirestoreStub },
         { provide: AngularFireAuth, useValue: mockAngularFireAuth },
+        { provide: UserSessionService, useValue: mockUserSession },
       ],
-      declarations: [LoginComponent, BuilderComponent],
+      declarations: [LoginComponent],
     }).compileComponents();
   }));
 
@@ -102,42 +111,17 @@ describe('LoginComponent', () => {
       });
   });
 
-  it('should show login button first', () => {
-    // should be rendered initially
-    expect(fixture.debugElement.query(By.css('.btn'))).toBeTruthy();
-  });
-
-  it('should emit if user changes', async(() => {
-    component = fixture.componentInstance;
-    spyOn(component.auth, 'emit');
-
-    component.authorizeInfo.subscribe(val => {
-      component.auth.emit(val);
-    });
-
-    component.authorizeInfo = new BehaviorSubject({
-      displayName: 'Mary',
-      email: '123@gmail.com',
-      phoneNumber: '12345678',
-      providerId: '12123',
-      photoURL: 'http://www.abc.com/123.jpg',
-      uid: '5434545345',
-    });
-
-    fixture.detectChanges();
-
-    expect(component.auth.emit).toHaveBeenCalled();
-  }));
+  // it('should show login button first', () => {
+  //   // should be rendered initially
+  //   component.authorizeInfo = null;
+  //   expect(fixture.debugElement.query(By.css('.btn'))).toBeTruthy();
+  // });
 
   it('should change if user changes', async(() => {
     component = fixture.componentInstance;
     spyOn(component.auth, 'emit');
     // let hostComponent = fixture.debugElement.componentInstance;
     const compiled = fixture.debugElement.nativeElement;
-
-    component.authorizeInfo.subscribe(val => {
-      component.auth.emit(val);
-    });
 
     component.authorizeInfo = of({
       displayName: 'Lily',
@@ -149,8 +133,6 @@ describe('LoginComponent', () => {
     });
 
     fixture.detectChanges();
-
-    expect(component.auth.emit).toHaveBeenCalled();
 
     expect(fixture.debugElement.query(By.css('.user-desc'))).toBeTruthy();
     expect(compiled.querySelector('p').textContent).toContain('Lily');
