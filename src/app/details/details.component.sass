@@ -1,0 +1,94 @@
+$xs: "only screen and (max-width : 576px)"
+$mobile: "only screen and (min-width : 576px)"
+$tablet: "only screen and (min-width : 768px)"
+$laptop: "only screen and (min-width : 992px)"
+$desktop: "only screen and (min-width : 1200px)"
+
+$theme-pink: #ff2a6b
+
+.recipe
+    margin: 0 0 3em 0
+    @media #{$laptop}
+        margin: 0 0 4em 0
+    
+.recipe-header
+    margin: 0
+    
+.recipe-time
+    font-size: 0.8rem
+    color: #a4a4a4
+
+.recipe-bg
+    margin: 1.5em 0
+
+
+.recipe
+    &-container
+        display: flex
+        flex-flow: column wrap
+        @media #{$laptop}
+            flex-flow: row wrap
+    &-details
+        width: 100%
+        background: #eff3f7
+        @media #{$laptop}
+            width: 50%
+    &-instructions
+        width: 100%
+        @media #{$laptop}
+            width: 50%
+
+.recipe-tag
+    padding: 0 4em 0 0
+
+.recipe-prepare
+    position: relative
+    background: $theme-pink
+    color: white
+    padding: 1.3em 1.7em
+    max-height: 7.1em
+    p
+        margin: 0
+    &:after
+        position: absolute
+        content: ''
+        width: 0
+        height: 0
+        border-top: 7.1em solid $theme-pink
+        border-right: 2.7em solid transparent
+        top: 0
+        right: -2.7em
+
+.recipe-ingredients
+    padding: 1.7em
+
+    .recipe-header
+        margin-bottom: 0.8em
+
+    &__group
+        display: flex
+        align-items: center
+        input[type="checkbox"]
+            display: none
+            min-height: 100%
+            margin-bottom: 0
+        label
+            position: relative
+            padding: 0.2em 0 0 2.5em
+            min-height: 1.8em
+            &:before
+                position: absolute
+                content: ""
+                width: 1.8em
+                height: 1.8em
+                left: 0
+                top: 0
+                background: white
+                border: 1px solid #aaaaaa
+            &:checked:before
+                background-image: url('../../assets/check-2.png')
+                background-repeat: no-repeat
+                background-position: center
+                background-color: $theme-pink
+                border-color: $theme-pink
+                transition: ease 300ms

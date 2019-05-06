@@ -1,18 +1,40 @@
 <div class="recipe" *ngIf="((recipe | async)) as recipes; else loading">
   <h1 class="recipe-header">{{recipes.title}}</h1>
-  <p>Cook: {{recipes.cook}}</p>
-  <p>Prep: {{recipes.prep}}</p>
-  <p>Serve: {{recipes.serve}}</p>
+  <time class="recipe-time">{{recipes.createdAt.toDate().toString().substr(4,11)}}</time>
 
-  <h2 class="recipe-header">Ingredients</h2>
-  <ul *ngIf="recipes.ingredients">
-    <li *ngFor="let ingredient of recipes.ingredients">{{ingredient.name}}</li>
-  </ul>
+  <div class="recipe-bg">
+    <img src="{{recipes.image}}" alt="{{recipes.title}}">
+  </div>
 
-  <h2 class="recipe-header">Instructions</h2>
-  <ul *ngIf="recipes.instructions">
-    <li *ngFor="let instruction of recipes.instructions">{{instruction.step}}</li>
-  </ul>
+  <article class="recipe-container">
+    <section class="recipe-details">
+      <div class="recipe-tag">
+        <div class="recipe-prepare">
+          <p>Cook: {{recipes.cook}}</p>
+          <p>Prep: {{recipes.prep}}</p>
+          <p>Serve: {{recipes.serve}}</p>
+        </div>
+      </div>
+
+      <div class="recipe-ingredients">
+        <h2 class="recipe-header">Ingredients</h2>
+        <ng-container *ngIf="recipes.ingredients">
+          <div class="recipe-ingredients__group" *ngFor="let ingredient of recipes.ingredients">
+            <input type="checkbox" name="{{ingredient.name.replace(' ','_')}}"
+              id="{{ingredient.name.replace(' ','_')}}" />
+            <label for="{{ingredient.name.replace(' ','_')}}">{{ingredient.name}}</label>
+          </div>
+        </ng-container>
+      </div>
+
+    </section>
+
+    <section class="recipe-instructions">
+      <ol *ngIf="recipes.instructions">
+        <li *ngFor="let instruction of recipes.instructions">{{instruction.step}}</li>
+      </ol>
+    </section>
+  </article>
 </div>
 
 <ng-template #loading>Loading&hellip;</ng-template>

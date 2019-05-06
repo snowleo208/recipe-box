@@ -98,9 +98,11 @@ export class BuilderComponent implements OnInit {
   onSubmit(): void {
     const final = this.recipeForm.value;
     const id = this.afs.createId();
+    const timestamp = new Date();
 
     this.uid.subscribe(val => (final.uid = val));
     final.id = id;
+    final.createdAt = timestamp;
 
     this.itemsCollection
       .doc(id)
