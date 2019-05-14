@@ -57,7 +57,6 @@ export class BuilderComponent implements OnInit {
   }
 
   setUserId(obj: UserInfo) {
-    console.log(obj);
     obj && obj.uid !== null ? this.uid.next(obj.uid) : '';
   }
 

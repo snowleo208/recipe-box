@@ -30,6 +30,9 @@ describe('DetailsComponent', () => {
           'Combine the bread crumbs, cheese and salt in another shallow bowl.',
       },
     ],
+    createdAt: {
+      toDate: () => new Date(),
+    },
   };
 
   const data = new BehaviorSubject(input);
