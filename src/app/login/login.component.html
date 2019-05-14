@@ -1,13 +1,14 @@
 <section class="login">
-  <div class="user t-login" *ngIf="userInfo | async as user; else showLogin">
-    <div class="user-avatar">
-      <img *ngIf="user.photoURL" src="{{user.photoURL}}" alt="{{user.displayName}}">
+  <div class="login-container">
+    <div class="user t-login" *ngIf="userInfo | async as user; else showLogin">
+      <div class="user-avatar">
+        <img *ngIf="user.photoURL" src="{{user.photoURL}}" alt="{{user.displayName}}">
+      </div>
+      <p class="user-desc">Hello {{user.displayName}}!</p>
+      <a class="login-link t-logout" (click)="logout()">Logout</a>
     </div>
-    <p class="user-desc">Hello {{user.displayName}}!</p>
-    <a class="login-link t-logout" (click)="logout()">Logout</a>
+    <ng-template #showLogin>
+      <a class="login-link t-google" (click)="login()">Login with Google</a>
+    </ng-template>
   </div>
-  <ng-template #showLogin>
-    <a class="login-link t-google" (click)="login()">Login with Google</a>
-  </ng-template>
-
 </section>

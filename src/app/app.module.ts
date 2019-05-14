@@ -15,6 +15,7 @@ import { DetailsComponent } from './details/details.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HomepageComponent } from './homepage/homepage.component';
 import { UserSessionService } from './user-session.service';
+import { AuthControllerService } from './auth-controller.service';
 
 const appRoutes: Routes = [
   { path: 'recipe/:id', component: DetailsComponent },
@@ -26,7 +27,13 @@ const appRoutes: Routes = [
   {
     path: 'builder',
     component: BuilderComponent,
+    canActivate: [AuthControllerService],
     data: { title: 'Create your recipe | Recipe Box' },
+  },
+  {
+    path: 'login',
+    component: AppComponent,
+    data: { title: 'Recipe Box' },
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   // { path: '**', component: PageNotFoundComponent }

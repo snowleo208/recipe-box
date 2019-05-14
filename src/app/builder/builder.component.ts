@@ -58,7 +58,7 @@ export class BuilderComponent implements OnInit {
 
   setUserId(obj: UserInfo) {
     console.log(obj);
-    obj.uid ? this.uid.next(obj.uid) : '';
+    obj && obj.uid !== null ? this.uid.next(obj.uid) : '';
   }
 
   // FormGroup

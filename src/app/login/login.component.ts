@@ -35,10 +35,8 @@ export class LoginComponent implements OnInit {
   }
 
   sendUserInfo(obj: UserInfo) {
-    console.log(obj);
-    // this.auth.emit(obj);
     this.session.setUserInfo(obj);
-    this.session.login(true);
+    this.session.login(obj !== null);
   }
 
   login() {
