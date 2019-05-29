@@ -2,7 +2,10 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "types": []
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "types": [],
+    "baseUrl": "./src"
   },
   "exclude": [
     "test.ts",
