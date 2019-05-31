@@ -18,20 +18,23 @@
 
       <div class="recipe-ingredients">
         <h2 class="recipe-header">Ingredients</h2>
-        <ng-container *ngIf="recipes.ingredients">
-          <div class="recipe-ingredients__group" *ngFor="let ingredient of recipes.ingredients">
-            <input type="checkbox" name="{{ingredient.name.replace(' ','_')}}"
-              id="{{ingredient.name.replace(' ','_')}}" />
-            <label for="{{ingredient.name.replace(' ','_')}}">{{ingredient.name}}</label>
-          </div>
-        </ng-container>
+        <form [formGroup]="ingredientsForm">
+          <ng-container *ngIf="recipes.ingredients">
+            <div class="recipe-ingredients__group" *ngFor="let ingredient of recipes.ingredients; index as i">
+              <input type="checkbox" name="ingredients-{{i}}" id="ingredients-{{i}}" formControlName="{{i}}" />
+              <label for="ingredients-{{i}}">{{ingredient.name}}</label>
+            </div>
+          </ng-container>
+        </form>
       </div>
 
     </section>
 
     <section class="recipe-instructions">
       <ol *ngIf="recipes.instructions">
-        <li *ngFor="let instruction of recipes.instructions">{{instruction.step}}</li>
+        <li *ngFor="let instruction of recipes.instructions">
+          <p>{{instruction.step}}</p>
+        </li>
       </ol>
     </section>
   </article>

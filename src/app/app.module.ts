@@ -16,6 +16,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomepageComponent } from './homepage/homepage.component';
 import { UserSessionService } from './user-session.service';
 import { AuthControllerService } from './auth-controller.service';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const appRoutes: Routes = [
   { path: 'recipe/:id', component: DetailsComponent },
@@ -35,6 +36,11 @@ const appRoutes: Routes = [
     component: AppComponent,
     data: { title: 'Recipe Box' },
   },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    data: { title: 'Dashboard | Recipe Box' },
+  },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   // { path: '**', component: PageNotFoundComponent }
 ];
@@ -46,6 +52,7 @@ const appRoutes: Routes = [
     LoginComponent,
     DetailsComponent,
     HomepageComponent,
+    DashboardComponent,
   ],
   imports: [
     RouterModule.forRoot(
@@ -61,4 +68,4 @@ const appRoutes: Routes = [
   providers: [UserSessionService],
   bootstrap: [HomepageComponent],
 })
-export class AppModule {}
+export class AppModule { }

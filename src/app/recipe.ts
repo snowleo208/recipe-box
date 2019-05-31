@@ -7,5 +7,6 @@ export class Recipe {
   public instructions: object;
   public image: string;
   public public: boolean;
+  public uid: string;
   public createdAt?: string;
 }

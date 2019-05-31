@@ -20,6 +20,8 @@ $theme-pink: #ff2a6b
 
 .recipe-bg
     margin: 1.5em 0
+    @media #{$laptop}
+        margin: 2em 0 3em 0
 
 
 .recipe
@@ -73,6 +75,13 @@ $theme-pink: #ff2a6b
             display: none
             min-height: 100%
             margin-bottom: 0
+            &:checked + label:before
+                background-image: url('../../assets/check-2.png')
+                background-repeat: no-repeat
+                background-position: center
+                background-color: $theme-pink
+                border-color: $theme-pink
+                transition: ease 300ms
         label
             position: relative
             padding: 0.2em 0 0 2.5em
@@ -86,10 +95,13 @@ $theme-pink: #ff2a6b
                 top: 0
                 background: white
                 border: 1px solid #aaaaaa
-            &:checked:before
-                background-image: url('../../assets/check-2.png')
-                background-repeat: no-repeat
-                background-position: center
-                background-color: $theme-pink
-                border-color: $theme-pink
-                transition: ease 300ms
+                cursor: pointer
+
+.recipe-instructions
+    li
+        font-size: 2.5em
+        margin: 0 0 0.5em 2em
+
+        p
+            font-size: 1rem
+            margin: 0

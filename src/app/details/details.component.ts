@@ -10,7 +10,8 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./details.component.sass'],
 })
 export class DetailsComponent implements OnInit {
-  public recipe: Observable<{}[]>;
+
+  public recipe: Observable<any>;
   public recipeId = new Subject<string>();
   private db: AngularFirestore;
   private fb: FormBuilder;
@@ -29,6 +30,15 @@ export class DetailsComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => this.recipeId.next(params.id));
+    this.recipe.subscribe(detail => {
+      console.log(detail);
+      const formFields = {};
+      if (detail.ingredients) {
+        detail.ingredients.forEach((item: object, idx: number) => formFields[idx] = '');
+        this.ingredientsForm = this.formBuilder.group(formFields);
+      }
+      return detail;
+    });
   }
 
   getItem(node: string): Observable<{}[]> {
