@@ -1,3 +1,29 @@
-<p>
-  dashboard works!
-</p>
+<section class="dashboard">
+
+  <div class="dashboard__userinfo" *ngIf="userInfo | async as user">
+    <div class="dashboard__avatar">
+      <img src="{{user.photoURL}}" alt="">
+    </div>
+    <div class="dashboard__details">
+      <p class="dashboard__username">{{user.displayName}}</p>
+      <p class="dashboard__subheader">{{user.email}}</p>
+    </div>
+  </div>
+
+  <div class="recipes" *ngIf="recipes$ | async as items">
+    <h2 class="u-header dashboard__title">My Recipes</h2>
+
+    <div class="recipes__wrapper">
+      <div class="recipes__item" *ngFor="let item of items | async">
+        <div class="recipes__image" [ngStyle]="{'background-image': 'url('+item.image+')'}">
+          <div class="recipes__tag">
+            <time class="recipes__date">{{item.createdAt.toDate().toString().substr(4,11)}}</time>
+          </div>
+        </div>
+        <div class="recipes__details">
+          <p>{{item.title}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

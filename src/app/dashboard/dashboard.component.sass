@@ -1,0 +1,97 @@
+$xs: "only screen and (max-width : 576px)"
+$mobile: "only screen and (min-width : 576px)"
+$tablet: "only screen and (min-width : 768px)"
+$laptop: "only screen and (min-width : 992px)"
+$desktop: "only screen and (min-width : 1200px)"
+
+.dashboard
+    line-height: 1.4
+
+    &__userinfo
+        display: flex
+        flex-direction: column
+        justify-content: center
+        align-items: center
+        text-align: center
+        margin: 0 0 0.5em 0
+        padding: 1em
+        @media #{$laptop}
+            padding: 2em
+
+
+    &__avatar
+        border-radius: 50%
+        border: solid 3px #efefef
+        width: 5em
+        height: 5em
+        margin: 0 0 0.5em 0
+        overflow: hidden
+
+        img
+            width: 100%
+            height: auto
+
+    &__details
+        margin: 0 0 2em 0
+
+    &__username
+        font-size: 1.8rem
+        margin: 0
+
+    &__subheader
+        font-size: 1.2rem
+        margin: 0
+        color: #d1d1d1
+
+
+.recipes
+    &__wrapper
+        @media #{$laptop}
+            display: flex
+            flex-flow: row wrap
+
+    &__item
+        position: relative
+        margin: 0 0 2em 0
+        @media #{$laptop}
+            width: calc((100% / 2) - 1em)
+            margin: 0 1em 1em 0
+            display: flex
+            flex-flow: row wrap
+
+    &__image
+        background-size: cover
+        background-position: center
+        background-repeat: no-repeat
+        height: 10em
+        @media #{$laptop}
+            flex: 0 0 30%
+
+    &__tag
+        position: absolute
+        top: 0
+        left: 0
+        padding: 0.5em
+        font-size: 0.9rem
+        color: white
+        background: #ff2a6b
+        &:after
+            position: absolute
+            content: ''
+            width: 0
+            height: 0
+            border-top: 2.4em solid #ff2a6b
+            border-right: 1.8em solid transparent
+            top: 0
+            right: -1.7em
+
+    &__details
+        padding: 1em
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1)
+        @media #{$laptop}
+            flex: 0 0 70%
+
+        p
+            font-size: 1.2rem
+            margin: 0
+    
