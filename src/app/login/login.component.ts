@@ -25,8 +25,8 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.userInfo
       ? this.userInfo.subscribe(val => {
-          this.sendUserInfo(val);
-        })
+        this.sendUserInfo(val);
+      })
       : '';
   }
 
@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
+    this.afAuth.auth.signInWithRedirect(new auth.GoogleAuthProvider());
   }
 
   logout() {

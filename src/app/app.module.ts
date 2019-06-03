@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { BuilderComponent } from './builder/builder.component';
 import { LoginComponent } from './login/login.component';
 import { DetailsComponent } from './details/details.component';
+import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 
 import { RouterModule, Routes } from '@angular/router';
 import { HomepageComponent } from './homepage/homepage.component';
@@ -39,7 +40,7 @@ const appRoutes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthControllerService],
+    canActivate: [AngularFireAuthGuard],
     data: { title: 'Dashboard | Recipe Box' },
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
