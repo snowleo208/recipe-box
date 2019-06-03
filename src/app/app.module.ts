@@ -11,13 +11,15 @@ import { AppComponent } from './app.component';
 import { BuilderComponent } from './builder/builder.component';
 import { LoginComponent } from './login/login.component';
 import { DetailsComponent } from './details/details.component';
-import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
+import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
+import { canActivate } from '@angular/fire/auth-guard';
 
 import { RouterModule, Routes } from '@angular/router';
 import { HomepageComponent } from './homepage/homepage.component';
 import { UserSessionService } from './user-session.service';
-import { AuthControllerService } from './auth-controller.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
+
+const redirectUnauthorizedToLogin = redirectUnauthorizedTo(['login']);
 
 const appRoutes: Routes = [
   { path: 'recipe/:id', component: DetailsComponent },
@@ -29,8 +31,9 @@ const appRoutes: Routes = [
   {
     path: 'builder',
     component: BuilderComponent,
-    canActivate: [AuthControllerService],
-    data: { title: 'Create your recipe | Recipe Box' },
+    canActivate: [AngularFireAuthGuard],
+    data: { title: 'Create Recipe | Recipe Box' },
+    ...canActivate(redirectUnauthorizedToLogin)
   },
   {
     path: 'login',
@@ -42,6 +45,7 @@ const appRoutes: Routes = [
     component: DashboardComponent,
     canActivate: [AngularFireAuthGuard],
     data: { title: 'Dashboard | Recipe Box' },
+    ...canActivate(redirectUnauthorizedToLogin)
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   // { path: '**', component: PageNotFoundComponent }
@@ -67,7 +71,7 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     AngularFireAuthModule,
   ],
-  providers: [UserSessionService],
+  providers: [UserSessionService, AngularFireAuthGuard],
   bootstrap: [HomepageComponent],
 })
 export class AppModule { }
