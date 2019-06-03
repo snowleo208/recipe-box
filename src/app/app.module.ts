@@ -18,6 +18,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomepageComponent } from './homepage/homepage.component';
 import { UserSessionService } from './user-session.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const redirectUnauthorizedToLogin = redirectUnauthorizedTo(['login']);
 
@@ -48,7 +49,7 @@ const appRoutes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin)
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  // { path: '**', component: PageNotFoundComponent }
+  { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
@@ -59,6 +60,7 @@ const appRoutes: Routes = [
     DetailsComponent,
     HomepageComponent,
     DashboardComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     RouterModule.forRoot(
