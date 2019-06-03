@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Recipe } from '../recipe';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { Recipe } from '../recipe';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
 } from '@angular/fire/firestore';
-
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserInfo } from 'firebase';
 import { UserSessionService } from '../user-session.service';
@@ -24,7 +25,8 @@ export class BuilderComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private afs: AngularFirestore,
-    private userSessionService: UserSessionService
+    private userSessionService: UserSessionService,
+    private router: Router
   ) {
     this.itemsCollection = afs.collection<Recipe>('recipes');
     this.submitComplete.subscribe();
@@ -57,7 +59,9 @@ export class BuilderComponent implements OnInit {
   }
 
   setUserId(obj: UserInfo) {
-    obj && obj.uid !== null ? this.uid.next(obj.uid) : '';
+    if (obj && obj.uid !== null) {
+      this.uid.next(obj.uid);
+    }
   }
 
   // FormGroup
@@ -102,6 +106,8 @@ export class BuilderComponent implements OnInit {
     this.uid.subscribe(val => (final.uid = val));
     final.id = id;
     final.createdAt = timestamp;
+
+    this.submitComplete.subscribe(val => val ? this.router.navigate([`/recipe/${id}`]) : '');
 
     this.itemsCollection
       .doc(id)

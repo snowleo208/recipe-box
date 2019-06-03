@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, Subject } from 'rxjs';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-details',
@@ -20,7 +21,8 @@ export class DetailsComponent implements OnInit {
   constructor(
     db: AngularFirestore,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router
   ) {
     this.db = db;
     this.fb = formBuilder;
@@ -31,7 +33,9 @@ export class DetailsComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => this.recipeId.next(params.id));
     this.recipe.subscribe(detail => {
-      console.log(detail);
+      if (!detail) {
+        this.router.navigate(['/home']);
+      }
       const formFields = {};
       if (detail.ingredients) {
         detail.ingredients.forEach((item: object, idx: number) => formFields[idx] = '');

@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginComponent } from './login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { By } from '@angular/platform-browser';
@@ -14,9 +13,12 @@ describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
 
   const authState = {
-    email: 'sfdgfdgdfg@gmail.com',
-    password: 'password',
-    uid: 'nuDdbfbhTwgkF5C6HN5DWDflpA83',
+    displayName: 'Lily',
+    email: '123@gmail.com',
+    phoneNumber: '12345678',
+    providerId: '12123',
+    photoURL: 'http://www.abc.com/123.jpg',
+    uid: '5434545345',
   };
 
   const mockAngularFireAuth = {
@@ -49,12 +51,9 @@ describe('LoginComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
-
-    const hostComponent = fixture.debugElement.componentInstance;
     const user: BehaviorSubject<any> = new BehaviorSubject(null);
 
     component.authorizeInfo = user;
-    hostComponent.user = user;
 
     fixture.detectChanges();
   });
@@ -98,4 +97,11 @@ describe('LoginComponent', () => {
     expect(fixture.debugElement.query(By.css('.user-desc'))).toBeTruthy();
     expect(compiled.querySelector('p').textContent).toContain('Lily');
   }));
+
+  it('can use getter to get user infomation', () => {
+    const user = new BehaviorSubject(authState);
+    spyOnProperty(component, 'userInfo', 'get').and.returnValue(user);
+    expect(component.userInfo).toBe(user);
+  });
+
 });

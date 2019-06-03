@@ -2,6 +2,7 @@ import { Component, Input, Output } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { User } from 'firebase';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -10,17 +11,17 @@ import { User } from 'firebase';
 })
 export class AppComponent {
   title = 'recipe-box';
-  @Input() auth: any;
-  @Output() user = new BehaviorSubject(null);
+  listLimit$ = new BehaviorSubject(6);
 
-  items: Observable<any[]>;
+  items: Observable<{}[]>;
+  placeholder: string;
 
   constructor(db: AngularFirestore) {
-    this.items = db.collection('recipes', ref => ref.where('public', '==', true)).valueChanges();
+    this.items = this.listLimit$.pipe(
+      switchMap(size =>
+        db.collection('recipes', ref => ref.where('public', '==', true).limit(size)).valueChanges(['added', 'removed'])
+      )
+    );
   }
 
-  getUser($event: User) {
-    this.auth = $event;
-    this.user.next($event);
-  }
 }

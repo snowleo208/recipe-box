@@ -6,7 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./homepage.component.sass'],
 })
 export class HomepageComponent implements OnInit {
-  constructor() {}
+  currentYear: number = new Date().getFullYear();
+  constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 }

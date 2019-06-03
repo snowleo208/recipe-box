@@ -1,9 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed, fakeAsync, tick, ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { HomepageComponent } from './homepage.component';
 import { LoginComponent } from '../login/login.component';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { BehaviorSubject } from 'rxjs';
 import { UserSessionService } from '../user-session.service';
@@ -11,37 +10,8 @@ import { UserSessionService } from '../user-session.service';
 describe('HomepageComponent', () => {
   let component: HomepageComponent;
   let fixture: ComponentFixture<HomepageComponent>;
-
-  const input = [
-    {
-      title: 'Parmesan Chicken Nuggets',
-      image:
-        'https://www.tasteofhome.com/wp-content/uploads/2017/10/Parmesan-Chicken-Nuggets_exps91788_SD2856494B12_03_3bC_RMS-1-696x696.jpg',
-      prep: '30 min',
-    },
-    {
-      title: 'Quick Chicken Piccata',
-      image:
-        'https://www.tasteofhome.com/wp-content/uploads/2018/01/exps23273_CW163681C12_11_2b-696x696.jpg',
-      prep: '30 min',
-    },
-    {
-      title: 'Lemon Cooler Cream Cake',
-      image:
-        'https://www.tasteofhome.com/wp-content/uploads/2017/10/Parmesan-Chicken-Nuggets_exps91788_SD2856494B12_03_3bC_RMS-1-696x696.jpg',
-      prep: '30 min',
-    },
-  ];
-
-  const data = new BehaviorSubject(input);
-
-  const collectionStub = {
-    valueChanges: jasmine.createSpy('valueChanges').and.returnValue(data),
-  };
-
-  const angularFirestoreStub = {
-    collection: jasmine.createSpy('collection').and.returnValue(collectionStub),
-  };
+  let login: LoginComponent;
+  let loginFixture: ComponentFixture<LoginComponent>;
 
   const authState = {
     displayName: 'Lily',
@@ -58,34 +28,52 @@ describe('HomepageComponent', () => {
         user: authState,
       }),
     }),
+    user: authState,
   };
 
   const mockUserSession = {
-    isLogin: new BehaviorSubject(false),
-    setUserInfo: new BehaviorSubject(0),
+    login: bool => new BehaviorSubject(bool),
+    setUserInfo: obj => new BehaviorSubject(authState),
     getLoginObs: () => void 0,
-    getUserInfoObs: () => new BehaviorSubject(null),
+    getUserInfoObs: () => authState,
   };
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [HomepageComponent, LoginComponent],
-      providers: [
-        { provide: AngularFirestore, useValue: angularFirestoreStub },
-        { provide: AngularFireAuth, useValue: mockAngularFireAuth },
-        { provide: UserSessionService, useValue: mockUserSession },
-      ],
-    }).compileComponents();
+    TestBed
+      .configureTestingModule({
+        imports: [RouterTestingModule],
+        providers: [
+          { provide: AngularFireAuth, useValue: mockAngularFireAuth },
+          { provide: UserSessionService, useValue: mockUserSession },
+        ],
+        declarations: [HomepageComponent, LoginComponent],
+      })
+      .overrideComponent(HomepageComponent, { // override and remove login component in hompage
+        remove: {
+          templateUrl: './homepage.component.html',
+        },
+        add: {
+          template: `<div class="main"><router-outlet></router-outlet></div><footer>
+        <p>Copyright ©{{currentYear}} All rights reserved | This template is made by <a
+            href="https://colorlib.com/wp/template/foodblog/" target="_blank" rel="noopener noreferrer">Colorlib</a></p>
+      </footer>`
+        }
+      }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HomepageComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the app', async(() => {
     expect(component).toBeTruthy();
+  }));
+
+  it('should get current year', () => {
+    expect(component.currentYear).toBe(new Date().getFullYear());
   });
+
 });

@@ -14,6 +14,7 @@ $desktop: "only screen and (min-width : 1200px)"
     position: relative
     width: 100%
     height: 341px
+    margin: 0 0 2em 0
 
     @media #{$laptop}
         width: calc((100% / 3) - 0.7em)
@@ -23,10 +24,23 @@ $desktop: "only screen and (min-width : 1200px)"
             margin: 0 0 2em 0
 
     &-img
+        position: relative
         height: 100%
         background-size: cover
         background-repeat: no-repeat
         background-position: center
+        &:after
+            position: absolute
+            top: 0
+            left: 0
+            right: 0
+            left: 0
+            display: block
+            width: 100%
+            height: 100%
+            background-image: url('/assets/l_e_others_490.png')
+            background-size: cover
+            background-repeat: no-repeat
     
     &-title
         margin: 0

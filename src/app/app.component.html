@@ -3,7 +3,11 @@
   <section class="recipe-container">
     <div class="recipe" *ngFor="let item of items | async">
       <a routerLink="../recipe/{{item.id}}" routerLinkActive="active">
-        <div class="recipe-img" *ngIf="item.image" [ngStyle]="{'background-image': 'url('+item.image+')'}"></div>
+        <div class="recipe-img" *ngIf="item.image; else placeholder"
+          [ngStyle]="{'background-image': 'url('+item.image+')'}"></div>
+        <ng-template #placeholder>
+          <div class="recipe-img" [ngStyle]="{'background-image': 'url(../assets/l_e_others_490.png)'}"></div>
+        </ng-template>
       </a>
       <div class="recipe-desc">
         <p class="recipe-title">{{item.title}}</p>

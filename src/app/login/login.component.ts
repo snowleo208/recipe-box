@@ -9,8 +9,7 @@ import { UserSessionService } from '../user-session.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.sass'],
 })
-export class LoginComponent implements OnInit {
-  @Output() auth: EventEmitter<any> = new EventEmitter();
+export class LoginComponent {
   authorizeInfo: Observable<UserInfo>;
   session: UserSessionService;
 
@@ -20,14 +19,9 @@ export class LoginComponent implements OnInit {
   ) {
     this.authorizeInfo = afAuth.user;
     this.session = userSessionService;
-  }
-
-  ngOnInit() {
-    this.userInfo
-      ? this.userInfo.subscribe(val => {
-        this.sendUserInfo(val);
-      })
-      : '';
+    this.userInfo.subscribe(val => {
+      this.sendUserInfo(val);
+    });
   }
 
   get userInfo(): Observable<UserInfo> | null {
@@ -45,7 +39,6 @@ export class LoginComponent implements OnInit {
 
   logout() {
     this.afAuth.auth.signOut();
-    // this.auth.emit(null);
     this.session.setUserInfo(null);
     this.session.login(false);
   }
