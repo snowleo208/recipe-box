@@ -39,6 +39,7 @@ const appRoutes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [AuthControllerService],
     data: { title: 'Dashboard | Recipe Box' },
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },

@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable, Subject, BehaviorSubject, combineLatest } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { UserSessionService } from '../user-session.service';
-import { switchMap, takeWhile, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',

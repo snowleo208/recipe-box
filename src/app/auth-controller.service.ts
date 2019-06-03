@@ -10,15 +10,19 @@ import { UserSessionService } from './user-session.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthControllerService {
+export class AuthControllerService implements CanActivate {
   authorized: boolean = false;
 
   constructor(private userService: UserSessionService, private router: Router) {
-    this.userService.getLoginObs().subscribe(user => (this.authorized = user));
+    this.userService.getLoginObs().subscribe(user => {
+      console.log(user);
+      this.authorized = user;
+    });
   }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (!this.authorized) {
+    console.log(this.authorized);
+    if (this.authorized === false) {
       return this.router.parseUrl('/login');
     } else {
       return true;

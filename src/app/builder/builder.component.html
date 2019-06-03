@@ -59,10 +59,14 @@
       </section>
     </div>
 
-    <div class="form-group">
-      <label for="public">Set as public recipe</label>
-      <input type="checkbox" name="public" formControlName="public">
-    </div>
+    <section class="form-group">
+      <h2>Options</h2>
+
+      <div class="form-group form-public">
+        <label for="public">Set as public recipe</label>
+        <input type="checkbox" name="public" formControlName="public">
+      </div>
+    </section>
 
     <input class="btn form-button t-primary" type="submit" (click)="onSubmit()" value="Submit" />
 

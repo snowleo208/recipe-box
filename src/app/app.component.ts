@@ -16,7 +16,7 @@ export class AppComponent {
   items: Observable<any[]>;
 
   constructor(db: AngularFirestore) {
-    this.items = db.collection('recipes').valueChanges();
+    this.items = db.collection('recipes', ref => ref.where('public', '==', true)).valueChanges();
   }
 
   getUser($event: User) {
