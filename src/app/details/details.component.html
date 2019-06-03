@@ -1,47 +1,58 @@
 <div class="recipe" *ngIf="((recipe | async)) as recipes; else loading">
-  <h1 class="recipe-header">{{recipes.title}}</h1>
-  <time class="recipe-time">{{recipes.createdAt.toDate().toString().substr(4,11)}}</time>
+  <div *ngIf="recipes.public; else private">
+    <h1 class="recipe-header">{{recipes.title}}</h1>
+    <time class="recipe-time">{{recipes.createdAt.toDate().toString().substr(4,11)}}</time>
 
-  <div class="recipe-bg">
-    <img src="{{recipes.image}}" alt="{{recipes.title}}">
-  </div>
+    <div class="recipe-bg">
+      <img src="{{recipes.image}}" alt="{{recipes.title}}">
+    </div>
 
-  <article class="recipe-container">
-    <section class="recipe-details">
-      <div class="recipe-tag">
-        <div class="recipe-prepare">
-          <p>Cook: {{recipes.cook}}</p>
-          <p>Prep: {{recipes.prep}}</p>
-          <p>Serve: {{recipes.serve}}</p>
+    <article class="recipe-container">
+      <section class="recipe-details">
+        <div class="recipe-tag">
+          <div class="recipe-prepare">
+            <p>Cook: {{recipes.cook}}</p>
+            <p>Prep: {{recipes.prep}}</p>
+            <p>Serve: {{recipes.serve}}</p>
+          </div>
         </div>
-      </div>
 
-      <div class="recipe-ingredients">
-        <h2 class="recipe-header">Ingredients</h2>
-        <form [formGroup]="ingredientsForm">
-          <ng-container *ngIf="recipes.ingredients">
-            <div class="recipe-ingredients__group" *ngFor="let ingredient of recipes.ingredients; index as i">
-              <input type="checkbox" name="ingredients-{{i}}" id="ingredients-{{i}}" formControlName="{{i}}" />
-              <label for="ingredients-{{i}}">{{ingredient.name}}</label>
-            </div>
-          </ng-container>
-        </form>
-      </div>
+        <div class="recipe-ingredients">
+          <h2 class="recipe-header">Ingredients</h2>
+          <form [formGroup]="ingredientsForm">
+            <ng-container *ngIf="recipes.ingredients">
+              <div class="recipe-ingredients__group" *ngFor="let ingredient of recipes.ingredients; index as i">
+                <input type="checkbox" name="ingredients-{{i}}" id="ingredients-{{i}}" formControlName="{{i}}" />
+                <label for="ingredients-{{i}}">{{ingredient.name}}</label>
+              </div>
+            </ng-container>
+          </form>
+        </div>
 
-    </section>
+      </section>
 
-    <section class="recipe-instructions">
-      <ol *ngIf="recipes.instructions">
-        <li *ngFor="let instruction of recipes.instructions">
-          <p>{{instruction.step}}</p>
-        </li>
-      </ol>
-    </section>
-  </article>
+      <section class="recipe-instructions">
+        <ol *ngIf="recipes.instructions">
+          <li *ngFor="let instruction of recipes.instructions">
+            <p>{{instruction.step}}</p>
+          </li>
+        </ol>
+      </section>
+    </article>
+  </div>
 </div>
 
 <ng-template #loading>
   <div class="u-loading">
     <h1>Loading&hellip;</h1>
+  </div>
+</ng-template>
+
+<ng-template #private>
+  <div class="u-private">
+    <h1>Sorry, this recipe is private.</h1>
+    <button class="btn" [routerLink]="['/home']">
+      Back to Home
+    </button>
   </div>
 </ng-template>
