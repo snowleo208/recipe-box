@@ -61,10 +61,23 @@ $desktop: "only screen and (min-width : 1200px)"
             flex-flow: row wrap
 
     &__image
+        position: relative
         background-size: cover
         background-position: center
         background-repeat: no-repeat
         height: 10em
+        &:after
+            position: absolute
+            top: 0
+            left: 0
+            right: 0
+            left: 0
+            display: block
+            width: 100%
+            height: 100%
+            background-image: url('/assets/l_e_others_490.png')
+            background-size: cover
+            background-repeat: no-repeat
         @media #{$laptop}
             flex: 0 0 30%
 

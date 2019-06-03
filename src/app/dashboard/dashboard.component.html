@@ -10,20 +10,41 @@
     </div>
   </div>
 
-  <div class="recipes" *ngIf="recipes$ | async as items">
+  <div class="recipes">
     <h2 class="u-header dashboard__title">My Recipes</h2>
 
-    <div class="recipes__wrapper">
-      <div class="recipes__item" *ngFor="let item of items | async">
-        <div class="recipes__image" [ngStyle]="{'background-image': 'url('+item.image+')'}">
-          <div class="recipes__tag">
-            <time class="recipes__date">{{item.createdAt.toDate().toString().substr(4,11)}}</time>
+    <ng-container *ngIf="(recipes$ | async); let recipeList">
+      <ng-container *ngIf="recipeList.length > 0; else emptycontent">
+        <div *ngFor="let element of recipeList">
+          <div class="recipes__item">
+            <div class="recipes__image" [ngStyle]="{'background-image': 'url('+element.image+')'}">
+              <div class="recipes__tag">
+                <time class="recipes__date">{{element.createdAt.toDate().toString().substr(4,11)}}</time>
+              </div>
+            </div>
+            <div class="recipes__details">
+              <p>{{element.title}}</p>
+            </div>
           </div>
         </div>
-        <div class="recipes__details">
-          <p>{{item.title}}</p>
-        </div>
-      </div>
-    </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #emptycontent>
+      <p>You have not create any recipes yet.</p>
+      <button class="btn" [routerLink]="['/builder']">
+        Create Recipe
+      </button>
+    </ng-template>
+
   </div>
 </section>
+
+
+<ng-template #placeholder>
+  <div class="recipes__image">
+    <div class="recipes__tag">
+      <time class="recipes__date">{{item.createdAt.toDate().toString().substr(4,11)}}</time>
+    </div>
+  </div>
+</ng-template>

@@ -1,7 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { UserSessionService } from '../user-session.service';
 import { BehaviorSubject } from 'rxjs';
+import { By } from '@angular/platform-browser';
 
 import { DashboardComponent } from './dashboard.component';
 
@@ -58,6 +61,10 @@ describe('DashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RouterModule,
+        RouterTestingModule,
+      ],
       providers: [
         { provide: AngularFirestore, useValue: angularFirestoreStub },
         { provide: UserSessionService, useValue: mockUserSession },
@@ -75,5 +82,23 @@ describe('DashboardComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show recipe list', () => {
+    data.next(input);
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('.recipes__date'))).toBeTruthy();
+  });
+
+  it('should show create button if no recipe', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    data.next([]);
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('.btn'))).toBeTruthy();
+    expect(compiled.querySelector('button').textContent).toContain(
+      'Create Recipe'
+    );
   });
 });

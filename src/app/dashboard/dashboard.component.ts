@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { UserSessionService } from '../user-session.service';
 
 @Component({
@@ -9,22 +10,20 @@ import { UserSessionService } from '../user-session.service';
   styleUrls: ['./dashboard.component.sass']
 })
 export class DashboardComponent implements OnInit {
-  authorizeInfo = new Subject();
+  authorizeInfo = new BehaviorSubject(null);
   session: UserSessionService;
-  recipes$: BehaviorSubject<object | null> = new BehaviorSubject(null);
+  recipes$: Observable<any> = new Observable();
   uid$: BehaviorSubject<string | null> = new BehaviorSubject(null);
 
   constructor(
     private userSessionService: UserSessionService, db: AngularFirestore) {
     this.session = userSessionService;
 
-    this.uid$.subscribe(uid => {
-      if (uid === null) {
-        return;
-      }
-      const lists = db.collection('recipes', ref => ref.where('uid', '==', uid)).valueChanges();
-      this.recipes$.next(lists);
-    });
+    this.recipes$ = this.uid$.pipe(
+      switchMap(uid =>
+        db.collection('recipes', ref => ref.where('uid', '==', uid)).valueChanges(['added', 'removed'])
+      )
+    );
   }
 
   ngOnInit() {
@@ -38,7 +37,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  get userInfo(): Subject<any> | null {
+  get userInfo(): BehaviorSubject<any> | null {
     return this.authorizeInfo;
   }
 

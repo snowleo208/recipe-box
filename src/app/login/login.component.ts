@@ -9,7 +9,7 @@ import { UserSessionService } from '../user-session.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.sass'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   authorizeInfo: Observable<UserInfo>;
   session: UserSessionService;
 
@@ -19,6 +19,9 @@ export class LoginComponent {
   ) {
     this.authorizeInfo = afAuth.user;
     this.session = userSessionService;
+  }
+
+  ngOnInit() {
     this.userInfo.subscribe(val => {
       this.sendUserInfo(val);
     });
