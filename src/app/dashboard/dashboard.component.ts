@@ -1,23 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { UserSessionService } from '../user-session.service';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { Recipe } from '../recipe';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.sass']
 })
+
 export class DashboardComponent implements OnInit {
+  private db: AngularFirestore;
+  private session: UserSessionService;
+  itemDoc: string[] = [];
   authorizeInfo = new BehaviorSubject(null);
-  session: UserSessionService;
-  recipes$: Observable<any> = new Observable();
+  isSelectable = false;
+  openModal = false;
+
   uid$: BehaviorSubject<string | null> = new BehaviorSubject(null);
+  recipes$: Observable<any> = new Observable();
+  public itemList: FormGroup;
 
   constructor(
-    private userSessionService: UserSessionService, db: AngularFirestore) {
+    private userSessionService: UserSessionService, db: AngularFirestore,
+    private formBuilder: FormBuilder) {
+    this.db = db;
     this.session = userSessionService;
+    this.itemList = this.formBuilder.group({});
 
     this.recipes$ = this.uid$.pipe(
       switchMap(uid =>
@@ -34,7 +46,49 @@ export class DashboardComponent implements OnInit {
 
     this.recipes$.subscribe(recipes => {
       console.log(recipes);
+      if (this.itemList.controls.length !== recipes.length) {
+        const formFields = {};
+        recipes.forEach((item: Recipe, idx: number) => formFields[item.id] = false);
+        this.itemList = this.formBuilder.group(formFields);
+        console.log(this.itemList);
+      }
     });
+  }
+
+  // trigger checkbox for user to select items
+  triggerSelect() {
+    this.isSelectable = !this.isSelectable;
+
+    if (!this.isSelectable) {
+      this.resetForm();
+    }
+  }
+
+  triggerModal() {
+    this.openModal = !this.openModal;
+  }
+
+  resetForm() {
+    this.itemList.reset();
+  }
+
+  addToDeleteList() {
+    Object.keys(this.itemList.value).forEach(item => {
+      if (this.itemList.value[item] === true) {
+        this.itemDoc.push(item);
+      }
+    });
+
+    this.triggerModal();
+  }
+
+  deleteItems() {
+    this.itemDoc.forEach(recipe => {
+      const recipeDoc = this.db.doc<Recipe>(`recipes/${recipe}`);
+      recipeDoc.delete();
+    });
+
+    this.triggerModal();
   }
 
   get userInfo(): BehaviorSubject<any> | null {

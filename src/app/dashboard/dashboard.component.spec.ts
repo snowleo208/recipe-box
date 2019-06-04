@@ -101,4 +101,15 @@ describe('DashboardComponent', () => {
       'Create Recipe'
     );
   });
+
+  it('should show create button if recipeList is null', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    data.next(null);
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('.btn'))).toBeTruthy();
+    expect(compiled.querySelector('button').textContent).toContain(
+      'Create Recipe'
+    );
+  });
 });

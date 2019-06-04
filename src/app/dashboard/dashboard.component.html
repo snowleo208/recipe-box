@@ -14,25 +14,66 @@
     <h2 class="u-header dashboard__title">My Recipes</h2>
 
     <ng-container *ngIf="(recipes$ | async); let recipeList">
-      <ng-container *ngIf="recipeList.length > 0; else emptycontent">
-        <div *ngFor="let element of recipeList">
-          <div class="recipes__item">
-            <div class="recipes__image" [ngStyle]="{'background-image': 'url('+element.image+')'}">
-              <div class="recipes__tag">
-                <time class="recipes__date">{{element.createdAt.toDate().toString().substr(4,11)}}</time>
-              </div>
-            </div>
-            <div class="recipes__details">
-              <p>{{element.title}}</p>
-            </div>
-          </div>
+
+      <div class="dashboard__selector">
+        <button class="btn t-icon" (click)="triggerSelect()">
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <use xlink:href="./assets/sprite.svg#playlist_add_check"></use>
+          </svg>
+          Select
+        </button>
+        <button [ngClass]="this.itemList.value.length <= 0 ? 'btn t-secondary t-icon' : 'btn t-icon'"
+          [disabled]="itemDoc.length <= 0" (click)="addToDeleteList()">
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <use xlink:href="./assets/sprite.svg#delete_forever"></use>
+          </svg>
+          Delete
+        </button>
+      </div>
+
+      <form class="recipes__form" [formGroup]="itemList">
+        <div class="recipes__container">
+          <ng-container *ngIf="recipeList.length > 0; else emptycontent">
+
+            <!-- input -->
+            <ng-container *ngFor="let element of recipeList">
+              <label class="recipes__item" for="{{element.id}}">
+                <input *ngIf="isSelectable" class="recipes__input" type="checkbox" name="{{element.id}}"
+                  id="{{element.id}}" formControlName="{{element.id}}" />
+                <ng-container *ngIf="element.image; else placeholder">
+                  <div class="recipes__image" [ngStyle]="{'background-image': 'url('+element.image+')'}"></div>
+                </ng-container>
+                <div class="recipes__details">
+                  <p>{{element.title}}</p>
+                  <time class="recipes__date">{{element.createdAt.toDate().toString().substr(4,11)}}</time>
+                </div>
+              </label>
+
+            </ng-container>
+            <!-- end of input -->
+
+          </ng-container>
+          <!-- end of for-loop -->
         </div>
-      </ng-container>
+      </form>
+
+      <div class="dashboard__editor">
+        <button class="btn t-icon" [routerLink]="['/builder']">
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <use xlink:href="./assets/sprite.svg#add"></use>
+          </svg>
+          Add Recipe
+        </button>
+      </div>
+
     </ng-container>
 
     <ng-template #emptycontent>
       <p>You have not create any recipes yet.</p>
-      <button class="btn" [routerLink]="['/builder']">
+      <button class="btn t-icon" [routerLink]="['/builder']">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="./assets/sprite.svg#add"></use>
+        </svg>
         Create Recipe
       </button>
     </ng-template>
@@ -40,11 +81,21 @@
   </div>
 </section>
 
-
-<ng-template #placeholder>
-  <div class="recipes__image">
-    <div class="recipes__tag">
-      <time class="recipes__date">{{item.createdAt.toDate().toString().substr(4,11)}}</time>
+<div [ngClass]="openModal === true ? 'modal active' : 'modal'">
+  <div class="modal__container">
+    <h2 class="u-header">Delete</h2>
+    <p class="modal__text">Are you sure you want to delete these items?</p>
+    <ul *ngFor="let chosen of itemDoc; let index">
+      <li>{{chosen}}</li>
+    </ul>
+    <div class="modal__btn">
+      <button class="btn t-secondary model__false" (click)="triggerModal()">No</button>
+      <button class="btn model__true" (click)="deleteItems()">Yes</button>
     </div>
   </div>
+</div>
+
+
+<ng-template #placeholder>
+  <div class="recipes__image"></div>
 </ng-template>
