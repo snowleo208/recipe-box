@@ -10,4 +10,5 @@ export class Recipe {
   public public: boolean;
   public uid: string;
   public createdAt?: string;
+  public updatedAt?: string;
 }

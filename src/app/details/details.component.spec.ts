@@ -2,8 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DetailsComponent } from './details.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { UserSessionService } from '../user-session.service';
 import { BehaviorSubject } from 'rxjs';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
@@ -47,6 +47,13 @@ describe('DetailsComponent', () => {
     doc: jasmine.createSpy('doc').and.returnValue(collectionStub),
   };
 
+  const mockUserSession = {
+    isLogin: new BehaviorSubject(false),
+    setUserInfo: new BehaviorSubject(0),
+    getLoginObs: () => void 0,
+    getUserInfoObs: () => new BehaviorSubject({}),
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -57,6 +64,7 @@ describe('DetailsComponent', () => {
       ],
       providers: [
         { provide: AngularFirestore, useValue: angularFirestoreStub },
+        { provide: UserSessionService, useValue: mockUserSession },
       ],
       declarations: [DetailsComponent],
     }).compileComponents();

@@ -66,6 +66,9 @@ export class DashboardComponent implements OnInit {
 
   triggerModal() {
     this.openModal = !this.openModal;
+
+    this.openModal ?
+      document.body.style.overflow = 'hidden' : document.body.style.overflow = null;
   }
 
   resetForm() {
@@ -73,13 +76,9 @@ export class DashboardComponent implements OnInit {
   }
 
   addToDeleteList() {
-    Object.keys(this.itemList.value).forEach(item => {
-      if (this.itemList.value[item] === true) {
-        this.itemDoc.push(item);
-      }
-    });
-
-    this.triggerModal();
+    const list = [];
+    Object.keys(this.itemList.value).forEach(val => this.itemList.value[val] === true ? list.push(val) : '');
+    this.itemDoc = list;
   }
 
   deleteItems() {

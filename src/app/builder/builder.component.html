@@ -1,5 +1,8 @@
 <section class="form-builder">
-  <h1 class="u-header">Create Recipe</h1>
+  <h1 class="u-header">
+    <ng-template *ngIf="!isEdit$ | async; else editTitle">Create Recipe</ng-template>
+    <ng-template #editTitle>Edit Recipe</ng-template>
+  </h1>
 
   <form [formGroup]="recipeForm">
 
@@ -68,7 +71,8 @@
       </div>
     </section>
 
-    <input class="btn form-button t-primary" type="submit" (click)="onSubmit()" value="Submit" />
+    <input class="btn form-button t-primary" type="submit" (click)="onSubmit($event)"
+      [value]="(isEdit$ | async) === false ? 'Submit' : 'Update'" />
 
     <p *ngIf="submitComplete | async">Finished!</p>
 

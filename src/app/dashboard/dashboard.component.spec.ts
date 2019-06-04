@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UserSessionService } from '../user-session.service';
@@ -62,8 +63,10 @@ describe('DashboardComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        FormsModule,
+        ReactiveFormsModule,
         RouterModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       providers: [
         { provide: AngularFirestore, useValue: angularFirestoreStub },
@@ -96,20 +99,22 @@ describe('DashboardComponent', () => {
     data.next([]);
     fixture.detectChanges();
 
-    expect(fixture.debugElement.query(By.css('.btn'))).toBeTruthy();
-    expect(compiled.querySelector('button').textContent).toContain(
+    expect(fixture.debugElement.query(By.css('#dashboard-create'))).toBeTruthy();
+    expect(compiled.querySelector('#dashboard-create').textContent).toContain(
       'Create Recipe'
     );
   });
 
-  it('should show create button if recipeList is null', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    data.next(null);
+  it('should be called triggerSelect function after click', () => {
+    spyOn(component, 'triggerSelect');
+    let button = fixture.debugElement.nativeElement.querySelector('#dashboard-select');
+    component.isSelectable = false;
+    button.click();
     fixture.detectChanges();
 
-    expect(fixture.debugElement.query(By.css('.btn'))).toBeTruthy();
-    expect(compiled.querySelector('button').textContent).toContain(
-      'Create Recipe'
-    );
+    fixture.whenStable().then(() => {
+      expect(component.triggerSelect).toHaveBeenCalled();
+    });
   });
+
 });

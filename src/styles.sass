@@ -78,8 +78,49 @@ a
     transition: ease 300ms
     &.t-secondary
         background: #6B7380
+    &.t-icon
+        display: flex
+        align-items: center
+        min-width: 0
+        margin: 0 1em 0 0
+        &:last-of-type
+            margin: 0
+        svg
+            fill: white
+            margin-right: 0.25em
     &:hover
         opacity: 0.9
+
+input[type='checkbox']
+    position: relative
+    width: 24px
+    height: 24px
+    flex: 0 0 24px
+    padding: 0
+    margin: 0
+    background: white
+    border: 1px solid #aaaaaa
+    appearance: none
+    transition: ease 200ms
+    &:checked
+        background: #ff2a6b
+    &:after
+        content: ""
+        position: absolute
+        top: 0.3em
+        left: 0.3em
+        width: 50%
+        height: 25%
+        display: block
+        border: solid 2px white
+        transform: scale(0) rotate(0)
+        opacity: 0
+        border-right: 0
+        border-top: 0
+        transition: transform 400ms, opacity 200ms
+    &:checked:after
+        opacity: 1
+        transform: scale(1) rotate(-45deg)
 
 footer
     color: #838383

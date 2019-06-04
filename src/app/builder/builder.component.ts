@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import { Recipe } from '../recipe';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
 } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { Recipe } from '../recipe';
 import { UserInfo } from 'firebase';
 import { UserSessionService } from '../user-session.service';
 
@@ -17,17 +18,22 @@ import { UserSessionService } from '../user-session.service';
   styleUrls: ['./builder.component.sass'],
 })
 export class BuilderComponent implements OnInit {
+  private fb: FormBuilder;
   private itemsCollection: AngularFirestoreCollection<Recipe>;
   private uid: BehaviorSubject<string | null> = new BehaviorSubject(null);
   public submitComplete = new BehaviorSubject(false);
   public session: UserSessionService;
+  public isEdit$: BehaviorSubject<boolean | string> = new BehaviorSubject(false);
+  public recipes$: Observable<any> = new Observable();
 
   constructor(
     private formBuilder: FormBuilder,
     private afs: AngularFirestore,
     private userSessionService: UserSessionService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
+    this.fb = formBuilder;
     this.itemsCollection = afs.collection<Recipe>('recipes');
     this.submitComplete.subscribe();
     this.session = userSessionService;
@@ -38,6 +44,16 @@ export class BuilderComponent implements OnInit {
   public recipeForm: FormGroup;
 
   ngOnInit() {
+
+    const isEditMode = params => params.edit ? this.isEdit$.next(params.edit) : this.isEdit$.next(false);
+    const getData = (id: string) => this.afs.collection('recipes', ref => ref.where('id', '==', id)).valueChanges(['added', 'removed']);
+
+    this.recipes$ = this.isEdit$.pipe(
+      switchMap(id =>
+        this.afs.collection('recipes', ref => ref.where('id', '==', id)).valueChanges(['added', 'removed'])
+      )
+    );
+
     this.recipeForm = this.formBuilder.group({
       title: ['', Validators.required],
       image: ['', Validators.required],
@@ -45,9 +61,37 @@ export class BuilderComponent implements OnInit {
       cook: ['', Validators.required],
       serve: ['', Validators.required],
       public: false,
-      ingredients: this.formBuilder.array([this.createItem()]),
-      instructions: this.formBuilder.array([this.createInstruction()]),
+      ingredients: this.formBuilder.array([this.createItem('')]),
+      instructions: this.formBuilder.array([this.createInstruction('')]),
     });
+
+    this.activatedRoute.queryParams.subscribe(isEditMode);
+    this.recipes$.subscribe((val: Recipe) => {
+      if (val && val[0]) {
+        const allFields = { ingredients: null, instructions: null };
+        const ingredientsArr = [];
+        const instructionsArr = [];
+        const obj = val[0];
+        const generateForm = item => {
+          if (item === 'createdAt' || item === 'uid' || item === 'id') {
+            return;
+          }
+          if (item !== 'ingredients' && item !== 'instructions') {
+            allFields[item] = obj[item];
+          } else if (item === 'ingredients') {
+            obj[item].forEach((ele: { [key: string]: string; }) => ingredientsArr.push(this.fb.group(ele)));
+          } else if (item === 'instructions') {
+            obj[item].forEach((ele: { [key: string]: string; }) => instructionsArr.push(this.fb.group(ele)));
+          }
+        };
+        Object.keys(obj).forEach(generateForm);
+        allFields.ingredients = this.fb.array(ingredientsArr);
+        allFields.instructions = this.fb.array(instructionsArr);
+        this.recipeForm = this.fb.group(allFields);
+        console.log(this.recipeForm);
+      }
+    });
+
   }
 
   get ingredients() {
@@ -66,17 +110,17 @@ export class BuilderComponent implements OnInit {
 
   // FormGroup
   // template for ingredients form group, two fields: name and weight
-  createItem(): FormGroup {
+  createItem(item: string): FormGroup {
     return this.formBuilder.group({
-      name: '',
+      name: item,
     });
   }
 
   // FormGroup
   // template for instructions form group
-  createInstruction(): FormGroup {
+  createInstruction(item: string): FormGroup {
     return this.formBuilder.group({
-      step: '',
+      step: item,
     });
   }
 
@@ -84,8 +128,8 @@ export class BuilderComponent implements OnInit {
   // add one more field to form array for ingredients
   addItem(type: string): void {
     type === 'ingredients'
-      ? this.ingredients.push(this.createItem())
-      : this.instructions.push(this.createInstruction());
+      ? this.ingredients.push(this.createItem(''))
+      : this.instructions.push(this.createInstruction(''));
   }
 
   // String, Int -> Void
@@ -98,7 +142,35 @@ export class BuilderComponent implements OnInit {
 
   // Void -> Void
   // submit and add recipe to firebase
-  onSubmit(): void {
+  onSubmit(e: Event): void {
+    e.preventDefault();
+    this.isEdit$.subscribe(val => !val ? this.onCreate() : this.onUpdate());
+  }
+
+  // Void -> Void
+  // update item and add update date to firebase, finally redirect to recipe page
+  onUpdate() {
+    const final = this.recipeForm.value;
+    let id: string | boolean = '';
+    const timestamp = new Date();
+
+    this.uid.subscribe(val => (final.uid = val));
+    this.isEdit$.subscribe(val => val !== false ? id = val : '');
+    final.id = id;
+    final.updatedAt = timestamp;
+
+    this.submitComplete.subscribe(val => val ? this.router.navigate([`/recipe/${id}`]) : '');
+
+    this.itemsCollection
+      .doc(id)
+      .update(final)
+      .then(() => this.submitComplete.next(true));
+
+  }
+
+  // Void -> Void
+  // create item and add user id and timestamp to firebase, finally redirect to recipe page
+  onCreate() {
     const final = this.recipeForm.value;
     const id = this.afs.createId();
     const timestamp = new Date();

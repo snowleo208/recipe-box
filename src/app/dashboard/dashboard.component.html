@@ -11,19 +11,21 @@
   </div>
 
   <div class="recipes">
-    <h2 class="u-header dashboard__title">My Recipes</h2>
+    <h2 class="u-header dashboard__title">Manage Recipes</h2>
 
     <ng-container *ngIf="(recipes$ | async); let recipeList">
 
       <div class="dashboard__selector">
-        <button class="btn t-icon" (click)="triggerSelect()">
+        <button [ngClass]="isSelectable ? 'btn t-secondary t-icon' : 'btn t-icon'" (click)="triggerSelect()"
+          id="dashboard-select">
           <svg viewBox="0 0 24 24" width="24" height="24">
             <use xlink:href="./assets/sprite.svg#playlist_add_check"></use>
           </svg>
-          Select
+          <span *ngIf="!isSelectable">Select</span>
+          <span *ngIf="isSelectable">Unselect</span>
         </button>
-        <button [ngClass]="this.itemList.value.length <= 0 ? 'btn t-secondary t-icon' : 'btn t-icon'"
-          [disabled]="itemDoc.length <= 0" (click)="addToDeleteList()">
+        <button [ngClass]="itemDoc.length <= 0 ? 'btn t-secondary t-icon' : 'btn t-icon'" [attr.disabled]="itemDoc.length
+          <=0 ? true : null" (click)="triggerModal()" id="dashboard-delete">
           <svg viewBox="0 0 24 24" width="24" height="24">
             <use xlink:href="./assets/sprite.svg#delete_forever"></use>
           </svg>
@@ -37,9 +39,10 @@
 
             <!-- input -->
             <ng-container *ngFor="let element of recipeList">
-              <label class="recipes__item" for="{{element.id}}">
+
+              <label *ngIf="isSelectable; else showLink" class="recipes__item l-selectable" for="{{element.id}}">
                 <input *ngIf="isSelectable" class="recipes__input" type="checkbox" name="{{element.id}}"
-                  id="{{element.id}}" formControlName="{{element.id}}" />
+                  id="{{element.id}}" formControlName="{{element.id}}" (change)="addToDeleteList($event)" />
                 <ng-container *ngIf="element.image; else placeholder">
                   <div class="recipes__image" [ngStyle]="{'background-image': 'url('+element.image+')'}"></div>
                 </ng-container>
@@ -48,6 +51,22 @@
                   <time class="recipes__date">{{element.createdAt.toDate().toString().substr(4,11)}}</time>
                 </div>
               </label>
+
+              <ng-template #showLink>
+                <a class="recipes__link" routerLink="../recipe/{{element.id}}" routerLinkActive="active">
+                  <div class="recipes__item l-selectable">
+                    <input *ngIf="isSelectable" class="recipes__input" type="checkbox" name="{{element.id}}"
+                      id="{{element.id}}" formControlName="{{element.id}}" (change)="addToDeleteList($event)" />
+                    <ng-container *ngIf="element.image; else placeholder">
+                      <div class="recipes__image" [ngStyle]="{'background-image': 'url('+element.image+')'}"></div>
+                    </ng-container>
+                    <div class="recipes__details">
+                      <p>{{element.title}}</p>
+                      <time class="recipes__date">{{element.createdAt.toDate().toString().substr(4,11)}}</time>
+                    </div>
+                  </div>
+                </a>
+              </ng-template>
 
             </ng-container>
             <!-- end of input -->
@@ -70,7 +89,7 @@
 
     <ng-template #emptycontent>
       <p>You have not create any recipes yet.</p>
-      <button class="btn t-icon" [routerLink]="['/builder']">
+      <button class="btn t-icon" [routerLink]="['/builder']" id="dashboard-create">
         <svg viewBox="0 0 24 24" width="24" height="24">
           <use xlink:href="./assets/sprite.svg#add"></use>
         </svg>
