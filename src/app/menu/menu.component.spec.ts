@@ -44,10 +44,11 @@ describe('MenuComponent', () => {
 
     fixture.detectChanges();
     expect(compiled.querySelector('.menu__link')).toBeTruthy();
+    expect(compiled.querySelectorAll('.menu__link').length).toBe(2, 'should have 2 links');
     expect(compiled.querySelector('.auth-btn')).toBeFalsy();
   }));
 
-  it('should have login class in menu', async(() => {
+  it('should have login class in menu after login', async(() => {
     component = fixture.componentInstance;
     const compiled = fixture.debugElement.nativeElement;
 
@@ -87,6 +88,8 @@ describe('MenuComponent', () => {
     });
 
     fixture.detectChanges();
+    expect(compiled.querySelector('.menu__link')).toBeTruthy();
+    expect(compiled.querySelectorAll('.menu__link').length).toBe(4, 'should have 4 links');
     expect(compiled.querySelector('.is-signin')).toBeTruthy();
   }));
 

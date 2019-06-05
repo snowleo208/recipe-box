@@ -20,6 +20,7 @@ import { UserSessionService } from './user-session.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { MenuComponent } from './menu/menu.component';
+import { FooterComponent } from './footer/footer.component';
 
 const redirectUnauthorizedToLogin = redirectUnauthorizedTo(['login']);
 
@@ -63,6 +64,7 @@ const appRoutes: Routes = [
     DashboardComponent,
     PageNotFoundComponent,
     MenuComponent,
+    FooterComponent,
   ],
   imports: [
     RouterModule.forRoot(

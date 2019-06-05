@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Router, Scroll } from '@angular/router';
+import { filter } from 'rxjs/operators';
+
 @Component({
   selector: 'app-homepage',
   templateUrl: './homepage.component.html',
@@ -7,7 +10,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomepageComponent implements OnInit {
   currentYear: number = new Date().getFullYear();
-  constructor() { }
+  constructor(private router: Router) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.router.events
+      .pipe(filter(event => event instanceof Scroll))
+      .subscribe(val => console.log(val));
+  }
 }

@@ -6,6 +6,7 @@ import { LoginComponent } from '../login/login.component';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { BehaviorSubject } from 'rxjs';
 import { UserSessionService } from '../user-session.service';
+import { FooterComponent } from '../footer/footer.component';
 
 describe('HomepageComponent', () => {
   let component: HomepageComponent;
@@ -46,7 +47,7 @@ describe('HomepageComponent', () => {
           { provide: AngularFireAuth, useValue: mockAngularFireAuth },
           { provide: UserSessionService, useValue: mockUserSession },
         ],
-        declarations: [HomepageComponent, LoginComponent],
+        declarations: [HomepageComponent, LoginComponent, FooterComponent],
       })
       .overrideComponent(HomepageComponent, { // override and remove login component in hompage
         remove: {
