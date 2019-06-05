@@ -1,4 +1,5 @@
-<nav class="menu">
+<nav [ngClass]="(scrollPosition | async) > 150? 'menu u-fixed' : 'menu'" scroll-div
+  (debounceScroll)="getScroll($event)">
   <ul [ngClass]="(session.getUserInfoObs() | async)?.uid? 'menu__list is-signin' : 'menu__list'">
     <a class="menu__link" routerLink="./home" routerLinkActive="active">
       <li>
@@ -36,3 +37,5 @@
     </ng-container>
   </ul>
 </nav>
+
+<div class="menu-dummy" *ngIf="(scrollPosition | async) > 200"></div>

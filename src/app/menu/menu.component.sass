@@ -4,17 +4,36 @@ $tablet: "only screen and (min-width : 768px)"
 $laptop: "only screen and (min-width : 992px)"
 $desktop: "only screen and (min-width : 1200px)"
 
+@keyframes easein
+    0%
+        height: 0
+        opacity: 0
+    80%
+        opacity: 1
+    100%
+        height: 4.1em
+
 .menu
-    ul
+    width: 100%
+    background: white
+    &-dummy
+        height: 4.1em
+        @media #{$laptop}
+            display: none
+    &.u-fixed
         position: fixed
-        bottom: 0
+        top: 0
         left: 0
         z-index: 1030
+        animation: easein 300ms forwards
+        @media #{$laptop}
+            position: relative
+            animation: none
+    ul
+        position: relative
         display: flex
         flex-flow: row wrap
         justify-content: center
-        background: white
-        width: 100%
         list-style-type: none
         margin: 0
         padding: 0
