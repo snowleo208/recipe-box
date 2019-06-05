@@ -26,6 +26,8 @@ export class BuilderComponent implements OnInit {
   public isEdit$: BehaviorSubject<boolean | string> = new BehaviorSubject(false);
   public recipes$: Observable<any> = new Observable();
 
+  public recipeForm: FormGroup;
+
   constructor(
     private formBuilder: FormBuilder,
     private afs: AngularFirestore,
@@ -38,22 +40,6 @@ export class BuilderComponent implements OnInit {
     this.submitComplete.subscribe();
     this.session = userSessionService;
 
-    this.session.getUserInfoObs().subscribe(val => this.setUserId(val));
-  }
-
-  public recipeForm: FormGroup;
-
-  ngOnInit() {
-
-    const isEditMode = params => params.edit ? this.isEdit$.next(params.edit) : this.isEdit$.next(false);
-    const getData = (id: string) => this.afs.collection('recipes', ref => ref.where('id', '==', id)).valueChanges(['added', 'removed']);
-
-    this.recipes$ = this.isEdit$.pipe(
-      switchMap(id =>
-        this.afs.collection('recipes', ref => ref.where('id', '==', id)).valueChanges(['added', 'removed'])
-      )
-    );
-
     this.recipeForm = this.formBuilder.group({
       title: ['', Validators.required],
       image: ['', Validators.required],
@@ -65,14 +51,27 @@ export class BuilderComponent implements OnInit {
       instructions: this.formBuilder.array([this.createInstruction('')]),
     });
 
+    this.session.getUserInfoObs().subscribe(val => this.setUserId(val));
+  }
+
+  ngOnInit() {
+
+    const isEditMode = (params: { edit: string | boolean; }) => params.edit ? this.isEdit$.next(params.edit) : this.isEdit$.next(false);
+
     this.activatedRoute.queryParams.subscribe(isEditMode);
+    this.recipes$ = this.isEdit$.pipe(
+      switchMap(id =>
+        this.afs.collection('recipes', ref => ref.where('id', '==', id)).valueChanges(['added', 'removed'])
+      )
+    );
+
     this.recipes$.subscribe((val: Recipe) => {
       if (val && val[0]) {
         const allFields = { ingredients: null, instructions: null };
         const ingredientsArr = [];
         const instructionsArr = [];
         const obj = val[0];
-        const generateForm = item => {
+        const generateForm = (item: string) => {
           if (item === 'createdAt' || item === 'uid' || item === 'id') {
             return;
           }
@@ -88,7 +87,6 @@ export class BuilderComponent implements OnInit {
         allFields.ingredients = this.fb.array(ingredientsArr);
         allFields.instructions = this.fb.array(instructionsArr);
         this.recipeForm = this.fb.group(allFields);
-        console.log(this.recipeForm);
       }
     });
 

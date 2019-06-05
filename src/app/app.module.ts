@@ -19,6 +19,7 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { UserSessionService } from './user-session.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { MenuComponent } from './menu/menu.component';
 
 const redirectUnauthorizedToLogin = redirectUnauthorizedTo(['login']);
 
@@ -61,6 +62,7 @@ const appRoutes: Routes = [
     HomepageComponent,
     DashboardComponent,
     PageNotFoundComponent,
+    MenuComponent,
   ],
   imports: [
     RouterModule.forRoot(

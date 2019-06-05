@@ -1,0 +1,67 @@
+$xs: "only screen and (max-width : 576px)"
+$mobile: "only screen and (min-width : 576px)"
+$tablet: "only screen and (min-width : 768px)"
+$laptop: "only screen and (min-width : 992px)"
+$desktop: "only screen and (min-width : 1200px)"
+
+.menu
+    ul
+        position: fixed
+        bottom: 0
+        left: 0
+        z-index: 1030
+        display: flex
+        flex-flow: row wrap
+        justify-content: center
+        background: white
+        width: 100%
+        list-style-type: none
+        margin: 0
+        padding: 0
+        height: 4.7em
+        border-top: solid 1px rgba(170, 170, 170, 0.2)
+        @media #{$laptop}
+            position: relative
+            border-top: 0
+            justify-content: flex-end
+            max-width: 1176px
+            margin: 0 auto
+            z-index: 0
+    a
+        display: inline-block
+        border-left: 0
+        text-decoration: none
+        color: #aaa
+        flex: 1 1 calc(100% / 2)
+        @media #{$laptop}
+            display: block
+            color: #191919
+            line-height: 1
+
+        &:hover
+            color: #191919
+            svg
+                fill: #191919
+            @media #{$laptop}
+                color: #191919
+    li
+        display: flex
+        flex-flow: column wrap
+        align-items: center
+        font-size: 0.7rem
+        padding: 1em
+        text-align: center
+        @media #{$laptop}
+            font-size: 1rem
+            text-align: left
+    svg
+        display: block
+        fill: #aaa
+        transition: ease 200ms
+        @media #{$laptop}
+            display: none
+
+.is-signin a
+    flex: 1 1 calc(100% / 4)
+    @media #{$laptop}
+        flex: 0 0 auto

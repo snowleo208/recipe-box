@@ -19,6 +19,7 @@ describe('DetailsComponent', () => {
       'https://www.tasteofhome.com/wp-content/uploads/2017/10/Parmesan-Chicken-Nuggets_exps91788_SD2856494B12_03_3bC_RMS-1-696x696.jpg',
     prep: '30 min',
     cook: '30 min',
+    serve: '24',
     ingredients: [
       { name: '1/4 cup butter, melted' },
       { name: '1/2 teaspoon kosher salt' },
@@ -31,6 +32,7 @@ describe('DetailsComponent', () => {
           'Combine the bread crumbs, cheese and salt in another shallow bowl.',
       },
     ],
+    uid: '123553',
     public: true,
     createdAt: {
       toDate: () => new Date(),
@@ -46,12 +48,14 @@ describe('DetailsComponent', () => {
   const angularFirestoreStub = {
     doc: jasmine.createSpy('doc').and.returnValue(collectionStub),
   };
+  const isLogin = new BehaviorSubject(false);
+  const authState = new BehaviorSubject({});
 
   const mockUserSession = {
-    isLogin: new BehaviorSubject(false),
-    setUserInfo: new BehaviorSubject(0),
-    getLoginObs: () => void 0,
-    getUserInfoObs: () => new BehaviorSubject({}),
+    isLogin,
+    setUserInfo: authState,
+    getLoginObs: () => isLogin,
+    getUserInfoObs: () => authState,
   };
 
   beforeEach(async(() => {
@@ -101,6 +105,7 @@ describe('DetailsComponent', () => {
         'https://www.tasteofhome.com/wp-content/uploads/2017/10/Parmesan-Chicken-Nuggets_exps91788_SD2856494B12_03_3bC_RMS-1-696x696.jpg',
       prep: '30 min',
       cook: '30 min',
+      serve: '24',
       ingredients: [
         { name: '1/4 cup butter, melted' },
         { name: '1/2 teaspoon kosher salt' },
@@ -113,6 +118,7 @@ describe('DetailsComponent', () => {
             'Combine the bread crumbs, cheese and salt in another shallow bowl.',
         },
       ],
+      uid: '1234',
       public: false,
       createdAt: {
         toDate: () => new Date(),
@@ -124,6 +130,52 @@ describe('DetailsComponent', () => {
     expect(fixture.debugElement.query(By.css('.recipe-header'))).toBeFalsy();
     expect(compiled.querySelector('h1').textContent).toContain(
       'Sorry, this recipe is private.'
+    );
+  });
+
+  it('should show private recipe if the user is author', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    data.next({
+      id: 'PbcXMrn1YnZnDeg8vTAG',
+      title: 'Parmesan Chicken Nuggets',
+      image:
+        'https://www.tasteofhome.com/wp-content/uploads/2017/10/Parmesan-Chicken-Nuggets_exps91788_SD2856494B12_03_3bC_RMS-1-696x696.jpg',
+      prep: '30 min',
+      cook: '30 min',
+      serve: '24',
+      ingredients: [
+        { name: '1/4 cup butter, melted' },
+        { name: '1/2 teaspoon kosher salt' },
+        { name: '1 cup panko (Japanese) bread crumbs' },
+      ],
+      instructions: [
+        { step: 'Place butter in a shallow bowl.' },
+        {
+          step:
+            'Combine the bread crumbs, cheese and salt in another shallow bowl.',
+        },
+      ],
+      uid: 'KsvXtqnl0wc',
+      public: false,
+      createdAt: {
+        toDate: () => new Date(),
+      },
+    });
+    isLogin.next(true);
+    authState.next({
+      displayName: 'Lily',
+      email: '123@gmail.com',
+      phoneNumber: '12345678',
+      providerId: '12123',
+      photoURL: 'http://www.abc.com/123.jpg',
+      uid: 'KsvXtqnl0wc',
+    });
+
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('.recipe-header'))).toBeTruthy();
+    expect(compiled.querySelector('h1').textContent).toContain(
+      'Parmesan Chicken Nuggets'
     );
   });
 

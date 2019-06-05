@@ -1,0 +1,38 @@
+<nav class="menu">
+  <ul [ngClass]="(session.getUserInfoObs() | async)?.uid? 'menu__list is-signin' : 'menu__list'">
+    <a class="menu__link" routerLink="./home" routerLinkActive="active">
+      <li>
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="./assets/sprite.svg#home"></use>
+        </svg>
+        Home
+      </li>
+    </a>
+    <a class="menu__link" routerLink="./home" routerLinkActive="active">
+      <li>
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="./assets/sprite.svg#featured_play_list"></use>
+        </svg>
+        All Recipes
+      </li>
+    </a>
+    <ng-container *ngIf="(session.getUserInfoObs() | async)?.uid">
+      <a class="menu__link auth-btn" routerLink="./dashboard" routerLinkActive="active">
+        <li>
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <use xlink:href="./assets/sprite.svg#dashboard"></use>
+          </svg>
+          Dashboard
+        </li>
+      </a>
+      <a class="menu__link auth-btn" routerLink="./builder" routerLinkActive="active">
+        <li>
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <use xlink:href="./assets/sprite.svg#add"></use>
+          </svg>
+          Create
+        </li>
+      </a>
+    </ng-container>
+  </ul>
+</nav>

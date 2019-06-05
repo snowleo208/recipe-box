@@ -1,4 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+$xs: "only screen and (max-width : 576px)"
+$mobile: "only screen and (min-width : 576px)"
+$tablet: "only screen and (min-width : 768px)"
+$laptop: "only screen and (min-width : 992px)"
 $desktop: "only screen and (min-width : 1200px)"
 
 body
@@ -8,6 +12,9 @@ body
     margin: 0
     padding: 0
     color: #212529
+    padding-bottom: 4.7em
+    @media #{$laptop}
+        padding-bottom: 0
 
 *
     font-family: inherit
@@ -62,6 +69,9 @@ a
         background: #ff2a6b
         -webkit-clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%)
         clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%)
+
+.u-none
+    display: none !important
 
 .btn
     position: relative

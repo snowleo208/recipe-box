@@ -1,6 +1,6 @@
 <section class="form-builder">
   <h1 class="u-header">
-    <ng-template *ngIf="!isEdit$ | async; else editTitle">Create Recipe</ng-template>
+    <ng-container *ngIf="(isEdit$ | async) === false; else editTitle">Create Recipe</ng-container>
     <ng-template #editTitle>Edit Recipe</ng-template>
   </h1>
 
