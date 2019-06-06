@@ -14,7 +14,8 @@
   <div class="recipe" *ngFor="let item of items | async">
     <button class="recipe__like" like-item id="{{item.id}}">
 
-      <ng-container *ngIf="item.like && item.like[(session.getUserInfoObs() | async).uid] === true; else notlike">
+      <ng-container
+        *ngIf="item.like && (session.getUserInfoObs() | async)?.uid && isLike(item.like, (session.getUserInfoObs() | async)?.uid) === true; else notlike">
         <svg viewBox="0 0 24 24" width="24" height="24">
           <use xlink:href="./assets/sprite.svg#favorite"></use>
         </svg>

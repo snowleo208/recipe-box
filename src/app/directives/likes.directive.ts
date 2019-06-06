@@ -20,33 +20,36 @@ export class LikeButton implements OnInit {
     constructor(private el: ElementRef, afs: AngularFirestore, session: UserSessionService) {
         this.db = afs;
         this.userSession = session;
-        this.userSession.getUserInfoObs().subscribe(val => this.userId.next(val.uid));
+        this.userSession.getUserInfoObs().subscribe(val => val && val.uid ? this.userId.next(val.uid) : false);
     }
 
     ngOnInit() {
         this.subscription = this.item.subscribe((e: any) => {
             const recipeItem = new BehaviorSubject(null);
 
-            const recipe = this.db.doc('recipes/' + e.id);
-            recipe.valueChanges().subscribe((info: Recipe) => recipeItem.getValue() === null ? recipeItem.next(info) : null);
+            if (this.userId.getValue() !== null) {
+                const recipe = this.db.doc('recipes/' + e.id);
+                recipe.valueChanges().subscribe((info: Recipe) => recipeItem.getValue() === null ? recipeItem.next(info) : null);
 
-            recipeItem.subscribe(info => {
-                if (!info) { return; }
-                const like = info.like ? info.like : {};
-                const uid = this.userId.getValue();
+                recipeItem.subscribe(info => {
+                    if (!info) { return; }
+                    const like = info.like ? info.like : {};
+                    const uid = this.userId.getValue();
 
-                // if already like then remove, else add user id
-                if (!like[uid]) {
-                    like[uid] = true;
-                } else {
-                    delete like[uid];
-                }
+                    // if already like then remove, else add user id
+                    if (!like[uid]) {
+                        like[uid] = true;
+                    } else {
+                        delete like[uid];
+                    }
 
-                recipe.update({ like });
-            });
+                    recipe.update({ like });
+                });
 
-            // edit user info
-            this.getItem(e.id);
+                // edit user info
+                this.getItem(e.id);
+
+            }
         });
     }
 

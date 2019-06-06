@@ -33,6 +33,11 @@ export class AppComponent {
     return Object.keys(item).length;
   }
 
+  isLike(obj, val) {
+    if (obj === null || val === null) { return false; }
+    return obj[val] ? true : false;
+  }
+
   clickLike(id: any) {
     console.log(id);
     this.itemId.emit(id);
