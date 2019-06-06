@@ -46,6 +46,10 @@ export class DetailsComponent implements OnInit {
     });
   }
 
+  getLength(item: object) {
+    return Object.keys(item).length;
+  }
+
   getItem(node: string): Observable<{}[]> {
     return this.db.doc<{}[]>('recipes/' + node).valueChanges();
   }

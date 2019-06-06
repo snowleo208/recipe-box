@@ -41,6 +41,7 @@
             <ng-container *ngFor="let element of recipeList">
 
               <label *ngIf="isSelectable; else showLink" class="recipes__item l-selectable" for="{{element.id}}">
+
                 <input *ngIf="isSelectable" class="recipes__input" type="checkbox" name="{{element.id}}"
                   id="{{element.id}}" formControlName="{{element.id}}" (change)="addToDeleteList($event)" />
                 <ng-container *ngIf="element.image; else placeholder">

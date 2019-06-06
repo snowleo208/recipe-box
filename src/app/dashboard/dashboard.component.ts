@@ -55,6 +55,10 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  get userInfo(): BehaviorSubject<any> | null {
+    return this.authorizeInfo;
+  }
+
   // trigger checkbox for user to select items
   triggerSelect() {
     this.isSelectable = !this.isSelectable;
@@ -88,10 +92,6 @@ export class DashboardComponent implements OnInit {
     });
 
     this.triggerModal();
-  }
-
-  get userInfo(): BehaviorSubject<any> | null {
-    return this.authorizeInfo;
   }
 
 }

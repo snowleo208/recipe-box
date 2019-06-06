@@ -8,16 +8,16 @@ import { Subject, Subscription } from 'rxjs';
 
 export class ScrollDir implements OnInit {
     @Output() debounceScroll = new EventEmitter();
-    private scrollPos = new Subject();
+    private data = new Subject();
     private subscription: Subscription;
 
     constructor(private el: ElementRef) { }
 
     ngOnInit() {
-        this.subscription = this.scrollPos.pipe(
+        this.subscription = this.data.pipe(
             debounceTime(200)
         ).subscribe((e: any) => {
-            console.log(e);
+            // console.log(e);
             this.debounceScroll.emit(e);
         });
     }
@@ -30,6 +30,6 @@ export class ScrollDir implements OnInit {
     onWindowScroll(event) {
         event.preventDefault();
         event.stopPropagation();
-        this.scrollPos.next(event);
+        this.data.next(event);
     }
 }

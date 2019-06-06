@@ -22,6 +22,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { MenuComponent } from './menu/menu.component';
 import { FooterComponent } from './footer/footer.component';
 import { ScrollDir } from './directives/scroll.directive';
+import { LikeButton } from './directives/likes.directive';
 
 const redirectUnauthorizedToLogin = redirectUnauthorizedTo(['login']);
 
@@ -66,7 +67,8 @@ const appRoutes: Routes = [
     PageNotFoundComponent,
     MenuComponent,
     FooterComponent,
-    ScrollDir
+    ScrollDir,
+    LikeButton
   ],
   imports: [
     RouterModule.forRoot(

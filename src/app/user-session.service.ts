@@ -8,7 +8,7 @@ export class UserSessionService {
   private userInfo: ReplaySubject<UserInfo> = new ReplaySubject<UserInfo>();
 
   public login(bool: boolean) {
-    console.log(bool);
+    // console.log(bool);
     this.isLogin.next(bool);
   }
 
