@@ -73,8 +73,4 @@ describe('HomepageComponent', () => {
     expect(component).toBeTruthy();
   }));
 
-  it('should get current year', () => {
-    expect(component.currentYear).toBe(new Date().getFullYear());
-  });
-
 });
