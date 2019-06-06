@@ -46,5 +46,6 @@ testem.log
 Thumbs.db
 
 #env
+.env
 env.ts
 fb.json
