@@ -50,6 +50,11 @@ export class DetailsComponent implements OnInit {
     return Object.keys(item).length;
   }
 
+  isLike(obj, val) {
+    if (obj === null || val === null) { return false; }
+    return obj[val] ? true : false;
+  }
+
   getItem(node: string): Observable<{}[]> {
     return this.db.doc<{}[]>('recipes/' + node).valueChanges();
   }
