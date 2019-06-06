@@ -7,7 +7,6 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class HomepageComponent implements OnInit {
-  private currentYear: number = new Date().getFullYear();
 
   constructor() { }
 

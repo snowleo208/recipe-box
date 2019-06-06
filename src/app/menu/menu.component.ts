@@ -8,11 +8,12 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./menu.component.sass']
 })
 export class MenuComponent implements OnInit {
-  private scrollPosition: BehaviorSubject<number> = new BehaviorSubject(0);
+  public scrollPosition: BehaviorSubject<number> = new BehaviorSubject(0);
+  public session: UserSessionService;
 
   constructor(
-    private session: UserSessionService) {
-    this.session = session;
+    private userSession: UserSessionService) {
+    this.session = userSession;
   }
 
   ngOnInit() {
