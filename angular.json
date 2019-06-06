@@ -22,7 +22,11 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
-            "assets": [
+            "assets": [{
+                "glob": "_redirects",
+                "input": "src",
+                "output": "/"
+              },
               "src/favicon.ico",
               "src/assets"
             ],
