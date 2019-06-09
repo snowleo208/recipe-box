@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { UserSessionService } from './user-session.service';
+import { Recipe } from './recipe';
 
 @Component({
   selector: 'app-root',
@@ -14,19 +15,22 @@ export class AppComponent {
   title = 'recipe-box';
   listLimit$ = new BehaviorSubject(6);
 
-  items: Observable<{}[]>;
+  items: Observable<{}[] | Recipe>;
   placeholder: string;
   session: UserSessionService;
 
   constructor(db: AngularFirestore, session: UserSessionService) {
     this.items = this.listLimit$.pipe(
       switchMap(size =>
-        db.collection('recipes', ref => ref.where('public', '==', true).limit(size)).valueChanges(['added', 'removed'])
+        db
+          .collection('recipes', ref =>
+            ref.where('public', '==', true).limit(size)
+          )
+          .valueChanges(['added', 'removed'])
       )
     );
 
     this.session = session;
-
   }
 
   getLength(item) {
@@ -34,7 +38,9 @@ export class AppComponent {
   }
 
   isLike(obj, val) {
-    if (obj === null || val === null) { return false; }
+    if (obj === null || val === null) {
+      return false;
+    }
     return obj[val] ? true : false;
   }
 
@@ -42,5 +48,4 @@ export class AppComponent {
     console.log(id);
     this.itemId.emit(id);
   }
-
 }

@@ -1,0 +1,18 @@
+<button class="recipe__like" id="{{recipeId}}">
+
+  <ng-container
+    *ngIf="likeList && (userSession.getUserInfoObs() | async)?.uid && isLike(likeList, (userSession.getUserInfoObs() | async)?.uid) === true; else notlike">
+    <svg viewBox="0 0 24 24" width="24" height="24">
+      <use xlink:href="./assets/sprite.svg#favorite"></use>
+    </svg>
+  </ng-container>
+
+  <ng-template #notlike>
+    <svg viewBox="0 0 24 24" width="24" height="24">
+      <use xlink:href="./assets/sprite.svg#favorite_border"></use>
+    </svg>
+  </ng-template>
+
+  <p *ngIf="likeList">{{getLength(likeList)}}</p>
+  <p *ngIf="!likeList">0</p>
+</button>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, Subject } from 'rxjs';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { UserSessionService } from '../user-session.service';
@@ -12,7 +12,6 @@ import { UserSessionService } from '../user-session.service';
   styleUrls: ['./details.component.sass'],
 })
 export class DetailsComponent implements OnInit {
-
   public recipe: Observable<any>;
   public recipeId = new Subject<string>();
   private db: AngularFirestore;
@@ -39,7 +38,9 @@ export class DetailsComponent implements OnInit {
       }
       const formFields = {};
       if (detail.ingredients) {
-        detail.ingredients.forEach((item: object, idx: number) => formFields[idx] = '');
+        detail.ingredients.forEach(
+          (item: object, idx: number) => (formFields[idx] = '')
+        );
         this.ingredientsForm = this.formBuilder.group(formFields);
       }
       return detail;
@@ -51,7 +52,9 @@ export class DetailsComponent implements OnInit {
   }
 
   isLike(obj, val) {
-    if (obj === null || val === null) { return false; }
+    if (obj === null || val === null) {
+      return false;
+    }
     return obj[val] ? true : false;
   }
 

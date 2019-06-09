@@ -12,24 +12,7 @@
 <h2 class="u-header t-recipe">Latest recipes</h2>
 <section class="recipe-container">
   <div class="recipe" *ngFor="let item of items | async">
-    <button class="recipe__like" like-item id="{{item.id}}">
-
-      <ng-container
-        *ngIf="item.like && (session.getUserInfoObs() | async)?.uid && isLike(item.like, (session.getUserInfoObs() | async)?.uid) === true; else notlike">
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <use xlink:href="./assets/sprite.svg#favorite"></use>
-        </svg>
-      </ng-container>
-
-      <ng-template #notlike>
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <use xlink:href="./assets/sprite.svg#favorite_border"></use>
-        </svg>
-      </ng-template>
-
-      <p *ngIf="item.like">{{getLength(item.like)}}</p>
-      <p *ngIf="!item.like">0</p>
-    </button>
+    <app-likebutton class="recipe__like t-white" [recipeId]="item.id" [likeList]="item.like"></app-likebutton>
     <a routerLink="../recipe/{{item.id}}" routerLinkActive="active">
       <div class="recipe-img" *ngIf="item.image; else placeholder"
         [ngStyle]="{'background-image': 'url('+item.image+')'}"></div>

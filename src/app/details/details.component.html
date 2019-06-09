@@ -3,24 +3,7 @@
     <h1 class="recipe-header">{{recipes.title}}</h1>
     <time class="recipe-time">{{recipes.createdAt.toDate().toString().substr(4,11)}}</time>
 
-
-    <button class="recipe__like" like-item id="{{recipes.id}}">
-      <ng-container
-        *ngIf="recipes.like && (session.getUserInfoObs() | async)?.uid && isLike(recipes.like, (session.getUserInfoObs() | async)?.uid) === true; else notlike">
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <use xlink:href="./assets/sprite.svg#favorite"></use>
-        </svg>
-      </ng-container>
-
-      <ng-template #notlike>
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <use xlink:href="./assets/sprite.svg#favorite_border"></use>
-        </svg>
-      </ng-template>
-
-      <p *ngIf="recipes.like">{{getLength(recipes.like)}}</p>
-      <p *ngIf="!recipes.like">0</p>
-    </button>
+    <app-likebutton class="recipe__like t-white" [recipeId]="recipes.id" [likeList]="recipes.like"></app-likebutton>
 
     <section class="recipe-editor" *ngIf="(session.getUserInfoObs() | async)?.uid === recipes.uid">
       <button class="btn t-icon" routerLink="../../builder" [queryParams]="{edit: recipes.id}"

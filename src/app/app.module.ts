@@ -11,7 +11,10 @@ import { AppComponent } from './app.component';
 import { BuilderComponent } from './builder/builder.component';
 import { LoginComponent } from './login/login.component';
 import { DetailsComponent } from './details/details.component';
-import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
+import {
+  AngularFireAuthGuard,
+  redirectUnauthorizedTo,
+} from '@angular/fire/auth-guard';
 import { canActivate } from '@angular/fire/auth-guard';
 
 import { RouterModule, Routes } from '@angular/router';
@@ -22,7 +25,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { MenuComponent } from './menu/menu.component';
 import { FooterComponent } from './footer/footer.component';
 import { ScrollDir } from './directives/scroll.directive';
-import { LikeButton } from './directives/likes.directive';
+import { LikeButtonComponent } from './likebutton/likebutton.component';
 
 const redirectUnauthorizedToLogin = redirectUnauthorizedTo(['login']);
 
@@ -38,7 +41,7 @@ const appRoutes: Routes = [
     component: BuilderComponent,
     canActivate: [AngularFireAuthGuard],
     data: { title: 'Create Recipe | Recipe Box' },
-    ...canActivate(redirectUnauthorizedToLogin)
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'login',
@@ -50,10 +53,10 @@ const appRoutes: Routes = [
     component: DashboardComponent,
     canActivate: [AngularFireAuthGuard],
     data: { title: 'Dashboard | Recipe Box' },
-    ...canActivate(redirectUnauthorizedToLogin)
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: '**', component: PageNotFoundComponent }
+  { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({
@@ -68,14 +71,14 @@ const appRoutes: Routes = [
     MenuComponent,
     FooterComponent,
     ScrollDir,
-    LikeButton
+    LikeButtonComponent,
   ],
   imports: [
     RouterModule.forRoot(
       appRoutes,
       {
         enableTracing: true,
-        scrollPositionRestoration: 'enabled'
+        scrollPositionRestoration: 'enabled',
       } // debugging purposes only
     ),
     BrowserModule,
@@ -87,4 +90,4 @@ const appRoutes: Routes = [
   providers: [UserSessionService, AngularFireAuthGuard],
   bootstrap: [HomepageComponent],
 })
-export class AppModule { }
+export class AppModule {}
