@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginComponent } from './login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { By } from '@angular/platform-browser';
@@ -37,12 +38,50 @@ describe('LoginComponent', () => {
     getUserInfoObs: () => authState,
   };
 
+  const input = [
+    {
+      id: 'oVbNvVYWZp1HqGW9G41y',
+      title: 'Parmesan Chicken Nuggets',
+      image:
+        'https://www.tasteofhome.com/wp-content/uploads/2017/10/Parmesan-Chicken-Nuggets_exps91788_SD2856494B12_03_3bC_RMS-1-696x696.jpg',
+      prep: '30 min',
+      like: {}
+    },
+    {
+      id: 'lLj2FOApZVZU3LWUIUKo',
+      title: 'Quick Chicken Piccata',
+      image:
+        'https://www.tasteofhome.com/wp-content/uploads/2018/01/exps23273_CW163681C12_11_2b-696x696.jpg',
+      prep: '30 min',
+      like: {}
+    },
+    {
+      id: 'MfARi4GyeFXrkeMWtSSi',
+      title: 'Lemon Cooler Cream Cake',
+      image:
+        'https://www.tasteofhome.com/wp-content/uploads/2017/10/Parmesan-Chicken-Nuggets_exps91788_SD2856494B12_03_3bC_RMS-1-696x696.jpg',
+      prep: '30 min',
+      like: {}
+    },
+  ];
+
+  const data = new BehaviorSubject(input);
+
+  const collectionStub = {
+    valueChanges: jasmine.createSpy('valueChanges').and.returnValue(data),
+  };
+
+  const angularFirestoreStub = {
+    collection: jasmine.createSpy('collection').and.returnValue(collectionStub),
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule, ReactiveFormsModule],
       providers: [
         { provide: AngularFireAuth, useValue: mockAngularFireAuth },
         { provide: UserSessionService, useValue: mockUserSession },
+        { provide: AngularFirestore, useValue: angularFirestoreStub }
       ],
       declarations: [LoginComponent],
     }).compileComponents();

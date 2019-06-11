@@ -5,6 +5,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { LikeButtonComponent } from './likebutton/likebutton.component';
+import { UserSessionService } from './user-session.service';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -41,6 +43,16 @@ describe('AppComponent', () => {
     collection: jasmine.createSpy('collection').and.returnValue(collectionStub),
   };
 
+  const isLogin = new BehaviorSubject(false);
+  const authState = new BehaviorSubject({});
+
+  const mockUserSession = {
+    isLogin,
+    setUserInfo: authState,
+    getLoginObs: () => isLogin,
+    getUserInfoObs: () => authState,
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -51,8 +63,9 @@ describe('AppComponent', () => {
       ],
       providers: [
         { provide: AngularFirestore, useValue: angularFirestoreStub },
+        { provide: UserSessionService, useValue: mockUserSession },
       ],
-      declarations: [AppComponent],
+      declarations: [AppComponent, LikeButtonComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);
@@ -74,7 +87,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('h2').textContent).toContain(
-      'Latest recipes'
+      'Amazing Recipes'
     );
   });
 });

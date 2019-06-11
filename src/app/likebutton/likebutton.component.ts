@@ -9,7 +9,9 @@ import { Subject, Subscription } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { UserSessionService } from '../user-session.service';
 import { Recipe } from '../recipe';
-import { takeUntil, switchMap, filter, zip, take } from 'rxjs/operators';
+import { switchMap, zip, take } from 'rxjs/operators';
+import { UserInfo } from 'firebase';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-likebutton',
@@ -28,7 +30,8 @@ export class LikeButtonComponent implements OnInit {
   constructor(
     private el: ElementRef,
     afs: AngularFirestore,
-    session: UserSessionService
+    session: UserSessionService,
+    private router: Router
   ) {
     this.db = afs;
     this.userSession = session;
@@ -49,14 +52,15 @@ export class LikeButtonComponent implements OnInit {
     return this.userSession
       .getUserInfoObs()
       .pipe(
-        takeUntil(this.destroy$),
-        filter(val => val !== null),
-        switchMap(user =>
-          this.db
+        switchMap((user: UserInfo) => {
+          if (user === null) {
+            throw new Error('AUTH_ERROR');
+          }
+          return this.db
             .doc('users/' + user.uid)
             .valueChanges()
-            .pipe(take(1))
-        ),
+            .pipe(take(1));
+        }),
         zip(
           this.db
             .doc('recipes/' + itemId)
@@ -64,25 +68,29 @@ export class LikeButtonComponent implements OnInit {
             .pipe(take(1))
         )
       )
-      .subscribe((info: any) => {
-        const user = info[0];
-        const recipe = info[1];
-        const userLikeList = user.like ? user.like : {};
-        const recipeLikeList = recipe.like ? recipe.like : {};
+      .subscribe(
+        (info: any) => {
+          const user = info[0];
+          const recipe = info[1];
+          const userLikeList = user.like ? user.like : {};
+          const recipeLikeList = recipe.like ? recipe.like : {};
 
-        userLikeList[itemId]
-          ? delete userLikeList[itemId]
-          : (userLikeList[itemId] = true);
+          // add or remove recipe id in user list
+          userLikeList[itemId] ? delete userLikeList[itemId] : (userLikeList[itemId] = true);
 
-        recipeLikeList[user.uid]
-          ? delete recipeLikeList[user.uid]
-          : (recipeLikeList[user.uid] = true);
+          // add or remove user id in recipe
+          recipeLikeList[user.uid] ? delete recipeLikeList[user.uid] : (recipeLikeList[user.uid] = true);
 
-        console.log(info, userLikeList, recipeLikeList);
-
-        this.db.doc('users/' + user.uid).update({ like: userLikeList });
-        this.db.doc('recipes/' + recipe.id).update({ like: recipeLikeList });
-      });
+          this.db.doc('users/' + user.uid).update({ like: userLikeList });
+          this.db.doc('recipes/' + recipe.id).update({ like: recipeLikeList });
+        },
+        err => {
+          console.log(err);
+          if (err.message === 'AUTH_ERROR') {
+            this.router.navigate(['login']);
+          }
+        }
+      );
   }
 
   getLength(item) {

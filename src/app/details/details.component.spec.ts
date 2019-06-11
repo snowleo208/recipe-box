@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DetailsComponent } from './details.component';
+import { LikeButtonComponent } from '../likebutton/likebutton.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { UserSessionService } from '../user-session.service';
@@ -70,7 +71,7 @@ describe('DetailsComponent', () => {
         { provide: AngularFirestore, useValue: angularFirestoreStub },
         { provide: UserSessionService, useValue: mockUserSession },
       ],
-      declarations: [DetailsComponent],
+      declarations: [DetailsComponent, LikeButtonComponent],
     }).compileComponents();
   }));
 
