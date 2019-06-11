@@ -14,6 +14,7 @@ import { DetailsComponent } from './details/details.component';
 import {
   AngularFireAuthGuard,
   redirectUnauthorizedTo,
+  redirectLoggedInTo,
 } from '@angular/fire/auth-guard';
 import { canActivate } from '@angular/fire/auth-guard';
 
@@ -26,8 +27,10 @@ import { MenuComponent } from './menu/menu.component';
 import { FooterComponent } from './footer/footer.component';
 import { ScrollDir } from './directives/scroll.directive';
 import { LikeButtonComponent } from './likebutton/likebutton.component';
+import { LoginPageComponent } from './login-page/login-page.component';
 
 const redirectUnauthorizedToLogin = redirectUnauthorizedTo(['login']);
+const redirectLoggedIn = redirectLoggedInTo(['home']);
 
 const appRoutes: Routes = [
   { path: 'recipe/:id', component: DetailsComponent },
@@ -45,8 +48,9 @@ const appRoutes: Routes = [
   },
   {
     path: 'login',
-    component: AppComponent,
-    data: { title: 'Recipe Box' },
+    component: LoginPageComponent,
+    data: { title: 'Login | Recipe Box' },
+    ...canActivate(redirectLoggedIn),
   },
   {
     path: 'dashboard',
@@ -72,6 +76,7 @@ const appRoutes: Routes = [
     FooterComponent,
     ScrollDir,
     LikeButtonComponent,
+    LoginPageComponent,
   ],
   imports: [
     RouterModule.forRoot(
@@ -90,4 +95,4 @@ const appRoutes: Routes = [
   providers: [UserSessionService, AngularFireAuthGuard],
   bootstrap: [HomepageComponent],
 })
-export class AppModule {}
+export class AppModule { }

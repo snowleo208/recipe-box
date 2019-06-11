@@ -1,7 +1,7 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth, UserInfo } from 'firebase/app';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UserSessionService } from '../user-session.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 
@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.afAuth.auth.signInWithRedirect(new auth.GoogleAuthProvider()).then(val => console.log('obj: ' + val));
+    this.afAuth.auth.signInWithRedirect(new auth.GoogleAuthProvider());
   }
 
   logout() {

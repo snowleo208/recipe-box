@@ -1,0 +1,50 @@
+$xs: "only screen and (max-width : 576px)"
+$mobile: "only screen and (min-width : 576px)"
+$tablet: "only screen and (min-width : 768px)"
+$laptop: "only screen and (min-width : 992px)"
+$desktop: "only screen and (min-width : 1200px)"
+$theme-google: rgb(219,68,55)
+
+
+.login
+    position: relative
+    display: flex
+    flex-flow: column wrap
+    margin: 0 -1em
+    @media #{$laptop}
+        flex-flow: row wrap
+    &__title
+        margin-bottom: 0.3em
+    &__bg
+        background-image: url('../../assets/jeff-sheldon-264920-unsplash.jpg')
+        background-position: center
+        background-size: cover
+        background-repeat: no-repeat
+        width: 100%
+        min-height: 50vh
+        @media #{$laptop}
+            min-height: 100vh
+            flex: 1 1 50%
+    &__details
+        padding: 1em
+        flex: 1 1 100%
+        @media #{$laptop}
+            padding: 2em
+            flex: 1 1 50%
+    &__btn
+        display: flex
+        align-items: center
+        appearance: none
+        -webkit-appearance: none
+        background: $theme-google
+        color: white
+        border: 0
+        padding: 0.8em 1em
+        margin: 0 0 2em 0
+        cursor: pointer
+        transition: ease 400ms
+        svg
+            fill: white
+            margin: 0 0.5em 0 0
+        &:hover
+            opacity: 0.9
