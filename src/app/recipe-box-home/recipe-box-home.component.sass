@@ -1,0 +1,58 @@
+$xs: "only screen and (max-width : 576px)"
+$mobile: "only screen and (min-width : 576px)"
+$tablet: "only screen and (min-width : 768px)"
+$laptop: "only screen and (min-width : 992px)"
+$desktop: "only screen and (min-width : 1200px)"
+$theme-pink: #ff2a6b
+
+.main
+    &__banner
+        background-image: url('../../assets/brooke-lark-230140-unsplash.jpg')
+        background-position: center
+        background-repeat: no-repeat
+        background-size: cover
+        min-height: 20em
+        margin: 0 0 2em 0
+        width: 100%
+        @media #{$laptop}
+            min-height: 30em
+
+.benefits
+    @media #{$laptop}
+        display: flex
+    &__points
+        background: $theme-pink
+        padding: 1.5em
+        color: white
+    &__bg
+        background-image: url('../../assets/brooke-lark-250695-unsplash.jpg')
+        background-position: center
+        background-repeat: no-repeat
+        background-size: cover
+        width: 100%
+        height: 100%
+        min-height: 20em
+        @media #{$laptop}
+            flex: 1 1 70%
+            min-height: 18em
+    &__title
+        margin: 0 0 0.25em 0
+    &__list
+        list-style: none
+        padding: 0 0 0 2em
+        @media #{$laptop}
+            flex: 1 1 30%
+        li
+            position: relative
+            margin: 0 0 0.5em 0
+            &:after
+                content: ""
+                position: absolute
+                width: 25px
+                height: 25px
+                left: -2em
+                top: 0
+                background-image: url(../../assets/check.png)
+
+.t-builder
+    margin-bottom: 2em

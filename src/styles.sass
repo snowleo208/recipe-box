@@ -5,6 +5,8 @@ $tablet: "only screen and (min-width : 768px)"
 $laptop: "only screen and (min-width : 992px)"
 $desktop: "only screen and (min-width : 1200px)"
 
+$max-width: 1176px
+
 body
     font-family: 'Poppins', sans-serif
     width: 100%
@@ -50,10 +52,15 @@ a
     &:hover
         color: #ff2a6b
 
-.main, .login-container
+section, .main
     padding: 0 1em
+
+    section
+        padding: 0
+        max-width: 100%
+
     @media #{$desktop}
-        max-width: 1176px
+        max-width: $max-width
         margin: 0 auto
 
 .u-header

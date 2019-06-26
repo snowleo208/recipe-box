@@ -1,32 +1,24 @@
-<section class="main__banner"></section>
-
-<section class="benefits">
-  <div class="benefits__bg"></div>
-  <div class="benefits__points">
-    <h2 class="benefits__title">Amazing Recipes</h2>
-    <ul class="benefits__list">
-      <li>Easy to made</li>
-      <li>Save your favourite one</li>
-      <li>View others' recipes</li>
-    </ul>
-  </div>
-</section>
-
-<h2 class="u-header t-recipe">Latest recipes</h2>
-<section class="recipe-container">
-  <div class="recipe" *ngFor="let item of items | async">
-    <app-likebutton class="recipe__like t-white" [recipeId]="item.id" [likeList]="item.like"></app-likebutton>
-    <a routerLink="../recipe/{{item.id}}" routerLinkActive="active">
-      <div class="recipe-img" *ngIf="item.image; else placeholder"
-        [ngStyle]="{'background-image': 'url('+item.image+')'}"></div>
-      <ng-template #placeholder>
-        <div class="recipe-img" [ngStyle]="{'background-image': 'url(../assets/l_e_others_490.png)'}"></div>
-      </ng-template>
-    </a>
-    <div class="recipe-desc">
-      <p class="recipe-title">{{item.title}}</p>
+<div class="main" *ngIf="limitation; else loading">
+  <h2 class="u-header t-recipe">Latest recipes</h2>
+  <section class="recipe-container">
+    <div class="recipe" *ngFor="let item of items | async">
+      <app-likebutton class="recipe__like t-white" [recipeId]="item.id" [likeList]="item.like"></app-likebutton>
+      <a routerLink="../recipe/{{item.id}}" routerLinkActive="active">
+        <div class="recipe-img" *ngIf="item.image; else placeholder"
+          [ngStyle]="{'background-image': 'url('+item.image+')'}"></div>
+        <ng-template #placeholder>
+          <div class="recipe-img" [ngStyle]="{'background-image': 'url(../assets/l_e_others_490.png)'}"></div>
+        </ng-template>
+      </a>
+      <div class="recipe-desc">
+        <p class="recipe-title">{{item.title}}</p>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+</div>
 
-<section class="toprate"></section>
+<ng-template #loading>
+  <div class="u-loading">
+    Loading...
+  </div>
+</ng-template>

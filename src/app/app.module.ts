@@ -28,15 +28,22 @@ import { FooterComponent } from './footer/footer.component';
 import { ScrollDir } from './directives/scroll.directive';
 import { LikeButtonComponent } from './likebutton/likebutton.component';
 import { LoginPageComponent } from './login-page/login-page.component';
+import { RecipePageComponent } from './recipe-page/recipe-page.component';
+import { RecipeBoxHomeComponent } from './recipe-box-home/recipe-box-home.component';
 
 const redirectUnauthorizedToLogin = redirectUnauthorizedTo(['login']);
 const redirectLoggedIn = redirectLoggedInTo(['home']);
 
 const appRoutes: Routes = [
+  {
+    path: 'recipe/all',
+    component: RecipePageComponent,
+    data: { title: 'All Recipes | Recipe Box' },
+  },
   { path: 'recipe/:id', component: DetailsComponent },
   {
     path: 'home',
-    component: AppComponent,
+    component: RecipeBoxHomeComponent,
     data: { title: 'Recipe Box' },
   },
   {
@@ -77,6 +84,8 @@ const appRoutes: Routes = [
     ScrollDir,
     LikeButtonComponent,
     LoginPageComponent,
+    RecipePageComponent,
+    RecipeBoxHomeComponent,
   ],
   imports: [
     RouterModule.forRoot(
@@ -95,4 +104,4 @@ const appRoutes: Routes = [
   providers: [UserSessionService, AngularFireAuthGuard],
   bootstrap: [HomepageComponent],
 })
-export class AppModule { }
+export class AppModule {}
