@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit {
 
     this.recipes$ = this.uid$.pipe(
       switchMap(uid =>
-        db.collection('recipes', ref => ref.where('uid', '==', uid)).valueChanges(['added', 'removed'])
+        db.collection('recipes', ref => ref.where('uid', '==', uid).orderBy('createdAt', 'desc')).valueChanges(['added', 'removed'])
       )
     );
   }
@@ -45,12 +45,10 @@ export class DashboardComponent implements OnInit {
     });
 
     this.recipes$.subscribe(recipes => {
-      console.log(recipes);
       if (this.itemList.controls.length !== recipes.length) {
         const formFields = {};
         recipes.forEach((item: Recipe, idx: number) => formFields[item.id] = false);
         this.itemList = this.formBuilder.group(formFields);
-        console.log(this.itemList);
       }
     });
   }

@@ -4,6 +4,7 @@
     "outDir": "../out-tsc/app",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "allowJs": true,
     "types": [],
     "baseUrl": "./src"
   },

@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, Query } from '@angular/fire/firestore';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { switchMap, shareReplay } from 'rxjs/operators';
 import { UserSessionService } from './user-session.service';
@@ -12,11 +12,15 @@ import { Recipe } from './recipe';
 })
 export class AppComponent implements OnInit {
   @Input() limitation: BehaviorSubject<number>;
+  @Input() orderBy: string;
+  @Input() title: string;
+  @Input() customClass: string;
   @Output() itemId = new EventEmitter();
-  title = 'recipe-box';
   listLimit$ = new BehaviorSubject(6);
 
+  collection: AngularFirestoreCollection;
   items: Observable<{}[] | Recipe>;
+  favItems: Observable<{}[] | Recipe>;
   placeholder: string;
   session: UserSessionService;
 
@@ -25,14 +29,30 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.limitation.subscribe(val => console.log(val));
+    this.collection = this.db
+      .collection('recipes', ref =>
+        ref.where('public', '==', true)
+      );
+
     this.items = this.limitation.pipe(
       switchMap(size =>
-        this.db
-          .collection('recipes', ref =>
-            ref.where('public', '==', true).limit(size)
-          )
-          .valueChanges(['added', 'removed'])
+        this.db.collection('recipes', ref => {
+          let query: Query = ref;
+          query = query.where('public', '==', true);
+
+          if (size) { query = query.limit(size); }
+
+          if (this.orderBy && this.orderBy === 'likeCount') {
+            query = query.where('likeCount', '>', 0);
+            query = query.orderBy(this.orderBy, 'desc');
+          } else if (this.orderBy && this.orderBy === 'createdAt') {
+            query = query.orderBy(this.orderBy, 'desc');
+          } else if (this.orderBy) {
+            query = query.orderBy(this.orderBy);
+          }
+
+          return query;
+        }).valueChanges(['added', 'removed'])
           .pipe(shareReplay(3))
       )
     );

@@ -7,9 +7,10 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./recipe-box-home.component.sass'],
 })
 export class RecipeBoxHomeComponent implements OnInit {
-  listLimit: BehaviorSubject<number> = new BehaviorSubject(1);
+  listLimit: BehaviorSubject<number> = new BehaviorSubject(6);
+  favLimit: BehaviorSubject<number> = new BehaviorSubject(6);
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
     this.listLimit.subscribe(val => console.log(val));

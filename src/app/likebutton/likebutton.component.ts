@@ -82,7 +82,7 @@ export class LikeButtonComponent implements OnInit {
           recipeLikeList[user.uid] ? delete recipeLikeList[user.uid] : (recipeLikeList[user.uid] = true);
 
           this.db.doc('users/' + user.uid).update({ like: userLikeList });
-          this.db.doc('recipes/' + recipe.id).update({ like: recipeLikeList });
+          this.db.doc('recipes/' + recipe.id).update({ like: recipeLikeList, likeCount: Object.keys(recipeLikeList).length });
         },
         err => {
           console.log(err);

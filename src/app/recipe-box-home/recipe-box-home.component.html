@@ -12,6 +12,10 @@
   </div>
 </section>
 
-<app-recipedb [limitation]="listLimit"></app-recipedb>
+<app-recipedb [limitation]="listLimit" [customClass]="'l-all'" [title]="'Latest Recipes'" [orderBy]="'createdAt'">
+</app-recipedb>
+
+<app-recipedb [limitation]="favLimit" [customClass]="'l-small'" [title]="'Most liked recipes'" [orderBy]="'likeCount'">
+</app-recipedb>
 
 <section class="toprate"></section>
