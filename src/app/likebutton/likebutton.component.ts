@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 export class LikeButtonComponent implements OnInit {
   @Input() recipeId: string;
   @Input() likeList: Recipe;
+  @Input() likeCount: number;
   private item = new Subject();
   private subscription: Subscription;
   private db: AngularFirestore;
@@ -74,15 +75,17 @@ export class LikeButtonComponent implements OnInit {
           const recipe = info[1];
           const userLikeList = user.like ? user.like : {};
           const recipeLikeList = recipe.like ? recipe.like : {};
+          let likeCount = recipe.likeCount ? recipe.likeCount : 0;
 
           // add or remove recipe id in user list
           userLikeList[itemId] ? delete userLikeList[itemId] : (userLikeList[itemId] = true);
 
           // add or remove user id in recipe
+          recipeLikeList[user.uid] ? (likeCount > 0 ? likeCount -= 1 : likeCount = 0) : likeCount += 1;
           recipeLikeList[user.uid] ? delete recipeLikeList[user.uid] : (recipeLikeList[user.uid] = true);
 
           this.db.doc('users/' + user.uid).update({ like: userLikeList });
-          this.db.doc('recipes/' + recipe.id).update({ like: recipeLikeList, likeCount: Object.keys(recipeLikeList).length });
+          this.db.doc('recipes/' + recipe.id).update({ like: recipeLikeList, likeCount });
         },
         err => {
           console.log(err);
@@ -91,10 +94,6 @@ export class LikeButtonComponent implements OnInit {
           }
         }
       );
-  }
-
-  getLength(item) {
-    return Object.keys(item).length;
   }
 
   isLike(obj: object, val: string) {

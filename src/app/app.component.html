@@ -12,7 +12,7 @@
         <p *ngIf="customClass === 'l-small'" class="recipe-date">{{item.createdAt.toDate().toString().substr(4,11)}}
         </p>
         <app-likebutton *ngIf="customClass === 'l-small'" class="recipe__like t-white" [recipeId]="item.id"
-          [likeList]="item.like"></app-likebutton>
+          [likeList]="item.like" [likeCount]="item.likeCount"></app-likebutton>
       </div>
     </a>
   </section>

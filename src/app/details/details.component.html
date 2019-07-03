@@ -4,7 +4,8 @@
       <h1 class="recipe-header">{{recipes.title}}</h1>
       <time class="recipe-time">{{recipes.createdAt.toDate().toString().substr(4,11)}}</time>
 
-      <app-likebutton class="recipe__like t-white" [recipeId]="recipes.id" [likeList]="recipes.like"></app-likebutton>
+      <app-likebutton class="recipe__like t-white" [recipeId]="recipes.id" [likeList]="recipes.like"
+        [likeCount]="recipes.likeCount"></app-likebutton>
 
       <section class="recipe-editor" *ngIf="(session.getUserInfoObs() | async)?.uid === recipes.uid">
         <button class="btn t-icon" routerLink="../../builder" [queryParams]="{edit: recipes.id}"
