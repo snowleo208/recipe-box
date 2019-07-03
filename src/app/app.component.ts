@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, Query } from '@angular/fire/firestore';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { AngularFirestore, AngularFirestoreCollection, Query, DocumentChangeAction } from '@angular/fire/firestore';
+import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { switchMap, shareReplay } from 'rxjs/operators';
 import { UserSessionService } from './user-session.service';
 import { Recipe } from './recipe';
@@ -16,26 +16,29 @@ export class AppComponent implements OnInit {
   @Input() title: string;
   @Input() customClass: string;
   @Output() itemId = new EventEmitter();
-  listLimit$ = new BehaviorSubject(6);
+  @Input() hasPagination: string | boolean;
 
-  collection: AngularFirestoreCollection;
-  items: Observable<{}[] | Recipe>;
+  collection: any;
+  items = new BehaviorSubject([]);
   favItems: Observable<{}[] | Recipe>;
   placeholder: string;
   session: UserSessionService;
+  private startBefore$ = new BehaviorSubject(null);
+  private startAfter$ = new BehaviorSubject(null);
+  private nextKey$ = new BehaviorSubject(null);
+  private prevKey$ = new BehaviorSubject(null);
 
   constructor(private db: AngularFirestore, session: UserSessionService) {
     this.session = session;
   }
 
   ngOnInit() {
-    this.collection = this.db
-      .collection('recipes', ref =>
-        ref.where('public', '==', true)
-      );
 
-    this.items = this.limitation.pipe(
-      switchMap(size =>
+    this.collection = combineLatest(
+      this.limitation,
+      this.startAfter$
+    ).pipe(
+      switchMap(([size, doc]) =>
         this.db.collection('recipes', ref => {
           let query: Query = ref;
           query = query.where('public', '==', true);
@@ -51,10 +54,41 @@ export class AppComponent implements OnInit {
             query = query.orderBy(this.orderBy);
           }
 
+          if (doc) { query = query.startAfter(doc); }
+
           return query;
-        }).valueChanges(['added', 'removed'])
-          .pipe(shareReplay(3))
+        }).snapshotChanges()
       )
-    );
+    ).subscribe(data => this.getData(data));
+  }
+
+  getData(data) {
+    const values = data.map(snap => {
+      const res = snap.payload.doc.data();
+      const doc = snap.payload.doc;
+      return { ...res, doc };
+    });
+
+    // set index for prev page (current contents)
+    this.prevKey$.next(data[0].payload.doc);
+    if (data.length - 1) {
+      // set index for next page
+      console.log(data);
+      this.nextKey$.next(data[data.length - 1].payload.doc);
+    } else {
+      this.nextKey$.next(false);
+    }
+
+    this.items.next(values);
+  }
+
+  isPrev() {
+    this.startBefore$.next(this.prevKey$.getValue());
+    this.startAfter$.next(null);
+  }
+
+  isNext() {
+    this.startBefore$.next(null);
+    this.startAfter$.next(this.nextKey$.getValue());
   }
 }

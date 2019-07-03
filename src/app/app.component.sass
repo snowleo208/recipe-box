@@ -13,6 +13,8 @@ a
     flex-flow: row wrap
     justify-content: flex-start
     margin-bottom: 2em
+    .recipe:last-of-type
+        margin-bottom: 0
 
 .recipe
     position: relative
@@ -46,7 +48,7 @@ a
             background-repeat: no-repeat
     
     &-title
-        font-size: 1rem
+        font-size: 0.9rem
         margin: 0
     &__like
         position: absolute
@@ -74,6 +76,19 @@ a
             border-right: 2.4em solid transparent
             top: 0
             right: -2.3em
+    &__pagination
+        display: flex
+        justify-content: center
+        margin: 0 0 2em 0
+        @media #{$laptop}
+            justify-content: flex-start
+        button
+            min-width: 10px
+            width: auto
+            margin-right: 1em
+            flex: 0 0 auto
+        button:last-of-type
+            margin-right: 0
 
 
 .recipe-container.l-small
@@ -92,6 +107,8 @@ a
             .recipe-img
                 opacity: 0.9
 
+    .recipe-title
+        font-size: 1rem
 
     .recipe-img
         position: relative

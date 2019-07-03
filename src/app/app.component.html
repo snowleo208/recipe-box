@@ -16,6 +16,10 @@
       </div>
     </a>
   </div>
+  <div class="recipe__pagination" *ngIf="hasPagination === 'true' | async">
+        <button class="btn u-primary" (click)="isPrev()" *ngIf="prevKey$ | async">Prev</button>
+        <button class="btn u-primary" (click)="isNext()" *ngIf="nextKey$ | async">Next</button>
+  </div>
 </div>
 
 <ng-template #loading>
