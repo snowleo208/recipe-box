@@ -1,6 +1,6 @@
 <div class="main" *ngIf="limitation; else loading">
   <h2 class="u-header t-recipe">{{title}}</h2>
-  <section [ngClass]="'recipe-container ' + customClass">
+  <div [ngClass]="'recipe-container ' + customClass">
     <a class="recipe" *ngFor="let item of items | async" routerLink="/recipe/{{item.id}}" routerLinkActive="active">
       <div class="recipe-img" *ngIf="item.image; else placeholder"
         [ngStyle]="{'background-image': 'url('+item.image+')'}"></div>
@@ -15,7 +15,7 @@
           [likeList]="item.like" [likeCount]="item.likeCount"></app-likebutton>
       </div>
     </a>
-  </section>
+  </div>
 </div>
 
 <ng-template #loading>

@@ -15,9 +15,9 @@
 <app-recipedb [limitation]="listLimit" [customClass]="'l-all'" [title]="'Latest Recipes'" [orderBy]="'createdAt'">
 </app-recipedb>
 
-<section class="popular">
+<div class="popular">
   <app-recipedb [limitation]="favLimit" [customClass]="'l-small'" [title]="'Most liked recipes'" [orderBy]="'likeCount'">
   </app-recipedb>
-</section>
+</div>
 
 <section class="toprate"></section>
