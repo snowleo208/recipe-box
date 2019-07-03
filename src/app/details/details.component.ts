@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { UserSessionService } from '../user-session.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-details',
@@ -14,6 +15,7 @@ import { UserSessionService } from '../user-session.service';
 export class DetailsComponent implements OnInit {
   public recipe: Observable<any>;
   public recipeId = new Subject<string>();
+  public author: Observable<any> = new Observable();
   private db: AngularFirestore;
   public ingredientsForm: FormGroup;
 
@@ -27,7 +29,7 @@ export class DetailsComponent implements OnInit {
     this.db = db;
     this.session = session;
     this.ingredientsForm = this.formBuilder.group({});
-    this.recipeId.subscribe(id => (this.recipe = this.getItem(id)));
+    this.recipeId.subscribe(id => this.recipe = this.getItem(id));
   }
 
   ngOnInit() {
@@ -36,6 +38,11 @@ export class DetailsComponent implements OnInit {
       if (!detail) {
         this.router.navigate(['/home']);
       }
+
+      if (detail.uid) {
+        this.getAuthor(detail.uid);
+      }
+
       const formFields = {};
       if (detail.ingredients) {
         detail.ingredients.forEach(
@@ -47,6 +54,16 @@ export class DetailsComponent implements OnInit {
     });
   }
 
+  getItem(node: string): Observable<{}[]> {
+    return this.db.doc<{}[]>('recipes/' + node).valueChanges();
+  }
+
+  getAuthor(node: string): Observable<{}[]> {
+    this.author = this.db.doc<{}[]>('users/' + node).valueChanges().pipe(take(1));
+    this.author.subscribe(val => console.log(val));
+    return this.author;
+  }
+
   getLength(item: object) {
     return Object.keys(item).length;
   }
@@ -56,9 +73,5 @@ export class DetailsComponent implements OnInit {
       return false;
     }
     return obj[val] ? true : false;
-  }
-
-  getItem(node: string): Observable<{}[]> {
-    return this.db.doc<{}[]>('recipes/' + node).valueChanges();
   }
 }

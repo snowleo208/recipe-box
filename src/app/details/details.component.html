@@ -2,7 +2,10 @@
   <div class="recipe" *ngIf="((recipe | async)) as recipes; else loading">
     <div *ngIf="recipes.public || (session.getUserInfoObs() | async)?.uid === recipes.uid; else private">
       <h1 class="recipe-header">{{recipes.title}}</h1>
-      <time class="recipe-time">{{recipes.createdAt.toDate().toString().substr(4,11)}}</time>
+      <div class="recipe-time">
+        <time>{{recipes.createdAt.toDate().toString().substr(4,11)}}</time>
+        <ng-container *ngIf="((author | async)) as authorDetails"> | Created by {{authorDetails.displayName}}</ng-container>
+      </div>
 
       <app-likebutton class="recipe__like t-white" [recipeId]="recipes.id" [likeList]="recipes.like"
         [likeCount]="recipes.likeCount"></app-likebutton>
