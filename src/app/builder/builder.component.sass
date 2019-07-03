@@ -26,6 +26,18 @@ textarea
         margin-bottom: 1em
     &.t-indgroup
         margin-bottom: 1em
+        div 
+            input, textarea
+                width: 80%
+            &:nth-child(1) input,
+            &:nth-child(1) textarea
+                width: 100%
+        button
+            width: 40px
+            height: 40px
+            align-self: flex-start
+            svg
+                fill: white
     &.form-public
         display: flex
         margin-bottom: 1em
@@ -37,6 +49,12 @@ textarea
 .form-input
     &.t-ingredients, &.t-steps
         margin: 0 1em 0 0
+        @media screen and (max-width: 320px)
+            margin: 0 0.5em 0 0
+        +.form-button
+            padding: 0.5em
+            svg
+                margin: 0
 
 @mixin btn
     padding: 0.5em 2em

@@ -38,8 +38,11 @@
             <label for="name">Ingredient {{i+1}}</label>
             <div class="form-group t-ingredients" [formGroupName]="i">
               <input class="form-input t-ingredients" formControlName="name" placeholder="e.g. 1 cup milk">
-              <button class="btn form-button t-primary" (click)="removeItem('ingredients', i)"
-                *ngIf="i > 0">Remove</button>
+              <button class="btn form-button t-primary t-icon" aria-label="Remove Ingredient" (click)="removeItem('ingredients', i)" *ngIf="i > 0"><svg
+                  viewBox="0 0 24 24" width="24" height="24">
+                  <use xlink:href="./assets/sprite.svg#delete_forever"></use>
+                </svg>
+              </button>
             </div>
           </div>
 
@@ -55,8 +58,11 @@
             <div class="form-group t-ingredients" [formGroupName]="i">
               <textarea class="form-input t-steps" formControlName="step"
                 placeholder="Enter step of your recipe"></textarea>
-              <button class="form-button t-primary" (click)="removeItem('instructions', i)"
-                *ngIf="i > 0">Remove</button>
+              <button class="form-button t-primary t-icon" aria-label="Remove Instructions" (click)="removeItem('instructions', i)"
+                *ngIf="i > 0"><svg
+                viewBox="0 0 24 24" width="24" height="24">
+                <use xlink:href="./assets/sprite.svg#delete_forever"></use>
+              </svg></button>
             </div>
           </div>
 

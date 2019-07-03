@@ -1,4 +1,4 @@
-$xs: "only screen and (max-width : 576px)"
+$xs: "only screen and (max-width : 320px)"
 $mobile: "only screen and (min-width : 576px)"
 $tablet: "only screen and (min-width : 768px)"
 $laptop: "only screen and (min-width : 992px)"
@@ -74,6 +74,8 @@ $desktop: "only screen and (min-width : 1200px)"
         font-size: 0.7rem
         padding: 1em
         text-align: center
+        @media #{$xs}
+            font-size: 0.6rem
         @media #{$laptop}
             font-size: 1rem
             text-align: left
@@ -86,5 +88,7 @@ $desktop: "only screen and (min-width : 1200px)"
 
 .is-signin a
     flex: 1 1 calc(100% / 4)
+    // @media #{$xs}
+    //     flex: 1 1 calc(100% / 4)
     @media #{$laptop}
         flex: 0 0 auto
