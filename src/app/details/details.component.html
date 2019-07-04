@@ -4,13 +4,14 @@
       <h1 class="recipe-header">{{recipes.title}}</h1>
       <div class="recipe-time">
         <time>{{recipes.createdAt.toDate().toString().substr(4,11)}}</time>
-        <ng-container *ngIf="((author | async)) as authorDetails"> | Created by {{authorDetails.displayName}}</ng-container>
+        <ng-container *ngIf="((author | async)) as authorDetails"> | Created by {{authorDetails.displayName}}
+        </ng-container>
       </div>
 
       <app-likebutton class="recipe__like t-white" [recipeId]="recipes.id" [likeList]="recipes.like"
         [likeCount]="recipes.likeCount"></app-likebutton>
 
-      <section class="recipe-editor" *ngIf="(session.getUserInfoObs() | async)?.uid === recipes.uid">
+      <div class="recipe-editor" *ngIf="(session.getUserInfoObs() | async)?.uid === recipes.uid">
         <button class="btn t-icon" routerLink="../../builder" [queryParams]="{edit: recipes.id}"
           routerLinkActive="active">
           <svg viewBox="0 0 24 24" width="24" height="24">
@@ -18,14 +19,14 @@
           </svg>
           Edit
         </button>
-      </section>
+      </div>
 
       <div class="recipe-bg">
         <img src="{{recipes.image}}" alt="{{recipes.title}}" onError="this.classList.add('u-none');">
       </div>
 
       <article class="recipe-container">
-        <section class="recipe-details">
+        <div class="recipe-details">
           <div class="recipe-tag">
             <div class="recipe-prepare">
               <p>Cook: {{recipes.cook}}</p>
@@ -46,15 +47,15 @@
             </form>
           </div>
 
-        </section>
+        </div>
 
-        <section class="recipe-instructions">
+        <article class="recipe-instructions">
           <ol *ngIf="recipes.instructions">
             <li *ngFor="let instruction of recipes.instructions">
               <p>{{instruction.step}}</p>
             </li>
           </ol>
-        </section>
+        </article>
       </article>
     </div>
   </div>

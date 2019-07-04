@@ -1,7 +1,9 @@
-<div class="main" *ngIf="limitation; else loading">
+<div class="main" *ngIf="limitation; else loading" scroll-div (debounceScroll)="getScroll($event)" #container>
   <h2 class="u-header t-recipe">{{title}}</h2>
   <div [ngClass]="'recipe-container ' + customClass">
-    <a class="recipe" *ngFor="let item of items | async" routerLink="/recipe/{{item.id}}" routerLinkActive="active">
+    <a class="recipe" *ngFor="let item of items$ | async" routerLink="/recipe/{{item.id}}" routerLinkActive="active">
+      <app-likebutton *ngIf="customClass === 'l-regular'" class="recipe__like t-white" [recipeId]="item.id"
+        [likeList]="item.like" [likeCount]="item.likeCount"></app-likebutton>
       <div class="recipe-img" *ngIf="item.image; else placeholder"
         [ngStyle]="{'background-image': 'url('+item.image+')'}"></div>
       <ng-template #placeholder>
@@ -15,10 +17,6 @@
           [likeList]="item.like" [likeCount]="item.likeCount"></app-likebutton>
       </div>
     </a>
-  </div>
-  <div class="recipe__pagination" *ngIf="hasPagination === 'true' | async">
-        <button class="btn u-primary" (click)="isPrev()" *ngIf="prevKey$ | async">Prev</button>
-        <button class="btn u-primary" (click)="isNext()" *ngIf="nextKey$ | async">Next</button>
   </div>
 </div>
 

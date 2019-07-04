@@ -1,7 +1,7 @@
-import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, Query, DocumentChangeAction } from '@angular/fire/firestore';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { switchMap, shareReplay } from 'rxjs/operators';
+import { Component, Output, EventEmitter, Input, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
+import { AngularFirestore, Query, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/firestore';
+import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { UserSessionService } from './user-session.service';
 import { Recipe } from './recipe';
 
@@ -10,31 +10,34 @@ import { Recipe } from './recipe';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('container', { static: false }) el: ElementRef;
+
   @Input() limitation: BehaviorSubject<number>;
   @Input() orderBy: string;
   @Input() title: string;
   @Input() customClass: string;
+  @Input() isAutoScroll: string | boolean;
   @Output() itemId = new EventEmitter();
-  @Input() hasPagination: string | boolean;
 
-  collection: any;
-  items = new BehaviorSubject([]);
-  favItems: Observable<{}[] | Recipe>;
-  placeholder: string;
+  collection$: any;
+  collection: AngularFirestoreCollection;
+  items: Recipe[];
+  private items$ = new BehaviorSubject([]);
   session: UserSessionService;
-  private startBefore$ = new BehaviorSubject(null);
-  private startAfter$ = new BehaviorSubject(null);
+  nextKey: DocumentChangeAction<{}[]> | boolean;
   private nextKey$ = new BehaviorSubject(null);
-  private prevKey$ = new BehaviorSubject(null);
+  private startAfter$ = new BehaviorSubject(null);
+  private shouldScroll$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public scrollPosition: BehaviorSubject<number> = new BehaviorSubject(0);
+  private onDestroy$ = new Subject();
 
   constructor(private db: AngularFirestore, session: UserSessionService) {
     this.session = session;
   }
 
   ngOnInit() {
-
-    this.collection = combineLatest(
+    this.collection$ = combineLatest(
       this.limitation,
       this.startAfter$
     ).pipe(
@@ -58,8 +61,25 @@ export class AppComponent implements OnInit {
 
           return query;
         }).snapshotChanges()
-      )
+      ),
+      takeUntil(this.onDestroy$)
     ).subscribe(data => this.getData(data));
+  }
+
+  ngAfterViewInit() {
+    this.scrollPosition
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => {
+        const element = this.el.nativeElement;
+        const elementRect = element.getBoundingClientRect();
+        this.shouldScroll$.next(Math.ceil(Math.abs(elementRect.top) + elementRect.bottom) === (element.scrollHeight));
+      });
+    this.shouldScroll$.subscribe(val => val && this.nextKey ? this.isNext() : false);
+  }
+
+  ngOnDestroy() {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   getData(data) {
@@ -70,25 +90,27 @@ export class AppComponent implements OnInit {
     });
 
     // set index for prev page (current contents)
-    this.prevKey$.next(data[0].payload.doc);
-    if (data.length - 1) {
+    if (this.isAutoScroll && data.length && data.length - 1) {
       // set index for next page
-      console.log(data);
-      this.nextKey$.next(data[data.length - 1].payload.doc);
+      this.nextKey = data[data.length - 1].payload.doc;
+      this.nextKey$.next(this.nextKey);
     } else {
-      this.nextKey$.next(false);
+      this.nextKey = false;
+      this.nextKey$.next(this.nextKey);
     }
 
-    this.items.next(values);
-  }
-
-  isPrev() {
-    this.startBefore$.next(this.prevKey$.getValue());
-    this.startAfter$.next(null);
+    // set data and infinite scroll
+    this.items = this.items ? [...this.items, ...values] : values;
+    this.items$.next(this.items);
   }
 
   isNext() {
-    this.startBefore$.next(null);
-    this.startAfter$.next(this.nextKey$.getValue());
+    this.startAfter$.next(this.nextKey);
+  }
+
+  getScroll(e) {
+    if (this.isAutoScroll) {
+      this.scrollPosition.next(e.pageY);
+    }
   }
 }

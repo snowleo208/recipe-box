@@ -12,11 +12,11 @@
   </div>
 </section>
 
-<app-recipedb [limitation]="listLimit" [customClass]="'l-all'" [title]="'Latest Recipes'" [orderBy]="'createdAt'" [hasPagination]="false">
+<app-recipedb [limitation]="listLimit" [customClass]="'l-all'" [title]="'Latest Recipes'" [orderBy]="'createdAt'" [isAutoScroll]="'false'">
 </app-recipedb>
 
 <div class="popular">
-  <app-recipedb [limitation]="favLimit" [customClass]="'l-small'" [title]="'Most liked recipes'" [orderBy]="'likeCount'" [hasPagination]="false">
+  <app-recipedb [limitation]="favLimit" [customClass]="'l-small'" [title]="'Most liked recipes'" [orderBy]="'likeCount'" [isAutoScroll]="'false'">
   </app-recipedb>
 </div>
 

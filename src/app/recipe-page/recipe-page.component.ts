@@ -7,8 +7,8 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./recipe-page.component.sass'],
 })
 export class RecipePageComponent implements OnInit {
-  limit: BehaviorSubject<number> = new BehaviorSubject(2);
-  className = 'l-all';
+  limit: BehaviorSubject<number> = new BehaviorSubject(6);
+  className = 'l-regular';
   constructor() { }
 
   ngOnInit() { }
