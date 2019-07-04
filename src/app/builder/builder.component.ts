@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { NgOption } from '@ng-select/ng-select';
 
 import {
   AngularFirestore,
@@ -16,16 +17,21 @@ import { UserSessionService } from '../user-session.service';
   selector: 'app-builder',
   templateUrl: './builder.component.html',
   styleUrls: ['./builder.component.sass'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class BuilderComponent implements OnInit {
   private fb: FormBuilder;
   private itemsCollection: AngularFirestoreCollection<Recipe>;
   private uid: BehaviorSubject<string | null> = new BehaviorSubject(null);
+  loadingTags = true;
+  private tags$: Observable<any> = new Observable();
+
   public submitComplete = new BehaviorSubject(false);
   public session: UserSessionService;
   public isEdit$: BehaviorSubject<boolean | string> = new BehaviorSubject(false);
   public recipes$: Observable<any> = new Observable();
 
+  tags: NgOption[] = [];
   public recipeForm: FormGroup;
 
   constructor(
@@ -46,9 +52,10 @@ export class BuilderComponent implements OnInit {
       prep: ['', Validators.required],
       cook: ['', Validators.required],
       serve: ['', Validators.required],
-      public: false,
       ingredients: this.formBuilder.array([this.createItem('')]),
       instructions: this.formBuilder.array([this.createInstruction('')]),
+      tags: null,
+      public: true,
     });
 
     this.session.getUserInfoObs().subscribe(val => this.setUserId(val));
@@ -90,6 +97,9 @@ export class BuilderComponent implements OnInit {
       }
     });
 
+    this.tags$ = this.afs.collection('tags', ref => ref.orderBy('name')).valueChanges(['added', 'removed']);
+
+    this.tags$.subscribe(data => this.getTags(data));
   }
 
   get ingredients() {
@@ -184,4 +194,11 @@ export class BuilderComponent implements OnInit {
       .set(final)
       .then(() => this.submitComplete.next(true));
   }
+
+  getTags(obj) {
+    console.log(obj);
+    this.loadingTags = false;
+    this.tags = obj;
+  }
+
 }

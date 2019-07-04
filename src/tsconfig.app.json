@@ -6,6 +6,7 @@
     "experimentalDecorators": true,
     "allowJs": true,
     "types": [],
+    "target": "es2015",
     "baseUrl": "./src"
   },
   "exclude": [

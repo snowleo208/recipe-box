@@ -33,13 +33,13 @@
 
       <div class="form-group">
         <h2>Ingredients</h2>
-        <section class="form-group t-indgroup">
+        <div class="form-group t-indgroup">
           <div formArrayName="ingredients" *ngFor="let item of ingredients.controls; let i = index;">
             <label for="name">Ingredient {{i+1}}</label>
             <div class="form-group t-ingredients" [formGroupName]="i">
               <input class="form-input t-ingredients" formControlName="name" placeholder="e.g. 1 cup milk">
-              <button class="btn form-button t-primary t-icon" aria-label="Remove Ingredient" (click)="removeItem('ingredients', i)" *ngIf="i > 0"><svg
-                  viewBox="0 0 24 24" width="24" height="24">
+              <button class="btn form-button t-primary t-icon" aria-label="Remove Ingredient"
+                (click)="removeItem('ingredients', i)" *ngIf="i > 0"><svg viewBox="0 0 24 24" width="24" height="24">
                   <use xlink:href="./assets/sprite.svg#delete_forever"></use>
                 </svg>
               </button>
@@ -47,37 +47,44 @@
           </div>
 
           <button class="btn form-button" (click)="addItem('ingredients')">Add Item</button>
-        </section>
+        </div>
       </div>
 
       <div class="form-group">
         <h2>Instructions</h2>
-        <section class="form-group t-indgroup">
+        <div class="form-group t-indgroup">
           <div formArrayName="instructions" *ngFor="let item of instructions.controls; let i = index;">
             <label for="name">Step {{i+1}}</label>
             <div class="form-group t-ingredients" [formGroupName]="i">
               <textarea class="form-input t-steps" formControlName="step"
                 placeholder="Enter step of your recipe"></textarea>
-              <button class="form-button t-primary t-icon" aria-label="Remove Instructions" (click)="removeItem('instructions', i)"
-                *ngIf="i > 0"><svg
-                viewBox="0 0 24 24" width="24" height="24">
-                <use xlink:href="./assets/sprite.svg#delete_forever"></use>
-              </svg></button>
+              <button class="form-button t-primary t-icon" aria-label="Remove Instructions"
+                (click)="removeItem('instructions', i)" *ngIf="i > 0"><svg viewBox="0 0 24 24" width="24" height="24">
+                  <use xlink:href="./assets/sprite.svg#delete_forever"></use>
+                </svg></button>
             </div>
           </div>
 
           <button class="btn form-button" (click)="addItem('instructions')">Add Item</button>
-        </section>
+        </div>
       </div>
 
-      <section class="form-group">
+      <div class="form-group">
         <h2>Options</h2>
 
-        <div class="form-group form-public">
+        <div class="form-group u-margin">
+          <label for="tags">Tags</label>
+          <ng-select #tagsSelect [items]="tags" [multiple]="true" [selectOnTab]="true" bindValue="name" bindLabel="name"
+            groupBy="category" [loading]="loadingTags" [addTag]="addTagPromise" [hideSelected]="true" labelForId="tags"
+            placeholder="Select tags" formControlName="tags">
+          </ng-select>
+        </div>
+
+        <div class="form-group form-public u-margin">
           <label for="public">Set as public recipe</label>
           <input type="checkbox" name="public" formControlName="public">
         </div>
-      </section>
+      </div>
 
       <input class="btn form-button t-primary" type="submit" (click)="onSubmit($event)"
         [value]="(isEdit$ | async) === false ? 'Submit' : 'Update'" />
