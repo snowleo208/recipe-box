@@ -25,6 +25,7 @@ export class BuilderComponent implements OnInit {
   private uid: BehaviorSubject<string | null> = new BehaviorSubject(null);
   loadingTags = true;
   private tags$: Observable<any> = new Observable();
+  selectedTags = [];
 
   public submitComplete = new BehaviorSubject(false);
   public session: UserSessionService;
@@ -74,12 +75,12 @@ export class BuilderComponent implements OnInit {
 
     this.recipes$.subscribe((val: Recipe) => {
       if (val && val[0]) {
-        const allFields = { ingredients: null, instructions: null };
+        const allFields = { ingredients: null, instructions: null, tags: null };
         const ingredientsArr = [];
         const instructionsArr = [];
         const obj = val[0];
         const generateForm = (item: string) => {
-          if (item === 'createdAt' || item === 'uid' || item === 'id') {
+          if (item === 'createdAt' || item === 'uid' || item === 'id' || item === 'tags') {
             return;
           }
           if (item !== 'ingredients' && item !== 'instructions') {
@@ -93,6 +94,7 @@ export class BuilderComponent implements OnInit {
         Object.keys(obj).forEach(generateForm);
         allFields.ingredients = this.fb.array(ingredientsArr);
         allFields.instructions = this.fb.array(instructionsArr);
+        this.selectedTags = obj.tags;
         this.recipeForm = this.fb.group(allFields);
       }
     });
@@ -159,6 +161,7 @@ export class BuilderComponent implements OnInit {
   // update item and add update date to firebase, finally redirect to recipe page
   onUpdate() {
     const final = this.recipeForm.value;
+
     let id: string | boolean = '';
     const timestamp = new Date();
 
@@ -196,7 +199,6 @@ export class BuilderComponent implements OnInit {
   }
 
   getTags(obj) {
-    console.log(obj);
     this.loadingTags = false;
     this.tags = obj;
   }

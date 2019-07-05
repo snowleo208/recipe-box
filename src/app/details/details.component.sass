@@ -17,6 +17,7 @@ $theme-pink: #ff2a6b
 .recipe-time
     font-size: 0.8rem
     color: #a4a4a4
+    margin: 0 0 1em 0
 
 .recipe-bg
     margin: 1.5em 0
@@ -43,8 +44,23 @@ $theme-pink: #ff2a6b
     &-editor
         margin: 1em 0
 
-.recipe-tag
+.recipe-desc
     padding: 0 4em 0 0
+
+.recipe-tags
+    display: flex
+    flex-flow: row wrap
+    margin: 0 0 1em 0
+    &__tag
+        background: #eff3f7
+        padding: 0.3em 0.6em
+        font-size: 0.8rem
+        margin: 0 1em 0 0
+        text-decoration: none
+        transition: ease 300ms
+        &:hover
+            background: #6B7380
+            color: white
 
 .recipe-prepare
     position: relative

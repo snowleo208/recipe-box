@@ -1,5 +1,9 @@
 <div class="main" *ngIf="limitation; else loading" scroll-div (debounceScroll)="getScroll($event)" #container>
-  <h2 class="u-header t-recipe">{{title}}</h2>
+  <h2 class="u-header t-recipe">
+    <ng-container *ngIf="param$ | async as tag; else normalTitle">Tag: {{tag}}</ng-container>
+    <ng-template #normalTitle>{{title}}</ng-template>
+  </h2>
+  <p *ngIf="(param$ | async) && (items$ | async) as recipe">Total: {{recipe.length}}</p>
   <div [ngClass]="'recipe-container ' + customClass">
     <a class="recipe" *ngFor="let item of items$ | async" routerLink="/recipe/{{item.id}}" routerLinkActive="active">
       <app-likebutton *ngIf="customClass === 'l-regular'" class="recipe__like t-white" [recipeId]="item.id"

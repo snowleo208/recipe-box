@@ -16,7 +16,6 @@ export const createProfile = functions.auth.user()
     .onCreate(function (userRecord, context) {
         return admin.firestore().doc('/users/' + userRecord.uid).set({
             displayName: userRecord.displayName,
-            email: userRecord.email,
             photoURL: userRecord.photoURL,
             uid: userRecord.uid,
         });

@@ -1,9 +1,10 @@
 import { Component, Output, EventEmitter, Input, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { AngularFirestore, Query, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/firestore';
-import { Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { UserSessionService } from './user-session.service';
 import { Recipe } from './recipe';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-recipedb',
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   collection$: any;
   collection: AngularFirestoreCollection;
   items: Recipe[];
+  private param$ = new BehaviorSubject(null);
   private items$ = new BehaviorSubject([]);
   session: UserSessionService;
   nextKey: DocumentChangeAction<{}[]> | boolean;
@@ -32,19 +34,22 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   public scrollPosition: BehaviorSubject<number> = new BehaviorSubject(0);
   private onDestroy$ = new Subject();
 
-  constructor(private db: AngularFirestore, session: UserSessionService) {
+  constructor(private db: AngularFirestore, session: UserSessionService, private router: Router, private activatedRoute: ActivatedRoute) {
     this.session = session;
   }
 
   ngOnInit() {
     this.collection$ = combineLatest(
       this.limitation,
-      this.startAfter$
+      this.startAfter$,
+      this.param$
     ).pipe(
-      switchMap(([size, doc]) =>
+      switchMap(([size, doc, param]) =>
         this.db.collection('recipes', ref => {
           let query: Query = ref;
           query = query.where('public', '==', true);
+
+          if (param) { query = query.where('tags', 'array-contains', param); }
 
           if (size) { query = query.limit(size); }
 
@@ -60,10 +65,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
           if (doc) { query = query.startAfter(doc); }
 
           return query;
-        }).snapshotChanges()
+        }).snapshotChanges(['added'])
       ),
       takeUntil(this.onDestroy$)
     ).subscribe(data => this.getData(data));
+
+    this.activatedRoute.queryParams
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => val && val.tags ? this.param$.next(val.tags) : this.param$.next(null));
   }
 
   ngAfterViewInit() {

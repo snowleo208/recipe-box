@@ -7,6 +7,10 @@
         <ng-container *ngIf="((author | async)) as authorDetails"> | Created by {{authorDetails.displayName}}
         </ng-container>
       </div>
+      <div class="recipe-tags" *ngIf="recipes.tags">
+        <a class="recipe-tags__tag" routerLink="/recipe/all" [queryParams]="{tags: tag}" routerLinkActive="active"
+          *ngFor="let tag of recipes.tags; index as i">{{tag}}</a>
+      </div>
 
       <app-likebutton class="recipe__like t-white" [recipeId]="recipes.id" [likeList]="recipes.like"
         [likeCount]="recipes.likeCount"></app-likebutton>
@@ -27,7 +31,7 @@
 
       <article class="recipe-container">
         <div class="recipe-details">
-          <div class="recipe-tag">
+          <div class="recipe-desc">
             <div class="recipe-prepare">
               <p>Cook: {{recipes.cook}}</p>
               <p>Prep: {{recipes.prep}}</p>
