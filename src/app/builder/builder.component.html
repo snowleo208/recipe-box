@@ -75,9 +75,8 @@
         <div class="form-group u-margin">
           <label for="tags">Tags (Maximum 3)</label>
           <ng-select #tagsSelect [items]="tags" [multiple]="true" [selectOnTab]="true" bindValue="name" bindLabel="name"
-            [closeOnSelect]="false" groupBy="category" [loading]="loadingTags" [addTag]="addTagPromise"
-            [hideSelected]="true" labelForId="tags" placeholder="Select tags" formControlName="tags"
-            [(ngModel)]="selectedTags" [maxSelectedItems]="3">
+            [closeOnSelect]="false" groupBy="category" [loading]="loadingTags" [hideSelected]="true" labelForId="tags"
+            placeholder="Select tags" formControlName="tags" [(ngModel)]="selectedTags" [maxSelectedItems]="3">
           </ng-select>
         </div>
 
