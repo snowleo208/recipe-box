@@ -1,0 +1,16 @@
+<div class="main">
+
+  <h2 class="u-header">Search</h2>
+
+  <form class="form-wrapper" [formGroup]="searchForm">
+    <div class="form-search">
+      <ng-select #tagsSelect [items]="tags" [multiple]="true" [selectOnTab]="true" bindValue="name" bindLabel="name"
+        [closeOnSelect]="false" groupBy="category" [loading]="loadingTags" [hideSelected]="true" labelForId="tags"
+        placeholder="Select tags" formControlName="tags">
+      </ng-select>
+    </div>
+
+    <input class="btn t-search" type="submit" value="Search">
+  </form>
+
+</div>

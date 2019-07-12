@@ -17,7 +17,6 @@ import { UserSessionService } from '../user-session.service';
   selector: 'app-builder',
   templateUrl: './builder.component.html',
   styleUrls: ['./builder.component.sass'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class BuilderComponent implements OnInit {
   private fb: FormBuilder;

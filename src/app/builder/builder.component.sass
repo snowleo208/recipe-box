@@ -83,34 +83,40 @@ textarea
 .ng-invalid:not(form)
     border-left: 5px solid #ff2a6b
 
-.ng-input input
-    min-height: 1px
-    margin: 0
-    padding: 0
+.ng-select ::ng-deep 
+    .ng-select-container .ng-value-container
+        .ng-input > input
+            min-height: 0px
+            margin: 0
+            padding: 0
 
-.ng-select .ng-select-container,
-.ng-select.ng-select-opened > .ng-select-container
+        .ng-value
+            background-color: #6B7380
+            color: white
+            border: 0
+
+    &.ng-select-multiple .ng-select-container .ng-value-container .ng-value
+        background-color: #6B7380
+        color: white
+        border: 0
+
+.ng-select ::ng-deep .ng-select-container,
+.ng-select.ng-select-opened ::ng-deep > .ng-select-container
     background: #eff3f7
     border-radius: 0
     border: 0
 
-.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked
+.ng-dropdown-panel ::ng-deep  .ng-dropdown-panel-items .ng-option.ng-option-marked
     background-color: #ff2a6b
     color: white
 
-.ng-value
-    background-color: #6B7380
-    color: white
-    border: 0
+.ng-select.ng-select-multiple ::ng-deep
+    .ng-select-container .ng-value-container .ng-value .ng-value-icon.left
+        border-right: 1px solid #6B7380
 
-.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value
-    background-color: #6B7380
-    color: white
-    border: 0
+    .ng-select-container .ng-value-container .ng-value .ng-value-icon:hover
+        background-color: #6B7380
+        opacity: 0.8
 
-.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon.left
-    border-right: 1px solid #6B7380
-
-.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon:hover
-    background-color: #6B7380
-    opacity: 0.8
+.ng-dropdown-panel ::ng-deep .ng-dropdown-panel-items .ng-option.ng-option-marked
+    background-color: #eff3f7

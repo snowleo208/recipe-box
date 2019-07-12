@@ -1,0 +1,58 @@
+$xs: "only screen and (max-width : 576px)"
+$mobile: "only screen and (min-width : 576px)"
+$tablet: "only screen and (min-width : 768px)"
+$laptop: "only screen and (min-width : 992px)"
+$desktop: "only screen and (min-width : 1200px)"
+    
+.form-wrapper
+    display: block
+    @media #{$tablet}
+        display: flex
+        flex-flow: row wrap
+    
+.form-search
+    margin: 0 0 1em 0
+
+.ng-select ::ng-deep 
+    @media #{$tablet}
+        flex: 0 0 80%
+    .ng-select-container .ng-value-container
+        .ng-input > input
+            min-height: 0px
+            margin: 0
+            padding: 0
+
+        .ng-value
+            background-color: #6B7380
+            color: white
+            border: 0
+
+    &.ng-select-multiple .ng-select-container .ng-value-container .ng-value
+        background-color: #6B7380
+        color: white
+        border: 0
+
+.ng-select ::ng-deep .ng-select-container,
+.ng-select.ng-select-opened ::ng-deep > .ng-select-container
+    background: #eff3f7
+    border-radius: 0
+    border: 0
+
+.ng-dropdown-panel ::ng-deep  .ng-dropdown-panel-items .ng-option.ng-option-marked
+    background-color: #ff2a6b
+    color: white
+
+.ng-select.ng-select-multiple ::ng-deep
+    .ng-select-container .ng-value-container .ng-value .ng-value-icon.left
+        border-right: 1px solid #6B7380
+
+    .ng-select-container .ng-value-container .ng-value .ng-value-icon:hover
+        background-color: #6B7380
+        opacity: 0.8
+
+.ng-dropdown-panel ::ng-deep .ng-dropdown-panel-items .ng-option.ng-option-marked
+    background-color: #eff3f7
+
+.t-search
+    min-height: 1px
+    padding: 0

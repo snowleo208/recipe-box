@@ -31,6 +31,7 @@ import { LikeButtonComponent } from './likebutton/likebutton.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RecipePageComponent } from './recipe-page/recipe-page.component';
 import { RecipeBoxHomeComponent } from './recipe-box-home/recipe-box-home.component';
+import { SearchBarComponent } from './search-bar/search-bar.component';
 
 const redirectUnauthorizedToLogin = redirectUnauthorizedTo(['login']);
 const redirectLoggedIn = redirectLoggedInTo(['home']);
@@ -87,6 +88,7 @@ const appRoutes: Routes = [
     LoginPageComponent,
     RecipePageComponent,
     RecipeBoxHomeComponent,
+    SearchBarComponent,
   ],
   imports: [
     RouterModule.forRoot(
