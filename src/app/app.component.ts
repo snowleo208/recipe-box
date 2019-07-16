@@ -1,5 +1,20 @@
-import { Component, Output, EventEmitter, Input, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
-import { AngularFirestore, Query, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/firestore';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  Input,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  OnDestroy,
+  AfterViewInit,
+} from '@angular/core';
+import {
+  AngularFirestore,
+  Query,
+  AngularFirestoreCollection,
+  DocumentChangeAction,
+} from '@angular/fire/firestore';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { UserSessionService } from './user-session.service';
@@ -34,7 +49,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   public scrollPosition: BehaviorSubject<number> = new BehaviorSubject(0);
   private onDestroy$ = new Subject();
 
-  constructor(private db: AngularFirestore, session: UserSessionService, private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(
+    private db: AngularFirestore,
+    session: UserSessionService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
     this.session = session;
   }
 
@@ -43,47 +63,64 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this.limitation,
       this.startAfter$,
       this.param$
-    ).pipe(
-      switchMap(([size, doc, param]) =>
-        this.db.collection('recipes', ref => {
-          let query: Query = ref;
-          query = query.where('public', '==', true);
+    )
+      .pipe(
+        switchMap(([size, doc, param]) =>
+          this.db
+            .collection('recipes', ref => {
+              let query: Query = ref;
+              query = query.where('public', '==', true);
 
-          if (param) { query = query.where('tags', 'array-contains', param); }
+              if (param) {
+                query = query.where('tags', 'array-contains', param);
+              }
 
-          if (size) { query = query.limit(size); }
+              if (size) {
+                query = query.limit(size);
+              }
 
-          if (this.orderBy && this.orderBy === 'likeCount') {
-            query = query.where('likeCount', '>', 0);
-            query = query.orderBy(this.orderBy, 'desc');
-          } else if (this.orderBy && this.orderBy === 'createdAt') {
-            query = query.orderBy(this.orderBy, 'desc');
-          } else if (this.orderBy) {
-            query = query.orderBy(this.orderBy);
-          }
+              if (this.orderBy && this.orderBy === 'likeCount') {
+                query = query.where('likeCount', '>', 0);
+                query = query.orderBy(this.orderBy, 'desc');
+              } else if (this.orderBy && this.orderBy === 'createdAt') {
+                query = query.orderBy(this.orderBy, 'desc');
+              } else if (this.orderBy) {
+                query = query.orderBy(this.orderBy);
+              }
 
-          if (doc) { query = query.startAfter(doc); }
+              if (doc) {
+                query = query.startAfter(doc);
+              }
 
-          return query;
-        }).snapshotChanges(['added'])
-      ),
-      takeUntil(this.onDestroy$)
-    ).subscribe(data => this.getData(data));
+              return query;
+            })
+            .snapshotChanges(['added'])
+        ),
+        takeUntil(this.onDestroy$)
+      )
+      .subscribe(data => this.getData(data));
 
     this.activatedRoute.queryParams
       .pipe(takeUntil(this.onDestroy$))
-      .subscribe(val => val && val.tags ? this.param$.next(val.tags) : this.param$.next(null));
+      .subscribe(val =>
+        val && val.tags ? this.param$.next(val.tags) : this.param$.next(null)
+      );
   }
 
   ngAfterViewInit() {
-    this.scrollPosition
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(val => {
+    this.scrollPosition.pipe(takeUntil(this.onDestroy$)).subscribe(val => {
+      if (this.el) {
         const element = this.el.nativeElement;
         const elementRect = element.getBoundingClientRect();
-        this.shouldScroll$.next(Math.ceil(Math.abs(elementRect.top) + elementRect.bottom) === (element.scrollHeight));
-      });
-    this.shouldScroll$.subscribe(val => val && this.nextKey ? this.isNext() : false);
+        this.shouldScroll$.next(
+          Math.ceil(Math.abs(elementRect.top) + elementRect.bottom) ===
+            element.scrollHeight
+        );
+      }
+    });
+    this.shouldScroll$
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => (val && this.nextKey ? this.isNext() : false));
   }
 
   ngOnDestroy() {
@@ -92,6 +129,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getData(data) {
+    console.log(data);
     const values = data.map(snap => {
       const res = snap.payload.doc.data();
       const doc = snap.payload.doc;
@@ -118,6 +156,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getScroll(e) {
+    // if scroll to the end, load next page
     if (this.isAutoScroll) {
       this.scrollPosition.next(e.pageY);
     }

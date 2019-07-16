@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgOption } from '@ng-select/ng-select';
@@ -28,7 +28,9 @@ export class BuilderComponent implements OnInit {
 
   public submitComplete = new BehaviorSubject(false);
   public session: UserSessionService;
-  public isEdit$: BehaviorSubject<boolean | string> = new BehaviorSubject(false);
+  public isEdit$: BehaviorSubject<boolean | string> = new BehaviorSubject(
+    false
+  );
   public recipes$: Observable<any> = new Observable();
 
   tags: NgOption[] = [];
@@ -59,16 +61,19 @@ export class BuilderComponent implements OnInit {
     });
 
     this.session.getUserInfoObs().subscribe(val => this.setUserId(val));
+    this.tags$ = this.afs.collection('tags').valueChanges(['added', 'removed']);
   }
 
   ngOnInit() {
-
-    const isEditMode = (params: { edit: string | boolean; }) => params.edit ? this.isEdit$.next(params.edit) : this.isEdit$.next(false);
+    const isEditMode = (params: { edit: string | boolean }) =>
+      params.edit ? this.isEdit$.next(params.edit) : this.isEdit$.next(false);
 
     this.activatedRoute.queryParams.subscribe(isEditMode);
     this.recipes$ = this.isEdit$.pipe(
       switchMap(id =>
-        this.afs.collection('recipes', ref => ref.where('id', '==', id)).valueChanges(['added', 'removed'])
+        this.afs
+          .collection('recipes', ref => ref.where('id', '==', id))
+          .valueChanges(['added', 'removed'])
       )
     );
 
@@ -79,15 +84,24 @@ export class BuilderComponent implements OnInit {
         const instructionsArr = [];
         const obj = val[0];
         const generateForm = (item: string) => {
-          if (item === 'createdAt' || item === 'uid' || item === 'id' || item === 'tags') {
+          if (
+            item === 'createdAt' ||
+            item === 'uid' ||
+            item === 'id' ||
+            item === 'tags'
+          ) {
             return;
           }
           if (item !== 'ingredients' && item !== 'instructions') {
             allFields[item] = obj[item];
           } else if (item === 'ingredients') {
-            obj[item].forEach((ele: { [key: string]: string; }) => ingredientsArr.push(this.fb.group(ele)));
+            obj[item].forEach((ele: { [key: string]: string }) =>
+              ingredientsArr.push(this.fb.group(ele))
+            );
           } else if (item === 'instructions') {
-            obj[item].forEach((ele: { [key: string]: string; }) => instructionsArr.push(this.fb.group(ele)));
+            obj[item].forEach((ele: { [key: string]: string }) =>
+              instructionsArr.push(this.fb.group(ele))
+            );
           }
         };
         Object.keys(obj).forEach(generateForm);
@@ -98,9 +112,9 @@ export class BuilderComponent implements OnInit {
       }
     });
 
-    this.tags$ = this.afs.collection('tags', ref => ref.orderBy('name')).valueChanges(['added', 'removed']);
-
-    this.tags$.subscribe(data => this.getTags(data));
+    this.tags$.subscribe(data =>
+      data.length > 0 ? this.getTags(data) : false
+    );
   }
 
   get ingredients() {
@@ -153,7 +167,7 @@ export class BuilderComponent implements OnInit {
   // submit and add recipe to firebase
   onSubmit(e: Event): void {
     e.preventDefault();
-    this.isEdit$.subscribe(val => !val ? this.onCreate() : this.onUpdate());
+    this.isEdit$.subscribe(val => (!val ? this.onCreate() : this.onUpdate()));
   }
 
   // Void -> Void
@@ -165,17 +179,18 @@ export class BuilderComponent implements OnInit {
     const timestamp = new Date();
 
     this.uid.subscribe(val => (final.uid = val));
-    this.isEdit$.subscribe(val => val !== false ? id = val : '');
+    this.isEdit$.subscribe(val => (val !== false ? (id = val) : ''));
     final.id = id;
     final.updatedAt = timestamp;
 
-    this.submitComplete.subscribe(val => val ? this.router.navigate([`/recipe/${id}`]) : '');
+    this.submitComplete.subscribe(val =>
+      val ? this.router.navigate([`/recipe/${id}`]) : ''
+    );
 
     this.itemsCollection
       .doc(id)
       .update(final)
       .then(() => this.submitComplete.next(true));
-
   }
 
   // Void -> Void
@@ -189,7 +204,9 @@ export class BuilderComponent implements OnInit {
     final.id = id;
     final.createdAt = timestamp;
 
-    this.submitComplete.subscribe(val => val ? this.router.navigate([`/recipe/${id}`]) : '');
+    this.submitComplete.subscribe(val =>
+      val ? this.router.navigate([`/recipe/${id}`]) : ''
+    );
 
     this.itemsCollection
       .doc(id)
@@ -201,5 +218,4 @@ export class BuilderComponent implements OnInit {
     this.loadingTags = false;
     this.tags = obj;
   }
-
 }

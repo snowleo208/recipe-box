@@ -7,7 +7,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
-  styleUrls: ['./search-bar.component.sass']
+  styleUrls: ['./search-bar.component.sass'],
 })
 export class SearchBarComponent implements OnInit {
   // @Output searchTags = [];
@@ -21,16 +21,19 @@ export class SearchBarComponent implements OnInit {
       tags: null,
     });
 
-    this.tags$ = this.afs.collection('tags', ref => ref.orderBy('name')).valueChanges(['added', 'removed']);
-    this.tags$.subscribe(data => this.getTags(data));
+    this.tags$ = this.afs
+      .collection('tags', ref => ref.orderBy('name'))
+      .valueChanges(['added', 'removed']);
   }
 
   ngOnInit() {
+    this.tags$.subscribe(data =>
+      data.length > 0 ? this.getTags(data) : false
+    );
   }
 
   getTags(obj) {
     this.loadingTags = false;
     this.tags = obj;
   }
-
 }

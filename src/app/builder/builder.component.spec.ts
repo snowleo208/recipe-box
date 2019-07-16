@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { BuilderComponent } from './builder.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,63 +14,63 @@ describe('BuilderComponent', () => {
   let component: BuilderComponent;
   let fixture: ComponentFixture<BuilderComponent>;
 
+  const recipeData = {
+    id: 'PbcXMrn1YnZnDeg8vTAG',
+    title: 'Parmesan Chicken Nuggets',
+    image:
+      'https://www.tasteofhome.com/wp-content/uploads/2017/10/Parmesan-Chicken-Nuggets_exps91788_SD2856494B12_03_3bC_RMS-1-696x696.jpg',
+    prep: '30 min',
+    cook: '30 min',
+    serve: '24',
+    ingredients: [
+      { name: '1/4 cup butter, melted' },
+      { name: '1/2 teaspoon kosher salt' },
+      { name: '1 cup panko (Japanese) bread crumbs' },
+    ],
+    instructions: [
+      { step: 'Place butter in a shallow bowl.' },
+      {
+        step:
+          'Combine the bread crumbs, cheese and salt in another shallow bowl.',
+      },
+    ],
+    public: true,
+    createdAt: {
+      toDate: () => new Date(),
+    },
+  };
+
   const input = [
     {
-      id: 'PbcXMrn1YnZnDeg8vTAG',
-      title: 'Parmesan Chicken Nuggets',
-      image:
-        'https://www.tasteofhome.com/wp-content/uploads/2017/10/Parmesan-Chicken-Nuggets_exps91788_SD2856494B12_03_3bC_RMS-1-696x696.jpg',
-      prep: '30 min',
-      cook: '30 min',
-      serve: '24',
-      ingredients: [
-        { name: '1/4 cup butter, melted' },
-        { name: '1/2 teaspoon kosher salt' },
-        { name: '1 cup panko (Japanese) bread crumbs' },
-      ],
-      instructions: [
-        { step: 'Place butter in a shallow bowl.' },
-        {
-          step:
-            'Combine the bread crumbs, cheese and salt in another shallow bowl.',
+      payload: {
+        doc: {
+          id: 'PbcXMrn1YnZnDeg8vTAG',
+          data: jasmine.createSpy('data').and.returnValue(recipeData),
         },
-      ],
-      public: true,
-      createdAt: {
-        toDate: () => new Date(),
       },
+      newIndex: 0,
+      oldIndex: -1,
+      type: 'added',
     },
     {
-      id: 'PbcXMrn1YnZnDeg8vTAG',
-      title: 'Parmesan Chicken Nuggets',
-      image:
-        'https://www.tasteofhome.com/wp-content/uploads/2017/10/Parmesan-Chicken-Nuggets_exps91788_SD2856494B12_03_3bC_RMS-1-696x696.jpg',
-      prep: '30 min',
-      cook: '30 min',
-      serve: '24',
-      ingredients: [
-        { name: '1/4 cup butter, melted' },
-        { name: '1/2 teaspoon kosher salt' },
-        { name: '1 cup panko (Japanese) bread crumbs' },
-      ],
-      instructions: [
-        { step: 'Place butter in a shallow bowl.' },
-        {
-          step:
-            'Combine the bread crumbs, cheese and salt in another shallow bowl.',
+      payload: {
+        doc: {
+          id: 'PbcXMrn1YnZnDeg8vTAG',
+          data: jasmine.createSpy('data').and.returnValue(recipeData),
         },
-      ],
-      public: true,
-      createdAt: {
-        toDate: () => new Date(),
       },
+      newIndex: 0,
+      oldIndex: -1,
+      type: 'added',
     },
   ];
 
   const data = new BehaviorSubject(input);
+  const recipes = new BehaviorSubject(recipeData);
 
   const collectionStub = {
-    valueChanges: jasmine.createSpy('valueChanges').and.returnValue(data),
+    valueChanges: jasmine.createSpy('valueChanges').and.returnValue(recipes),
+    snapshotChanges: jasmine.createSpy('snapshotChanges').and.returnValue(data),
   };
 
   const angularFirestoreStub = {
@@ -94,14 +95,17 @@ describe('BuilderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule,
+      imports: [
+        FormsModule,
         ReactiveFormsModule,
+        NgSelectModule,
         RouterModule,
-        RouterTestingModule],
+        RouterTestingModule,
+      ],
       providers: [
         { provide: AngularFirestore, useValue: angularFirestoreStub },
         { provide: UserSessionService, useValue: mockUserSession },
-        { provide: ActivatedRoute, useValue: ActivatedRouteStub }
+        { provide: ActivatedRoute, useValue: ActivatedRouteStub },
       ],
       declarations: [BuilderComponent],
     }).compileComponents();
@@ -123,9 +127,7 @@ describe('BuilderComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.debugElement.query(By.css('.u-header'))).toBeTruthy();
-    expect(compiled.querySelector('h1').textContent).toContain(
-      'Edit Recipe'
-    );
+    expect(compiled.querySelector('h1').textContent).toContain('Edit Recipe');
   });
 
   it('should show create header when in create mode', () => {
@@ -134,13 +136,10 @@ describe('BuilderComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.debugElement.query(By.css('.u-header'))).toBeTruthy();
-    expect(compiled.querySelector('h1').textContent).toContain(
-      'Create Recipe'
-    );
+    expect(compiled.querySelector('h1').textContent).toContain('Create Recipe');
   });
 
   // it('form invalid when empty', () => {
   //   expect(component.recipeForm.valid).toBeFalsy();
   // });
-
 });
