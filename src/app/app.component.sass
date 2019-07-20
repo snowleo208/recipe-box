@@ -50,6 +50,11 @@ a
     &-title
         font-size: 0.9rem
         margin: 0
+        @media screen and (max-width: 320px)
+            font-size: 0.8rem
+            overflow: hidden
+            text-overflow: ellipsis
+            white-space: nowrap
     &__like
         position: absolute
         top: 1em

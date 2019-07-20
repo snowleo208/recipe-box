@@ -109,10 +109,7 @@
   <div [ngClass]="openModal === true ? 'modal active' : 'modal'">
     <div class="modal__container">
       <h2 class="u-header">Delete</h2>
-      <p class="modal__text">Are you sure you want to delete these items?</p>
-      <ul *ngFor="let chosen of itemDoc; let index">
-        <li>{{chosen}}</li>
-      </ul>
+      <p class="modal__text">Are you sure you want to delete those items?</p>
       <div class="modal__btn">
         <button class="btn t-secondary model__false" (click)="triggerModal()">No</button>
         <button class="btn model__true" (click)="deleteItems()">Yes</button>

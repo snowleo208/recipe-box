@@ -31,6 +31,24 @@ $desktop: "only screen and (min-width : 1200px)"
             position: relative
             animation: none
             border-bottom: none
+    &__logo
+        display: none
+        @media #{$laptop}
+            display: block
+            position: absolute
+            top: 0
+            left: 0
+            width: auto
+            height: 100%
+    &__home
+        display: flex
+        justify-content: center
+        flex-direction: column
+        svg
+            display: block
+            margin: 0 auto
+        @media #{$laptop}
+            display: none
     ul
         position: relative
         display: flex
@@ -50,7 +68,9 @@ $desktop: "only screen and (min-width : 1200px)"
             border-top: 0
             z-index: 0
     a
-        display: inline-block
+        display: flex
+        justify-content: center
+        align-items: center
         border-left: 0
         text-decoration: none
         color: #aaa
@@ -87,7 +107,7 @@ $desktop: "only screen and (min-width : 1200px)"
             display: none
 
 .is-signin a
-    flex: 1 1 calc(100% / 4)
+    flex: 1 1 calc((100% / 4) - 1em)
     // @media #{$xs}
     //     flex: 1 1 calc(100% / 4)
     @media #{$laptop}

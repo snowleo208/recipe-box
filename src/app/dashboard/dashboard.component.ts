@@ -126,6 +126,7 @@ export class DashboardComponent implements OnInit {
 
     if (!this.isSelectable) {
       this.resetForm();
+      this.itemDoc = [];
     }
   }
 
