@@ -54,6 +54,19 @@ a
     &__selector
         display: flex
         margin: 0 0 2em 0
+    &__pagination
+        display: flex
+        justify-content: center
+        margin: 0 0 2em 0
+        @media #{$laptop}
+            justify-content: flex-start
+        button
+            min-width: 10px
+            width: auto
+            margin-right: 1em
+            flex: 0 0 auto
+        button:last-of-type
+            margin-right: 0
     &__editor
         margin: 0 0 2em 0
 

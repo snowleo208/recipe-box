@@ -17,6 +17,12 @@
       <ng-container *ngIf="(recipes$ | async); let recipeList">
 
         <div class="dashboard__selector">
+          <button class="btn t-icon" [routerLink]="['/builder']">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <use xlink:href="./assets/sprite.svg#add"></use>
+            </svg>
+            Add Recipe
+          </button>
           <button [ngClass]="isSelectable ? 'btn t-secondary t-icon' : 'btn t-icon'" (click)="triggerSelect()"
             id="dashboard-select">
             <svg viewBox="0 0 24 24" width="24" height="24">
@@ -78,25 +84,23 @@
           </div>
         </form>
 
-        <div class="dashboard__editor">
-          <button class="btn t-icon" [routerLink]="['/builder']">
-            <svg viewBox="0 0 24 24" width="24" height="24">
-              <use xlink:href="./assets/sprite.svg#add"></use>
-            </svg>
-            Add Recipe
-          </button>
+        <div class="dashboard__pagination" *ngIf="recipeList.length > 0">
+          <button class="btn u-primary" (click)="isPrev()" *ngIf="(prevKey$ | async) && pageNum > 0">Prev</button>
+          <button class="btn u-primary" (click)="isNext()" *ngIf="nextKey$ | async">Next</button>
         </div>
 
       </ng-container>
 
       <ng-template #emptycontent>
-        <p>You have not create any recipes yet.</p>
-        <button class="btn t-icon" [routerLink]="['/builder']" id="dashboard-create">
-          <svg viewBox="0 0 24 24" width="24" height="24">
-            <use xlink:href="./assets/sprite.svg#add"></use>
-          </svg>
-          Create Recipe
-        </button>
+        <div class="dashboard__empty">
+          <p>You have not create any recipes yet.</p>
+          <button class="btn t-icon" [routerLink]="['/builder']" id="dashboard-create">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <use xlink:href="./assets/sprite.svg#add"></use>
+            </svg>
+            Create Recipe
+          </button>
+        </div>
       </ng-template>
 
     </div>
