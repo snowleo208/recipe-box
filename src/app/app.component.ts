@@ -29,7 +29,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('container', { static: false }) el: ElementRef;
 
-  @Input() limitation: BehaviorSubject<number>;
+  @Input() limitation: number;
   @Input() orderBy: string;
   @Input() title: string;
   @Input() customClass: string;
@@ -39,8 +39,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   collection$: any;
   collection: AngularFirestoreCollection;
   items: Recipe[];
-  private param$ = new BehaviorSubject(null);
-  private items$ = new BehaviorSubject([]);
+  param$ = new BehaviorSubject(null);
+  items$ = new BehaviorSubject([]);
   session: UserSessionService;
   nextKey: DocumentChangeAction<{}[]> | boolean;
   private nextKey$ = new BehaviorSubject(null);
@@ -59,13 +59,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    this.collection$ = combineLatest(
-      this.limitation,
-      this.startAfter$,
-      this.param$
-    )
+    this.collection$ = combineLatest(this.startAfter$, this.param$)
       .pipe(
-        switchMap(([size, doc, param]) =>
+        switchMap(([doc, param]) =>
           this.db
             .collection('recipes', ref => {
               let query: Query = ref;
@@ -75,8 +71,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
                 query = query.where('tags', 'array-contains', param);
               }
 
-              if (size) {
-                query = query.limit(size);
+              if (this.limitation) {
+                query = query.limit(this.limitation);
               }
 
               if (this.orderBy && this.orderBy === 'likeCount') {

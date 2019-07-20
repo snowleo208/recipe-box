@@ -3,6 +3,7 @@ $mobile: "only screen and (min-width : 576px)"
 $tablet: "only screen and (min-width : 768px)"
 $laptop: "only screen and (min-width : 992px)"
 $desktop: "only screen and (min-width : 1200px)"
+$theme-pink: #ff2a6b
 
 @keyframes easein
     0%
@@ -67,7 +68,7 @@ $desktop: "only screen and (min-width : 1200px)"
             margin: 0 auto
             border-top: 0
             z-index: 0
-    a
+    &__link
         display: flex
         justify-content: center
         align-items: center
@@ -75,6 +76,15 @@ $desktop: "only screen and (min-width : 1200px)"
         text-decoration: none
         color: #aaa
         flex: 1 1 calc(100% / 2)
+        &:hover
+            color: #6B7380
+            opacity: 0.8
+        &.active
+            // background: #6b7380
+            color: #6B7380
+            &:hover
+                color: #6B7380
+                opacity: 0.8
         @media #{$laptop}
             display: block
             color: #191919

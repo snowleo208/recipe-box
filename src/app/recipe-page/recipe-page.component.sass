@@ -1,0 +1,18 @@
+$xs: "only screen and (max-width : 576px)"
+$mobile: "only screen and (min-width : 576px)"
+$tablet: "only screen and (min-width : 768px)"
+$laptop: "only screen and (min-width : 992px)"
+$desktop: "only screen and (min-width : 1200px)"
+$theme-pink: #ff2a6b
+
+.recipes
+    &__banner
+        background-image: url('../../assets/webvilla-hv1MrBzGGNY-unsplash.jpg')
+        background-position: 50% 70%
+        background-repeat: no-repeat
+        background-size: cover
+        min-height: 20em
+        margin: 0 0 2em 0
+        width: 100%
+        @media #{$laptop}
+            min-height: 30em
