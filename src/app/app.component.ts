@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() orderBy: string;
   @Input() title: string;
   @Input() customClass: string;
-  @Input() isAutoScroll: string | boolean;
+  @Input() isAutoScroll: BehaviorSubject<boolean> = new BehaviorSubject(true);
   @Output() itemId = new EventEmitter();
 
   collection$: any;
@@ -40,6 +40,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   session: UserSessionService;
   nextKey: DocumentChangeAction<{}[]> | boolean;
 
+  private scroll = false;
   private hasNext$ = new BehaviorSubject(true);
   private nextKey$ = new BehaviorSubject(null);
   private startAfter$ = new BehaviorSubject(null);
@@ -99,6 +100,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(val =>
         val && val.tags ? this.param$.next(val.tags) : this.param$.next(null)
       );
+
+    this.isAutoScroll
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => (this.scroll = val));
   }
 
   ngAfterViewInit() {
@@ -118,11 +123,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getData(data: any[]) {
-    if (data === []) {
-      this.hasNext$.next(false);
-    } else {
-      this.hasNext$.next(true);
+    console.log(this.items);
+    // return if data exists and non-autoscroll
+    if (this.items && !this.scroll) {
+      return;
     }
+
     const values = data.map(snap => {
       const res = snap.payload.doc.data();
       const doc = snap.payload.doc;
@@ -130,7 +136,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     // set index for prev page (current contents)
-    if (this.isAutoScroll === 'true' && data.length && data.length - 1) {
+    if (this.scroll && data.length && data.length - 1) {
       // set index for next page
       this.nextKey = data[data.length - 1].payload.doc;
       console.log(this.nextKey);
@@ -143,6 +149,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     // set data and infinite scroll
     this.items = this.items ? [...this.items, ...values] : values;
     this.items$.next(this.items);
+    console.log(this.items);
   }
 
   isNext() {
@@ -152,7 +159,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getScroll(e) {
     // if scroll to the end, load next page
-    if (this.isAutoScroll === 'true') {
+    if (this.scroll) {
       this.scrollPosition.next(e.pageY);
     }
   }

@@ -8,8 +8,10 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class RecipePageComponent implements OnInit {
   limit: BehaviorSubject<number> = new BehaviorSubject(6);
+  scroll: BehaviorSubject<boolean> = new BehaviorSubject(true);
   className = 'l-regular';
-  constructor() { }
 
-  ngOnInit() { }
+  constructor() {}
+
+  ngOnInit() {}
 }

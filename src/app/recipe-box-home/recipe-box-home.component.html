@@ -13,12 +13,12 @@
 </section>
 
 <app-recipedb [limitation]="6" [customClass]="'l-all'" [title]="'Latest Recipes'" [orderBy]="'createdAt'"
-  [isAutoScroll]="'false'">
+  [isAutoScroll]="scroll">
 </app-recipedb>
 
 <div class="popular">
   <app-recipedb [limitation]="3" [customClass]="'l-small'" [title]="'Most liked recipes'" [orderBy]="'likeCount'"
-    [isAutoScroll]="'false'">
+    [isAutoScroll]="scroll">
   </app-recipedb>
 </div>
 

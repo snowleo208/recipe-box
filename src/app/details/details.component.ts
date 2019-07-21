@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { UserSessionService } from '../user-session.service';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-details',
@@ -18,6 +18,7 @@ export class DetailsComponent implements OnInit {
   public author: Observable<any> = new Observable();
   private db: AngularFirestore;
   public ingredientsForm: FormGroup;
+  private onDestroy$ = new Subject();
 
   constructor(
     db: AngularFirestore,
@@ -29,12 +30,16 @@ export class DetailsComponent implements OnInit {
     this.db = db;
     this.session = session;
     this.ingredientsForm = this.formBuilder.group({});
-    this.recipeId.subscribe(id => this.recipe = this.getItem(id));
+    this.recipeId
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(id => (this.recipe = this.getItem(id)));
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => this.recipeId.next(params.id));
-    this.recipe.subscribe(detail => {
+    this.route.params
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(params => this.recipeId.next(params.id));
+    this.recipe.pipe(takeUntil(this.onDestroy$)).subscribe(detail => {
       if (!detail) {
         this.router.navigate(['/home']);
       }
@@ -54,13 +59,23 @@ export class DetailsComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
+  }
+
   getItem(node: string): Observable<{}[]> {
     return this.db.doc<{}[]>('recipes/' + node).valueChanges();
   }
 
   getAuthor(node: string): Observable<{}[]> {
-    this.author = this.db.doc<{}[]>('users/' + node).valueChanges().pipe(take(1));
-    this.author.subscribe(val => console.log(val));
+    this.author = this.db
+      .doc<{}[]>('users/' + node)
+      .valueChanges()
+      .pipe(take(1));
+    this.author
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => console.log(val));
     return this.author;
   }
 

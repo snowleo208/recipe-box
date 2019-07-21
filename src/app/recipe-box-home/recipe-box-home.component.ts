@@ -9,6 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 export class RecipeBoxHomeComponent implements OnInit {
   listLimit: BehaviorSubject<number> = new BehaviorSubject(6);
   favLimit: BehaviorSubject<number> = new BehaviorSubject(3);
+  scroll: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor() {}
 
