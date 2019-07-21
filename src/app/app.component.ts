@@ -95,7 +95,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(data => this.getData(data));
 
     this.activatedRoute.queryParams
-      .pipe(takeUntil(this.hasNext$))
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(val =>
         val && val.tags ? this.param$.next(val.tags) : this.param$.next(null)
@@ -105,7 +104,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this.scrollPosition.pipe(takeUntil(this.onDestroy$)).subscribe(val => {
       const scrollPercent =
-        (window.pageYOffset + window.innerHeight) / document.body.scrollHeight;
+        (val + window.innerHeight) / document.body.scrollHeight;
       this.shouldScroll$.next(scrollPercent > 0.8);
     });
     this.shouldScroll$
@@ -118,7 +117,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onDestroy$.complete();
   }
 
-  getData(data) {
+  getData(data: any[]) {
     if (data === []) {
       this.hasNext$.next(false);
     } else {
@@ -131,7 +130,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     // set index for prev page (current contents)
-    if (this.isAutoScroll && data.length && data.length - 1) {
+    if (this.isAutoScroll === 'true' && data.length && data.length - 1) {
       // set index for next page
       this.nextKey = data[data.length - 1].payload.doc;
       console.log(this.nextKey);
@@ -153,7 +152,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getScroll(e) {
     // if scroll to the end, load next page
-    if (this.isAutoScroll) {
+    if (this.isAutoScroll === 'true') {
       this.scrollPosition.next(e.pageY);
     }
   }
