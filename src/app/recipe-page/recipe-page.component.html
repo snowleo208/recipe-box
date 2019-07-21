@@ -1,9 +1,12 @@
-<div class="recipes__banner"></div>
+<div class="recipe-page">
+  <div class="recipes__banner"></div>
 
-<app-search-bar></app-search-bar>
+  <app-search-bar></app-search-bar>
 
-<div class="recipes">
-  <app-recipedb [limitation]="12" [customClass]="className" [title]="'All Recipes'" [orderBy]="'createdAt'"
-    [isAutoScroll]="'true'">
-  </app-recipedb>
+  <div class="recipes">
+    <app-recipedb [limitation]="12" [customClass]="className" [title]="'All Recipes'" [orderBy]="'createdAt'"
+      [isAutoScroll]="'true'">
+    </app-recipedb>
+  </div>
+
 </div>

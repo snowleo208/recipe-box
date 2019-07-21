@@ -4,8 +4,6 @@ import {
   EventEmitter,
   Input,
   OnInit,
-  ViewChild,
-  ElementRef,
   OnDestroy,
   AfterViewInit,
 } from '@angular/core';
@@ -27,8 +25,6 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./app.component.sass'],
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('container', { static: false }) el: ElementRef;
-
   @Input() limitation: number;
   @Input() orderBy: string;
   @Input() title: string;
@@ -43,6 +39,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   items$ = new BehaviorSubject([]);
   session: UserSessionService;
   nextKey: DocumentChangeAction<{}[]> | boolean;
+
+  private hasNext$ = new BehaviorSubject(true);
   private nextKey$ = new BehaviorSubject(null);
   private startAfter$ = new BehaviorSubject(null);
   private shouldScroll$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -97,6 +95,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(data => this.getData(data));
 
     this.activatedRoute.queryParams
+      .pipe(takeUntil(this.hasNext$))
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(val =>
         val && val.tags ? this.param$.next(val.tags) : this.param$.next(null)
@@ -105,14 +104,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     this.scrollPosition.pipe(takeUntil(this.onDestroy$)).subscribe(val => {
-      if (this.el) {
-        const element = this.el.nativeElement;
-        const elementRect = element.getBoundingClientRect();
-        this.shouldScroll$.next(
-          Math.ceil(Math.abs(elementRect.top) + elementRect.bottom) ===
-            element.scrollHeight
-        );
-      }
+      const scrollPercent =
+        (window.pageYOffset + window.innerHeight) / document.body.scrollHeight;
+      this.shouldScroll$.next(scrollPercent > 0.8);
     });
     this.shouldScroll$
       .pipe(takeUntil(this.onDestroy$))
@@ -125,7 +119,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getData(data) {
-    console.log(data);
+    if (data === []) {
+      this.hasNext$.next(false);
+    } else {
+      this.hasNext$.next(true);
+    }
     const values = data.map(snap => {
       const res = snap.payload.doc.data();
       const doc = snap.payload.doc;
@@ -136,6 +134,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.isAutoScroll && data.length && data.length - 1) {
       // set index for next page
       this.nextKey = data[data.length - 1].payload.doc;
+      console.log(this.nextKey);
       this.nextKey$.next(this.nextKey);
     } else {
       this.nextKey = false;
@@ -149,6 +148,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   isNext() {
     this.startAfter$.next(this.nextKey);
+    this.shouldScroll$.next(false);
   }
 
   getScroll(e) {

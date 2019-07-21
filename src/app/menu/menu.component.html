@@ -1,7 +1,7 @@
 <nav [ngClass]="(scrollPosition | async) > 150? 'menu u-fixed' : 'menu'" scroll-div
   (debounceScroll)="getScroll($event)">
   <ul [ngClass]="(session.getUserInfoObs() | async)?.uid? 'menu__list is-signin' : 'menu__list'">
-    <a class="menu__link" routerLink="./home" routerLinkActive="active">
+    <a class="menu__link" routerLink="./home" routerLinkActive="active" aria-label="Back to homepage">
       <li>
         <span class="menu__home">
           <svg viewBox="0 0 24 24" width="24" height="24">
@@ -9,7 +9,6 @@
           </svg>
           Home
         </span>
-        <img class="menu__logo" src="./assets/logo.png" alt="Home">
       </li>
     </a>
     <a class="menu__link" routerLink="./recipe/all" routerLinkActive="active">

@@ -92,8 +92,6 @@ describe('AppComponent', () => {
 
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
-    const compiled = fixture.debugElement.nativeElement;
-    fixture.componentInstance.el = compiled.querySelector('#container');
     fixture.detectChanges();
   }));
 
@@ -104,17 +102,10 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should recognize container', async(() => {
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    fixture.componentInstance.el = compiled.querySelector('#container');
-    expect(fixture.componentInstance.el).toBeDefined();
-  }));
-
   it('should render h2 as same as title variable', () => {
     // tslint:disable-next-line:no-shadowed-variable
     const fixture = TestBed.createComponent(AppComponent);
-    fixture.componentInstance.limitation = new BehaviorSubject(6);
+    fixture.componentInstance.limitation = 6;
     fixture.componentInstance.title = 'Amazing Recipes';
     fixture.detectChanges();
 

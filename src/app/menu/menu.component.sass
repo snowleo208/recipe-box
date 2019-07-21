@@ -4,6 +4,7 @@ $tablet: "only screen and (min-width : 768px)"
 $laptop: "only screen and (min-width : 992px)"
 $desktop: "only screen and (min-width : 1200px)"
 $theme-pink: #ff2a6b
+$menu-desktop: 48px
 
 @keyframes easein
     0%
@@ -36,11 +37,6 @@ $theme-pink: #ff2a6b
         display: none
         @media #{$laptop}
             display: block
-            position: absolute
-            top: 0
-            left: 0
-            width: auto
-            height: 100%
     &__home
         display: flex
         justify-content: center
@@ -50,7 +46,7 @@ $theme-pink: #ff2a6b
             margin: 0 auto
         @media #{$laptop}
             display: none
-    ul
+    &__list
         position: relative
         display: flex
         flex-flow: row wrap
@@ -68,6 +64,7 @@ $theme-pink: #ff2a6b
             margin: 0 auto
             border-top: 0
             z-index: 0
+            max-height: $menu-desktop
     &__link
         display: flex
         justify-content: center
@@ -90,6 +87,18 @@ $theme-pink: #ff2a6b
             color: #191919
             line-height: 1
             flex: 0 0 auto
+            &:first-of-type
+                position: absolute
+                left: 0
+                top: 0
+                background-image: url('../../assets/logo.png')
+                background-size: contain
+                background-repeat: no-repeat
+                background-position: center
+                li
+                    padding: 0
+                    width: 95px
+                    height: $menu-desktop
 
         &:hover
             color: #191919
