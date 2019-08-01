@@ -153,3 +153,10 @@ a
 
 .t-builder
     margin-bottom: 2em
+
+.tags
+    &:after
+        content: ', '
+    &:last-of-type
+        &:after
+            content: ''

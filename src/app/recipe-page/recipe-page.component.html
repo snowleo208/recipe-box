@@ -1,11 +1,11 @@
 <div class="recipe-page">
   <div class="recipes__banner"></div>
 
-  <app-search-bar></app-search-bar>
+  <app-search-bar (searchTags)="onReceivedTags($event)"></app-search-bar>
 
   <div class="recipes">
     <app-recipedb [limitation]="6" [customClass]="className" [title]="'All Recipes'" [orderBy]="'createdAt'"
-      [isAutoScroll]="scroll">
+      [isAutoScroll]="scroll" [searchBy]="tags$">
     </app-recipedb>
   </div>
 

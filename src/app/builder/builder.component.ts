@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgOption } from '@ng-select/ng-select';
@@ -7,8 +7,8 @@ import {
   AngularFirestore,
   AngularFirestoreCollection,
 } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { Recipe } from '../recipe';
 import { UserInfo } from 'firebase';
 import { UserSessionService } from '../user-session.service';
@@ -18,7 +18,8 @@ import { UserSessionService } from '../user-session.service';
   templateUrl: './builder.component.html',
   styleUrls: ['./builder.component.sass'],
 })
-export class BuilderComponent implements OnInit {
+export class BuilderComponent implements OnInit, OnDestroy {
+  private onDestroy$ = new Subject();
   private fb: FormBuilder;
   private itemsCollection: AngularFirestoreCollection<Recipe>;
   private uid: BehaviorSubject<string | null> = new BehaviorSubject(null);
@@ -60,7 +61,7 @@ export class BuilderComponent implements OnInit {
       public: true,
     });
 
-    this.session.getUserInfoObs().subscribe(val => this.setUserId(val));
+    this.session.getUserInfoObs().pipe(takeUntil(this.onDestroy$)).subscribe(val => this.setUserId(val));
     this.tags$ = this.afs.collection('tags').valueChanges(['added', 'removed']);
   }
 
@@ -77,7 +78,7 @@ export class BuilderComponent implements OnInit {
       )
     );
 
-    this.recipes$.subscribe((val: Recipe) => {
+    this.recipes$.pipe(takeUntil(this.onDestroy$)).subscribe((val: Recipe) => {
       if (val && val[0]) {
         const allFields = { ingredients: null, instructions: null, tags: null };
         const ingredientsArr = [];
@@ -107,7 +108,7 @@ export class BuilderComponent implements OnInit {
         Object.keys(obj).forEach(generateForm);
         allFields.ingredients = this.fb.array(ingredientsArr);
         allFields.instructions = this.fb.array(instructionsArr);
-        this.selectedTags = obj.tags;
+        this.selectedTags = Object.keys(obj.tags);
         this.recipeForm = this.fb.group(allFields);
       }
     });
@@ -115,6 +116,11 @@ export class BuilderComponent implements OnInit {
     this.tags$.subscribe(data =>
       data.length > 0 ? this.getTags(data) : false
     );
+  }
+
+  ngOnDestroy() {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   get ingredients() {
@@ -167,7 +173,7 @@ export class BuilderComponent implements OnInit {
   // submit and add recipe to firebase
   onSubmit(e: Event): void {
     e.preventDefault();
-    this.isEdit$.subscribe(val => (!val ? this.onCreate() : this.onUpdate()));
+    this.isEdit$.pipe(takeUntil(this.onDestroy$)).subscribe(val => (!val ? this.onCreate() : this.onUpdate()));
   }
 
   // Void -> Void
@@ -177,13 +183,19 @@ export class BuilderComponent implements OnInit {
 
     let id: string | boolean = '';
     const timestamp = new Date();
+    const tags = {};
 
-    this.uid.subscribe(val => (final.uid = val));
-    this.isEdit$.subscribe(val => (val !== false ? (id = val) : ''));
+    final.tags.forEach(element => {
+      tags[element] = true;
+    });
+
+    this.uid.pipe(takeUntil(this.onDestroy$)).subscribe(val => (final.uid = val));
+    this.isEdit$.pipe(takeUntil(this.onDestroy$)).subscribe(val => (val !== false ? (id = val) : ''));
     final.id = id;
     final.updatedAt = timestamp;
+    final.tags = tags;
 
-    this.submitComplete.subscribe(val =>
+    this.submitComplete.pipe(takeUntil(this.onDestroy$)).subscribe(val =>
       val ? this.router.navigate([`/recipe/${id}`]) : ''
     );
 
@@ -199,12 +211,18 @@ export class BuilderComponent implements OnInit {
     const final = this.recipeForm.value;
     const id = this.afs.createId();
     const timestamp = new Date();
+    const tags = {};
+
+    final.tags.forEach(element => {
+      tags[element] = true;
+    });
 
     this.uid.subscribe(val => (final.uid = val));
     final.id = id;
     final.createdAt = timestamp;
+    final.tags = tags;
 
-    this.submitComplete.subscribe(val =>
+    this.submitComplete.pipe(takeUntil(this.onDestroy$)).subscribe(val =>
       val ? this.router.navigate([`/recipe/${id}`]) : ''
     );
 

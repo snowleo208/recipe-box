@@ -1,6 +1,9 @@
 <div class="main" *ngIf="limitation; else loading" scroll-div (debounceScroll)="getScroll($event)" #container>
   <h2 class="u-header t-recipe">
-    <ng-container *ngIf="param$ | async as tag; else normalTitle">Tag: {{tag}}</ng-container>
+    <ng-container *ngIf="(param$|async) as tag; else normalTitle;">
+      Tag:
+      <span class="tags" *ngFor="let item of tag">{{item}}</span>
+    </ng-container>
     <ng-template #normalTitle>{{title}}</ng-template>
   </h2>
   <p *ngIf="(param$ | async) && (items$ | async) as recipe">Total: {{recipe.length}}</p>

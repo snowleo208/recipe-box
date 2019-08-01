@@ -9,7 +9,7 @@
       </div>
       <div class="recipe-tags" *ngIf="recipes.tags">
         <a class="recipe-tags__tag" routerLink="/recipe/all" [queryParams]="{tags: tag}" routerLinkActive="active"
-          *ngFor="let tag of recipes.tags; index as i">{{tag}}</a>
+          *ngFor="let tag of getKeys(recipes.tags); index as i">{{tag}}</a>
       </div>
 
       <app-likebutton class="recipe__like t-white" [recipeId]="recipes.id" [likeList]="recipes.like"

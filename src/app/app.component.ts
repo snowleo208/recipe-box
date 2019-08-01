@@ -29,6 +29,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() orderBy: string;
   @Input() title: string;
   @Input() customClass: string;
+  @Input() searchBy: BehaviorSubject<[string]>;
   @Input() isAutoScroll: BehaviorSubject<boolean> = new BehaviorSubject(true);
   @Output() itemId = new EventEmitter();
 
@@ -41,7 +42,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   nextKey: DocumentChangeAction<{}[]> | boolean;
 
   private scroll = false;
-  private hasNext$ = new BehaviorSubject(true);
   private nextKey$ = new BehaviorSubject(null);
   private startAfter$ = new BehaviorSubject(null);
   private shouldScroll$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -58,16 +58,30 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    this.collection$ = combineLatest(this.startAfter$, this.param$)
+    this.collection$ = combineLatest(this.startAfter$, this.param$, this.searchBy)
       .pipe(
-        switchMap(([doc, param]) =>
+        switchMap(([doc, param, searchBy]) =>
           this.db
             .collection('recipes', ref => {
               let query: Query = ref;
               query = query.where('public', '==', true);
 
-              if (param) {
-                query = query.where('tags', 'array-contains', param);
+              // get data from param when searchBy is not exist
+              if (param && (!searchBy || searchBy === [])) {
+                if (typeof param === 'string') {
+                  query = query.where('tags.' + param, '==', true);
+                } else {
+                  param.forEach(item => item !== '' ? query = query.where('tags.' + item, '==', true) : '');
+                }
+              }
+
+              if (searchBy) {
+                searchBy.forEach(item => item !== '' ? query = query.where('tags.' + item, '==', true) : '');
+              }
+
+              if (param || searchBy) {
+                // remove orderBy to stop composite index of firestore
+                this.orderBy = null;
               }
 
               if (this.limitation) {
@@ -89,17 +103,38 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
               return query;
             })
-            .snapshotChanges(['added'])
+            .snapshotChanges()
         ),
         takeUntil(this.onDestroy$)
       )
       .subscribe(data => this.getData(data));
 
+    // get param and change related obs
     this.activatedRoute.queryParams
       .pipe(takeUntil(this.onDestroy$))
-      .subscribe(val =>
-        val && val.tags ? this.param$.next(val.tags) : this.param$.next(null)
-      );
+      .subscribe(val => {
+        if (val && val.tags) {
+          let tags = [];
+          if (typeof val.tags === 'string') {
+            // changed to array for html template
+            tags.push(val.tags);
+          } else {
+            tags = val.tags;
+          }
+          this.param$.next(tags);
+        } else {
+          this.param$.next(null);
+        }
+      });
+
+    this.searchBy
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => {
+        if (val) {
+          this.items = null;
+          this.param$.next(val);
+        }
+      });
 
     this.isAutoScroll
       .pipe(takeUntil(this.onDestroy$))
@@ -123,7 +158,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getData(data: any[]) {
-    console.log(this.items);
     // return if data exists and non-autoscroll
     if (this.items && !this.scroll) {
       return;
@@ -139,7 +173,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.scroll && data.length && data.length - 1) {
       // set index for next page
       this.nextKey = data[data.length - 1].payload.doc;
-      console.log(this.nextKey);
       this.nextKey$.next(this.nextKey);
     } else {
       this.nextKey = false;
@@ -149,7 +182,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     // set data and infinite scroll
     this.items = this.items ? [...this.items, ...values] : values;
     this.items$.next(this.items);
-    console.log(this.items);
+    // console.log(this.items);
   }
 
   isNext() {

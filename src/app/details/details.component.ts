@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, Subject } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -12,7 +12,7 @@ import { take, takeUntil } from 'rxjs/operators';
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.sass'],
 })
-export class DetailsComponent implements OnInit {
+export class DetailsComponent implements OnInit, OnDestroy {
   public recipe: Observable<any>;
   public recipeId = new Subject<string>();
   public author: Observable<any> = new Observable();
@@ -79,8 +79,8 @@ export class DetailsComponent implements OnInit {
     return this.author;
   }
 
-  getLength(item: object) {
-    return Object.keys(item).length;
+  getKeys(item: object) {
+    return Object.keys(item);
   }
 
   isLike(obj, val) {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -7,11 +7,17 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./recipe-page.component.sass'],
 })
 export class RecipePageComponent implements OnInit {
+  @Input() searchTags: [];
   limit: BehaviorSubject<number> = new BehaviorSubject(6);
   scroll: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  tags$: BehaviorSubject<[string]> = new BehaviorSubject(null);
   className = 'l-regular';
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
+
+  onReceivedTags(tags: [string]) {
+    this.tags$.next(tags);
+  }
 }
