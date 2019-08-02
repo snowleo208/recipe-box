@@ -17,7 +17,7 @@
       <ng-container *ngIf="(recipes$ | async); let recipeList">
 
         <div class="dashboard__selector">
-          <button class="btn t-icon" [routerLink]="['/builder']">
+          <button class="btn t-icon" [routerLink]="['/builder']" id="dashboard-create">
             <svg viewBox="0 0 24 24" width="24" height="24">
               <use xlink:href="./assets/sprite.svg#add"></use>
             </svg>

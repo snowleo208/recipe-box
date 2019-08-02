@@ -10,6 +10,7 @@ export class Recipe {
   public like?: string[];
   public public: boolean;
   public uid: string;
+  public tags?: object;
   public createdAt?: string;
   public updatedAt?: string;
 }

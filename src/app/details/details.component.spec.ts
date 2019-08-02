@@ -33,6 +33,10 @@ describe('DetailsComponent', () => {
           'Combine the bread crumbs, cheese and salt in another shallow bowl.',
       },
     ],
+    tags: {
+      Chicken: true,
+      Dinner: true
+    },
     uid: '123553',
     public: true,
     createdAt: {
@@ -96,6 +100,15 @@ describe('DetailsComponent', () => {
     );
   });
 
+  it('should show tags', () => {
+    const compiled = fixture.debugElement.nativeElement;
+
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('.recipe-tags__tag'))).toBeTruthy();
+    expect(compiled.querySelectorAll('.recipe-tags__tag').length).toBe(2);
+  });
+
   it('should show private message if not public recipe', () => {
     const compiled = fixture.debugElement.nativeElement;
 
@@ -119,6 +132,10 @@ describe('DetailsComponent', () => {
             'Combine the bread crumbs, cheese and salt in another shallow bowl.',
         },
       ],
+      tags: {
+        Chicken: true,
+        Dinner: true
+      },
       uid: '1234',
       public: false,
       createdAt: {
@@ -156,6 +173,10 @@ describe('DetailsComponent', () => {
             'Combine the bread crumbs, cheese and salt in another shallow bowl.',
         },
       ],
+      tags: {
+        Chicken: true,
+        Dinner: true
+      },
       uid: 'KsvXtqnl0wc',
       public: false,
       createdAt: {

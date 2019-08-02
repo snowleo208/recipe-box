@@ -92,11 +92,16 @@ export class DashboardComponent implements OnInit {
       return { ...res, doc };
     });
 
+    if (data.length <= 0) {
+      this.recipes$.next([]);
+      return;
+    }
+
     // set index for prev page (current contents)
     this.prevKey$.next(data[0].payload.doc);
     if (data.length - 1) {
       // set index for next page
-      console.log(data);
+      // console.log(data);
       this.nextKey$.next(data[data.length - 1].payload.doc);
     } else {
       this.nextKey$.next(false);

@@ -4,6 +4,8 @@ import { SearchBarComponent } from './search-bar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject } from 'rxjs';
 
 describe('SearchBarComponent', () => {
@@ -56,7 +58,7 @@ describe('SearchBarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule, ReactiveFormsModule, NgSelectModule],
+      imports: [FormsModule, ReactiveFormsModule, NgSelectModule, RouterModule, RouterTestingModule],
       declarations: [SearchBarComponent],
       providers: [
         { provide: AngularFirestore, useValue: angularFirestoreStub },

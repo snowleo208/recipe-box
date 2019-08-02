@@ -1,27 +1,32 @@
-# RecipeBox
+# Deres - a recipe box for all
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.8.
+This is a recipe box for everyone, built using Angular 8. With unit tests and storybook.
 
-## Development server
+## User Story
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+### Guest
 
-## Code scaffolding
+- Guest can view homepage with latest recipes
+- Guest can view all public recipes
+- Guest can search in "All recipes" page by tags
+- Guest can browse recipe by tags
+- Guest can view recipe details, public recipes only
+- Guest can login by Google
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Authorized user
 
-## Build
+- User can view homepage with latest recipes
+- User can like any recipes
+- After giving likes, the recipe will show like icon filled in deep pink
+- User can create public or private recipes
+- User can view their recipes in dashboard
+- User can select and delete their recipes
+- User can edit their own recipes
+- User can add ingredients and steps when they are in recipe builder
+- User can logout
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Online Demo
 
-## Running unit tests
+The app is online using Netlify, welcome to have a try!
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+[Demo](https://keen-borg-d5fcad.netlify.com/)
