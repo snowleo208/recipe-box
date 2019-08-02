@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() orderBy: string;
   @Input() title: string;
   @Input() customClass: string;
-  @Input() searchBy: BehaviorSubject<[string]>;
+  @Input() searchBy: BehaviorSubject<[string]> = new BehaviorSubject(null);
   @Input() isAutoScroll: BehaviorSubject<boolean> = new BehaviorSubject(true);
   @Output() itemId = new EventEmitter();
 
