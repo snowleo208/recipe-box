@@ -20,12 +20,9 @@ describe('MenuComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: UserSessionService, useValue: mockUserSession },
-      ],
-      declarations: [MenuComponent]
-    })
-      .compileComponents();
+      providers: [{ provide: UserSessionService, useValue: mockUserSession }],
+      declarations: [MenuComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -44,7 +41,10 @@ describe('MenuComponent', () => {
 
     fixture.detectChanges();
     expect(compiled.querySelector('.menu__link')).toBeTruthy();
-    expect(compiled.querySelectorAll('.menu__link').length).toBe(2, 'should have 2 links');
+    expect(compiled.querySelectorAll('.menu__link').length).toBe(
+      2,
+      'should have 2 links'
+    );
     expect(compiled.querySelector('.auth-btn')).toBeFalsy();
   }));
 
@@ -89,8 +89,28 @@ describe('MenuComponent', () => {
 
     fixture.detectChanges();
     expect(compiled.querySelector('.menu__link')).toBeTruthy();
-    expect(compiled.querySelectorAll('.menu__link').length).toBe(4, 'should have 4 links');
+    expect(compiled.querySelectorAll('.menu__link').length).toBe(
+      4,
+      'should have 4 links'
+    );
     expect(compiled.querySelector('.is-signin')).toBeTruthy();
   }));
 
+  it('should be normal menu and not fixed', async(() => {
+    component = fixture.componentInstance;
+    const compiled = fixture.debugElement.nativeElement;
+    component.scrollPosition = new BehaviorSubject(150);
+
+    fixture.detectChanges();
+    expect(compiled.querySelector('.u-fixed')).toBeFalsy();
+  }));
+
+  it('should be fixed menu', async(() => {
+    component = fixture.componentInstance;
+    const compiled = fixture.debugElement.nativeElement;
+    component.scrollPosition = new BehaviorSubject(479);
+
+    fixture.detectChanges();
+    expect(compiled.querySelector('.u-fixed')).toBeTruthy();
+  }));
 });

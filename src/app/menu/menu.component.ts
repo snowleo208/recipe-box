@@ -5,22 +5,19 @@ import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.sass']
+  styleUrls: ['./menu.component.sass'],
 })
 export class MenuComponent implements OnInit {
   public scrollPosition: BehaviorSubject<number> = new BehaviorSubject(0);
   public session: UserSessionService;
 
-  constructor(
-    private userSession: UserSessionService) {
+  constructor(private userSession: UserSessionService) {
     this.session = userSession;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   getScroll(e) {
-    this.scrollPosition.next(e.pageY);
+    this.scrollPosition.next(e.pageY || e.target.scrollingElement.scrollTop);
   }
-
 }

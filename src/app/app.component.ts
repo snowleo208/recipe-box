@@ -205,7 +205,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   getScroll(e) {
     // if scroll to the end, load next page
     if (this.scroll) {
-      this.scrollPosition.next(e.pageY);
+      this.scrollPosition.next(e.pageY || e.target.scrollingElement.scrollTop);
     }
   }
 }
