@@ -22,7 +22,9 @@ export class BuilderComponent implements OnInit, OnDestroy {
   private onDestroy$ = new Subject();
   private fb: FormBuilder;
   private itemsCollection: AngularFirestoreCollection<Recipe>;
-  private uid: BehaviorSubject<string | null> = new BehaviorSubject(null);
+  private uid = '';
+  private uid$: BehaviorSubject<string | null> = new BehaviorSubject(null);
+  isAuthor$: BehaviorSubject<boolean | null> = new BehaviorSubject(null);
   loadingTags = true;
   private tags$: Observable<any> = new Observable();
   selectedTags = [];
@@ -61,7 +63,10 @@ export class BuilderComponent implements OnInit, OnDestroy {
       public: true,
     });
 
-    this.session.getUserInfoObs().pipe(takeUntil(this.onDestroy$)).subscribe(val => this.setUserId(val));
+    this.session
+      .getUserInfoObs()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => this.setUserId(val));
     this.tags$ = this.afs.collection('tags').valueChanges(['added', 'removed']);
   }
 
@@ -78,43 +83,56 @@ export class BuilderComponent implements OnInit, OnDestroy {
       )
     );
 
-    this.recipes$.pipe(takeUntil(this.onDestroy$)).subscribe((val: Recipe) => {
-      if (val && val[0]) {
-        const allFields = { ingredients: null, instructions: null, tags: null };
-        const ingredientsArr = [];
-        const instructionsArr = [];
-        const obj = val[0];
-        const generateForm = (item: string) => {
-          if (
-            item === 'createdAt' ||
-            item === 'uid' ||
-            item === 'id' ||
-            item === 'tags'
-          ) {
-            return;
-          }
-          if (item !== 'ingredients' && item !== 'instructions') {
-            allFields[item] = obj[item];
-          } else if (item === 'ingredients') {
-            obj[item].forEach((ele: { [key: string]: string }) =>
-              ingredientsArr.push(this.fb.group(ele))
-            );
-          } else if (item === 'instructions') {
-            obj[item].forEach((ele: { [key: string]: string }) =>
-              instructionsArr.push(this.fb.group(ele))
-            );
-          }
-        };
-        Object.keys(obj).forEach(generateForm);
-        allFields.ingredients = this.fb.array(ingredientsArr);
-        allFields.instructions = this.fb.array(instructionsArr);
-        this.selectedTags = Object.keys(obj.tags);
-        this.recipeForm = this.fb.group(allFields);
-      }
-    });
+    this.recipes$
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((val: Recipe | null | []) => {
+        if (val === null) return;
+        if (val[0] && val[0].uid && val[0].uid === this.uid) {
+          this.isAuthor$.next(true);
+        } else {
+          this.isAuthor$.next(false);
+          return;
+        }
+        if (val && val[0]) {
+          const allFields = {
+            ingredients: null,
+            instructions: null,
+            tags: null,
+          };
+          const ingredientsArr = [];
+          const instructionsArr = [];
+          const obj = val[0];
+          const generateForm = (item: string) => {
+            if (
+              item === 'createdAt' ||
+              item === 'uid' ||
+              item === 'id' ||
+              item === 'tags'
+            ) {
+              return;
+            }
+            if (item !== 'ingredients' && item !== 'instructions') {
+              allFields[item] = obj[item];
+            } else if (item === 'ingredients') {
+              obj[item].forEach((ele: { [key: string]: string }) =>
+                ingredientsArr.push(this.fb.group(ele))
+              );
+            } else if (item === 'instructions') {
+              obj[item].forEach((ele: { [key: string]: string }) =>
+                instructionsArr.push(this.fb.group(ele))
+              );
+            }
+          };
+          Object.keys(obj).forEach(generateForm);
+          allFields.ingredients = this.fb.array(ingredientsArr);
+          allFields.instructions = this.fb.array(instructionsArr);
+          this.selectedTags = Object.keys(obj.tags);
+          this.recipeForm = this.fb.group(allFields);
+        }
+      });
 
     this.tags$.subscribe(data =>
-      data.length > 0 ? this.getTags(data) : false
+      data !== null && data.length > 0 ? this.getTags(data) : false
     );
   }
 
@@ -133,7 +151,8 @@ export class BuilderComponent implements OnInit, OnDestroy {
 
   setUserId(obj: UserInfo) {
     if (obj && obj.uid !== null) {
-      this.uid.next(obj.uid);
+      this.uid = obj.uid;
+      this.uid$.next(obj.uid);
     }
   }
 
@@ -173,7 +192,9 @@ export class BuilderComponent implements OnInit, OnDestroy {
   // submit and add recipe to firebase
   onSubmit(e: Event): void {
     e.preventDefault();
-    this.isEdit$.pipe(takeUntil(this.onDestroy$)).subscribe(val => (!val ? this.onCreate() : this.onUpdate()));
+    this.isEdit$
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => (!val ? this.onCreate() : this.onUpdate()));
   }
 
   // Void -> Void
@@ -189,15 +210,17 @@ export class BuilderComponent implements OnInit, OnDestroy {
       tags[element] = true;
     });
 
-    this.uid.pipe(takeUntil(this.onDestroy$)).subscribe(val => (final.uid = val));
-    this.isEdit$.pipe(takeUntil(this.onDestroy$)).subscribe(val => (val !== false ? (id = val) : ''));
+    final.uid = this.uid;
+    this.isEdit$
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => (val !== false ? (id = val) : ''));
     final.id = id;
     final.updatedAt = timestamp;
     final.tags = tags;
 
-    this.submitComplete.pipe(takeUntil(this.onDestroy$)).subscribe(val =>
-      val ? this.router.navigate([`/recipe/${id}`]) : ''
-    );
+    this.submitComplete
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => (val ? this.router.navigate([`/recipe/${id}`]) : ''));
 
     this.itemsCollection
       .doc(id)
@@ -217,14 +240,14 @@ export class BuilderComponent implements OnInit, OnDestroy {
       tags[element] = true;
     });
 
-    this.uid.subscribe(val => (final.uid = val));
+    this.uid$.subscribe(val => (final.uid = val));
     final.id = id;
     final.createdAt = timestamp;
     final.tags = tags;
 
-    this.submitComplete.pipe(takeUntil(this.onDestroy$)).subscribe(val =>
-      val ? this.router.navigate([`/recipe/${id}`]) : ''
-    );
+    this.submitComplete
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => (val ? this.router.navigate([`/recipe/${id}`]) : ''));
 
     this.itemsCollection
       .doc(id)

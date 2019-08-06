@@ -13,7 +13,5 @@ export class RecipeBoxHomeComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {
-    this.listLimit.subscribe(val => console.log(val));
-  }
+  ngOnInit() {}
 }

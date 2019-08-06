@@ -58,7 +58,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    this.collection$ = combineLatest(this.startAfter$, this.param$, this.searchBy)
+    this.collection$ = combineLatest(
+      this.startAfter$,
+      this.param$,
+      this.searchBy
+    )
       .pipe(
         switchMap(([doc, param, searchBy]) =>
           this.db
@@ -71,12 +75,20 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
                 if (typeof param === 'string') {
                   query = query.where('tags.' + param, '==', true);
                 } else {
-                  param.forEach(item => item !== '' ? query = query.where('tags.' + item, '==', true) : '');
+                  param.forEach(item =>
+                    item !== ''
+                      ? (query = query.where('tags.' + item, '==', true))
+                      : ''
+                  );
                 }
               }
 
               if (searchBy) {
-                searchBy.forEach(item => item !== '' ? query = query.where('tags.' + item, '==', true) : '');
+                searchBy.forEach(item =>
+                  item !== ''
+                    ? (query = query.where('tags.' + item, '==', true))
+                    : ''
+                );
               }
 
               if (param || searchBy) {
@@ -128,13 +140,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       });
 
     this.searchBy
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(val => {
-        if (val) {
-          this.items = null;
-          this.param$.next(val);
-        }
-      });
+      ? this.searchBy.pipe(takeUntil(this.onDestroy$)).subscribe(val => {
+          if (val) {
+            this.items = null;
+            this.param$.next(val);
+          }
+        })
+      : '';
 
     this.isAutoScroll
       .pipe(takeUntil(this.onDestroy$))

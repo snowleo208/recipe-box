@@ -1,5 +1,5 @@
-<div class="main">
-  <section class="form-builder">
+<div class="main" *ngIf="(!(isEdit$|async) || (isEdit$|async) && (recipes$|async)); else isLoading">
+  <section class="form-builder" *ngIf="!(isEdit$|async) || ((isEdit$|async) && (isAuthor$|async)); else notAuthorized">
     <h1 class="u-header">
       <ng-container *ngIf="(isEdit$ | async) === false; else editTitle">Create Recipe</ng-container>
       <ng-template #editTitle>Edit Recipe</ng-template>
@@ -38,7 +38,7 @@
             <label for="name">Ingredient {{i+1}}</label>
             <div class="form-group t-ingredients" [formGroupName]="i">
               <input class="form-input t-ingredients" formControlName="name" placeholder="e.g. 1 cup milk">
-              <button class="btn form-button t-primary t-icon" aria-label="Remove Ingredient"
+              <button class="btn form-button t-primary t-icon l-remove" aria-label="Remove Ingredient"
                 (click)="removeItem('ingredients', i)" *ngIf="i > 0"><svg viewBox="0 0 24 24" width="24" height="24">
                   <use xlink:href="./assets/sprite.svg#delete_forever"></use>
                 </svg>
@@ -58,7 +58,7 @@
             <div class="form-group t-ingredients" [formGroupName]="i">
               <textarea class="form-input t-steps" cols="50" formControlName="step"
                 placeholder="Enter step of your recipe"></textarea>
-              <button class="form-button t-primary t-icon" aria-label="Remove Instructions"
+              <button class="btn form-button t-primary t-icon l-remove" aria-label="Remove Instructions"
                 (click)="removeItem('instructions', i)" *ngIf="i > 0"><svg viewBox="0 0 24 24" width="24" height="24">
                   <use xlink:href="./assets/sprite.svg#delete_forever"></use>
                 </svg></button>
@@ -94,3 +94,13 @@
     </form>
   </section>
 </div>
+
+<ng-template #isLoading>
+  <div class="main">
+    <p>Loading...</p>
+  </div>
+</ng-template>
+
+<ng-template #notAuthorized>
+  <p>You are not authorized to edit this recipe, please confirm you are author of this recipe and try again.</p>
+</ng-template>
