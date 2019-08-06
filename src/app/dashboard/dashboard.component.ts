@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AngularFirestore, Query } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, combineLatest, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { UserSessionService } from '../user-session.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Recipe } from '../recipe';
@@ -11,7 +11,7 @@ import { Recipe } from '../recipe';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.sass'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   private db: AngularFirestore;
   private session: UserSessionService;
   itemDoc: string[] = [];
@@ -25,6 +25,7 @@ export class DashboardComponent implements OnInit {
   prevKey$ = new BehaviorSubject(null);
   private startBefore$ = new BehaviorSubject(null);
   private startAfter$ = new BehaviorSubject(null);
+  private onDestroy$ = new Subject();
 
   uid$: BehaviorSubject<string | null> = new BehaviorSubject(null);
   recipes$: BehaviorSubject<any> = new BehaviorSubject([]);
@@ -42,10 +43,13 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.session.getUserInfoObs().subscribe(val => {
-      this.uid$.next(val.uid);
-      return this.authorizeInfo.next(val);
-    });
+    this.session
+      .getUserInfoObs()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(val => {
+        this.uid$.next(val.uid);
+        return this.authorizeInfo.next(val);
+      });
 
     // get recipe db doc
     this.doc$ = combineLatest(this.uid$, this.startAfter$).pipe(
@@ -67,10 +71,12 @@ export class DashboardComponent implements OnInit {
       )
     );
 
-    this.doc$.subscribe(data => this.getData(data));
+    this.doc$
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(data => this.getData(data));
 
     // get recipe list and build form
-    this.recipes$.subscribe(recipes => {
+    this.recipes$.pipe(takeUntil(this.onDestroy$)).subscribe(recipes => {
       if (this.itemList.controls.length !== recipes.length) {
         const formFields = {};
         recipes.forEach(
@@ -79,6 +85,11 @@ export class DashboardComponent implements OnInit {
         this.itemList = this.formBuilder.group(formFields);
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   get userInfo(): BehaviorSubject<any> | null {
