@@ -15,14 +15,14 @@ import {
 } from '@angular/fire/firestore';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { UserSessionService } from './user-session.service';
-import { Recipe } from './recipe';
+import { UserSessionService } from '../user-session.service';
+import { Recipe } from '../recipe';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-recipedb',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass'],
+  templateUrl: './recipe-db.component.html',
+  styleUrls: ['./recipe-db.component.sass'],
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() limitation: number;

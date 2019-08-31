@@ -1,13 +1,13 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { AppComponent } from './app.component';
+import { AppComponent } from './recipe-db.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LikeButtonComponent } from './likebutton/likebutton.component';
-import { UserSessionService } from './user-session.service';
-import { ElementRef } from '@angular/core';
+import { LikeButtonComponent } from '../likebutton/likebutton.component';
+import { UserSessionService } from '../user-session.service';
+// import { ElementRef } from '@angular/core';
 
 describe('AppComponent', () => {
   let component: AppComponent;

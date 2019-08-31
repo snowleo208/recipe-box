@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RecipePageComponent } from './recipe-page.component';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
-import { AppComponent } from '../app.component';
+import { AppComponent } from '../recipe-db/recipe-db.component';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { UserSessionService } from '../user-session.service';
 import { BehaviorSubject } from 'rxjs';

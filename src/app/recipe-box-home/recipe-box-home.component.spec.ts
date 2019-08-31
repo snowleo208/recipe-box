@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RecipeBoxHomeComponent } from './recipe-box-home.component';
-import { AppComponent } from '../app.component';
+import { AppComponent } from '../recipe-db/recipe-db.component';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LikeButtonComponent } from '../likebutton/likebutton.component';

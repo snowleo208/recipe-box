@@ -8,7 +8,7 @@ import { environment } from '../environments/environment';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 
-import { AppComponent } from './app.component';
+import { AppComponent } from './recipe-db/recipe-db.component';
 import { BuilderComponent } from './builder/builder.component';
 import { LoginComponent } from './login/login.component';
 import { DetailsComponent } from './details/details.component';
@@ -103,9 +103,9 @@ const appRoutes: Routes = [
     AngularFirestoreModule,
     ReactiveFormsModule,
     AngularFireAuthModule,
-    NgSelectModule
+    NgSelectModule,
   ],
   providers: [UserSessionService, AngularFireAuthGuard],
   bootstrap: [HomepageComponent],
 })
-export class AppModule { }
+export class AppModule {}
